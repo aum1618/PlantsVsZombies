@@ -43,7 +43,7 @@ void createMap(RenderWindow& window) {
 int main()
 {
 	//Create a window, n*n
-	RenderWindow window(VideoMode(1200, 700), "Plants Vs Zombies");
+	RenderWindow window(VideoMode(1920, 1080), "Plants Vs Zombies");
 	//Game icon
 	Image icon;
 	if (!icon.loadFromFile("./Images/icon.png"))
