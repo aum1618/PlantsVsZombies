@@ -96,7 +96,7 @@ int main()
 
 
 
-		window.setSize(sf::Vector2u(550, 340));
+		window.setSize(sf::Vector2u(1920, 1080));
 		window.display();
 	}
 	return 0;
