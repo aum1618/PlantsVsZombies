@@ -303,11 +303,11 @@ int main()
 
 		//Создание заднего фона
 		createBack(window);
-		vector <std::string> paths = { "Горошек.png", "Подсолнух.png", "Капуста.png", "Актиния.png", "Бомба.png", "Поу.png" };
+		vector <std::string> paths = { "1.png", "2.png", "3.png", "4.png", "5.png", "6.png"};
 		vector <coordinats> placeCards;
 		//Рисование карточки героев
 		for (int i = 0; i < 6; i++) {
-			std::string path = "card" + paths[i];
+			std::string path = "card"+  paths[i];
 			auto number_hero = i;
 			createHeroCard(window, path, number_hero + 1, placeCards);
 		}
