@@ -16,7 +16,7 @@ struct coordinats {
 void createBack(RenderWindow& window) {
 	//Drawing the background
 	Image map_image;
-	map_image.loadFromFile("./Images/backwindow.jpg");
+	map_image.loadFromFile("./Images/background.png");
 	Texture map;
 	map.loadFromImage(map_image);
 	Sprite s_map;
@@ -24,20 +24,36 @@ void createBack(RenderWindow& window) {
 	s_map.setPosition(0, 0);
 	window.draw(s_map);
 }
+void createZombie(RenderWindow& window){
+	float speed = 0.1f;
+	Image zombie_image;
+	zombie_image.loadFromFile("./Images/zombieOnPlace.png");
+	Texture zombieTexture;
+	zombieTexture.loadFromImage(zombie_image);
+	Sprite z_zombie;
+
+	// Set random y-value
+	int fixedY = 400;
+	// Set position at x-value of 1920 and random y-value
+	z_zombie.setTexture(zombieTexture);
+	z_zombie.setPosition(1920 - zombieTexture.getSize().x, fixedY);
+
+	window.draw(z_zombie);
+	}
 
 //Drawing the map
-void createMap(RenderWindow& window) {
-	//Drawing a map
-	Image map_image;//объект изображения для карты
-	map_image.loadFromFile("./Images/grid.png");//load the file for the map
-	Texture map;
-	map.loadFromImage(map_image);
-	Sprite s_map;
-	s_map.setTexture(map);
-	s_map.setPosition(300, 160);
-
-	window.draw(s_map);
-}
+//void createMap(RenderWindow& window) {
+//	//Drawing a map
+//	Image map_image;//объект изображения для карты
+//	map_image.loadFromFile("./Images/grid.png");//load the file for the map
+//	Texture map;
+//	map.loadFromImage(map_image);
+//	Sprite s_map;
+//	s_map.setTexture(map);
+//	s_map.setPosition(300, 160);
+//
+//	window.draw(s_map);
+//}
 
 
 int main()
@@ -91,8 +107,8 @@ int main()
 
 		//Create a background
 		createBack(window);
-		createMap(window);
-
+		//createMap(window);
+		createZombie(window);
 
 
 
