@@ -4,21 +4,19 @@
 using namespace sf;
 using namespace std;
 
-struct coordinates {
+
+struct coordinats {
 	int x;
 	int y;
 };
-struct Zombies {
-	Sprite s;
-	coordinates co;
-};
+
 
 
 //Drawing the background
 void createBack(RenderWindow& window) {
 	//Drawing the background
 	Image map_image;
-	map_image.loadFromFile("./Images/background.png");
+	map_image.loadFromFile("../SFML/Images/backwindow.jpg");
 	Texture map;
 	map.loadFromImage(map_image);
 	Sprite s_map;
@@ -26,73 +24,33 @@ void createBack(RenderWindow& window) {
 	s_map.setPosition(0, 0);
 	window.draw(s_map);
 }
-void initializeZombies(Zombies* z, int noOfZom,sf::Texture& zombText) {
-	for (int i = 0; i < noOfZom; i++) {
-		z[i].s.setTexture(zombText);
-		z[i].co.x = 1280 - zombText.getSize().x;
-		z[i].co.y = rand() % (700 - zombText.getSize().y);
-	}
-}
-void drawZombie(Zombies* z, int noOfZom, sf::RenderWindow& window) {
-	for (int i = 0; i < noOfZom; i++) {
-		z[i].s.setPosition(z[i].co.x, z[i].co.y);
-		window.draw(z[i].s);
-	}
-}
-void moveZombie(RenderWindow& window, Zombies* zomb, int numZombies, float speed) {
-	for (int i = 0; i < numZombies; ++i) {
-		float currentX = zomb[i].co.x;
-		float newX = 0;
-		// Check if the zombie has gone off the screen
-		if (currentX>0) {
-			// If the zombie is completely off-screen, reset its position to the right side
-			newX = currentX - speed;
-		}
 
-		// Set the new position for the current zombie (only along the X-axis)
-		zomb[i].s.setPosition(newX, zomb[i].co.y);
-	}
-}
 //Drawing the map
-//void createMap(RenderWindow& window) {
-//	//Drawing a map
-//	Image map_image;//объект изображения для карты
-//	map_image.loadFromFile("./Images/grid.png");//load the file for the map
-//	Texture map;
-//	map.loadFromImage(map_image);
-//	Sprite s_map;
-//	s_map.setTexture(map);
-//	s_map.setPosition(300, 160);
-//
-//	window.draw(s_map);
-//}
+void createMap(RenderWindow& window) {
+	//Drawing a map
+	Image map_image;//объект изображения для карты
+	map_image.loadFromFile("../SFML/Images/grid.png");//load the file for the map
+	Texture map;
+	map.loadFromImage(map_image);
+	Sprite s_map;
+	s_map.setTexture(map);
+	s_map.setPosition(300, 160);
+
+	window.draw(s_map);
+}
 
 
 int main()
 {
-	srand(time(0));
-	float speed = 10.0f;
-	int numberOfZombies = 5;
-	Image zombie_image;
-	zombie_image.loadFromFile("./Images/zombieOnPlace.png");
-	sf::Texture zombieTexture;
-	sf::Sprite zombieSprite;
-	zombieTexture.loadFromImage(zombie_image);
-	zombieSprite.setTexture(zombieTexture);
-	Zombies* zomb = new Zombies[numberOfZombies];
-	initializeZombies(zomb, numberOfZombies,zombieTexture);
-	
-	
 	//Create a window, n*n
-	RenderWindow window(VideoMode(1280, 720), "Plants Vs Zombies");
+	RenderWindow window(VideoMode(1200, 700), "Plants Vs Zombies");
 	//Game icon
 	Image icon;
-	if (!icon.loadFromFile("./Images/icon.png"))
+	if (!icon.loadFromFile("../SFML/Images/icon.png"))
 	{
 		return 1;
 	}
 	window.setIcon(32, 32, icon.getPixelsPtr());
-
 
 	///////////////////////////////////////
 
@@ -130,14 +88,16 @@ int main()
 			if (event.type == Event::Closed)
 				window.close();
 		}
+
 		//Create a background
 		createBack(window);
-		drawZombie(zomb, numberOfZombies, window);
-		moveZombie(window, zomb, numberOfZombies, speed);
+		createMap(window);
 
+
+
+
+		window.setSize(sf::Vector2u(550, 340));
 		window.display();
-		window.clear();
-
 	}
 	return 0;
 }
