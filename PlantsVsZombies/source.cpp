@@ -133,12 +133,7 @@ public:
 void createBack(RenderWindow& window) {
     Image map_image;
     map_image.loadFromFile("./Images/background.png");
-    Texture map;
-    map.loadFromImage(map_image);
-    Sprite s_map;
-    s_map.setTexture(map);
-    s_map.setPosition(0, 0);
-    window.draw(s_map);
+   
 }
 
 void createZombie(RenderWindow& window) {
@@ -179,13 +174,18 @@ Plant** addPlants(Plant** plantArray, int& size,float x,float y) {
 }
 
 int main() {
-    RenderWindow window(VideoMode(1920, 1080), "Plants Vs Zombies");
-    window.setSize(Vector2u(1920, 1080));
+    RenderWindow window(VideoMode(1920, 1080,32), "Plants Vs Zombies");
     Image icon;
-    if (!icon.loadFromFile("./Images/icon.png")) {
-        return 1;
-    }
-    window.setIcon(32, 32, icon.getPixelsPtr());
+    //if (!icon.loadFromFile("./Images/shot.png")) {
+    //    //return 1;
+    //}
+    //window.setIcon(32, 32, icon.getPixelsPtr());
+    Texture map;
+    map.loadFromFile("./Images/background.png");
+    Sprite s_map;
+    s_map.setTexture(map);
+    s_map.setPosition(0, 0);
+    window.setVerticalSyncEnabled(true);
 
     const int ROWS = 5;
     const int COLS = 9;
@@ -239,9 +239,10 @@ int main() {
         for (int i = 0; i < plants_created; i++) {
             plants[i]->updateBullet();
         }
-
+        window.clear();
+        window.draw(s_map);
         // Draw the background
-        createBack(window);
+        //createBack(window);
 
         // Draw the plants
         for (int i = 0; i < plants_created; i++) {
@@ -256,7 +257,6 @@ int main() {
         createZombie(window);
 
         window.display();
-        window.clear();
     }
     return 0;
 }
