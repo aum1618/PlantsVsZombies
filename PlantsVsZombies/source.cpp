@@ -29,13 +29,13 @@ void createBack(RenderWindow& window) {
 void initializeZombies(Zombies* z, int noOfZom,sf::Texture& zombText) {
 	for (int i = 0; i < noOfZom; i++) {
 		z[i].s.setTexture(zombText);
-		z[i].co.x = 1260 - zombText.getSize().x;
+		z[i].co.x = 1280 - zombText.getSize().x;
 		z[i].co.y = rand() % (700 - zombText.getSize().y);
 	}
 }
 void drawZombie(Zombies* z, int noOfZom, sf::RenderWindow& window) {
 	for (int i = 0; i < noOfZom; i++) {
-		//z[i].s.setPosition(z[i].co.x, z[i].co.y);
+		z[i].s.setPosition(z[i].co.x, z[i].co.y);
 		window.draw(z[i].s);
 	}
 }
@@ -71,7 +71,7 @@ void moveZombie(RenderWindow& window, Zombies* zomb, int numZombies, float speed
 int main()
 {
 	srand(time(0));
-	float speed = 50.0f;
+	float speed = 10.0f;
 	int numberOfZombies = 5;
 	Image zombie_image;
 	zombie_image.loadFromFile("./Images/zombieOnPlace.png");
@@ -92,7 +92,6 @@ int main()
 		return 1;
 	}
 	window.setIcon(32, 32, icon.getPixelsPtr());
-	window.setSize(sf::Vector2u(1280, 720));
 
 
 	///////////////////////////////////////
