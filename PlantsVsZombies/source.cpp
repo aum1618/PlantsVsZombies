@@ -10,6 +10,7 @@ using namespace std;
 
 
 int main() {
+    srand(time(0));
     RenderWindow window(VideoMode(1280, 720, 32), "Plants Vs Zombies");
     Image icon;
     if (!icon.loadFromFile("./Images/Icon.png")) {
@@ -31,11 +32,10 @@ int main() {
     plants = new Plant * [plants_created];
     Zombie** zombies = new Zombie * [noOfZombies];
     for (int i = 0; i < noOfZombies; i++) {
-        zombies[i] = new Zombie(1280-100, rand() % 680);
+        int newX = (1280) + (rand() % 1000);
+        int newY = (rand() % 700) -140;
+        zombies[i] = new Zombie(newX,newY);
     }
-
-
-
 
     while (window.isOpen()) {
 

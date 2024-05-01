@@ -18,8 +18,8 @@ struct Zombie {
 		health = 3;
 		cordintes.x = x;
 		cordintes.y = y;
-		speed = 2;
-isAlive = true;
+		speed = 4;
+		isAlive = true;
 		texture.loadFromFile("./Images/zombieOnPlace.png");
 		sprite.setTexture(texture);
 		sprite.setPosition(x, y);
@@ -37,12 +37,10 @@ isAlive = true;
 			}
 		}
 	}
-void draw(RenderWindow& window) {
-	if (isAlive) {
-		window.draw(sprite);
+	void draw(RenderWindow& window) {
+		if (isAlive) {
+			window.draw(sprite);
+		}
 	}
-	}
-
-
 };
 
