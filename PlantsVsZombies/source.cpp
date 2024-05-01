@@ -1,103 +1,85 @@
-﻿#include <SFML/Graphics.hpp>
+﻿
+#pragma once
+#include <SFML/Graphics.hpp>
+#include <iostream>
 #include <ctime>
-//#include"../SFML/Images/"
+#include "Plant.h"
+#include "Zombie.h"
 using namespace sf;
 using namespace std;
 
 
-struct coordinats {
-	int x;
-	int y;
-};
+int main() {
+    RenderWindow window(VideoMode(1280, 720, 32), "Plants Vs Zombies");
+    Image icon;
+    if (!icon.loadFromFile("./Images/Icon.png")) {
+        return 1;
+    }
+    window.setIcon(32, 32, icon.getPixelsPtr());
+    Texture map;
+    map.loadFromFile("./Images/background.png");
+    Sprite s_map;
+    s_map.setTexture(map);
+    s_map.setPosition(0, 0);
+    window.setVerticalSyncEnabled(true);
 
 
+    int plants_created = 0;
+    int noOfZombies = 10;
 
-//Drawing the background
-void createBack(RenderWindow& window) {
-	//Drawing the background
-	Image map_image;
-	map_image.loadFromFile("../SFML/Images/backwindow.jpg");
-	Texture map;
-	map.loadFromImage(map_image);
-	Sprite s_map;
-	s_map.setTexture(map);
-	s_map.setPosition(0, 0);
-	window.draw(s_map);
-}
-
-//Drawing the map
-void createMap(RenderWindow& window) {
-	//Drawing a map
-	Image map_image;//объект изображения для карты
-	map_image.loadFromFile("../SFML/Images/grid.png");//load the file for the map
-	Texture map;
-	map.loadFromImage(map_image);
-	Sprite s_map;
-	s_map.setTexture(map);
-	s_map.setPosition(300, 160);
-
-	window.draw(s_map);
-}
-
-
-int main()
-{
-	//Create a window, n*n
-	RenderWindow window(VideoMode(1200, 700), "Plants Vs Zombies");
-	//Game icon
-	Image icon;
-	if (!icon.loadFromFile("../SFML/Images/icon.png"))
-	{
-		return 1;
-	}
-	window.setIcon(32, 32, icon.getPixelsPtr());
-
-	///////////////////////////////////////
-
-	//Game field (5*9)
-	//Point 137*79 - leftmost point
-	//length 41; width 53
-	const int ROWS = 5;
-	const int COLS = 9;
-
-	bool FIELD_GAME_STATUS[ROWS][COLS];
-
-	for (int i = 0; i < ROWS; i++) {
-		for (int j = 0; j < COLS; j++) {
-			FIELD_GAME_STATUS[i][j] = true;
-		}
-	}
-
-	Clock timeMoney;
-
-
-
-	Clock clock;
-
-	while (window.isOpen())
-	{
-		float time = clock.getElapsedTime().asMicroseconds();
-		float moneyTime = timeMoney.getElapsedTime().asSeconds();
-
-		clock.restart();
-		time = time / 800;
-
-		Event event;
-		while (window.pollEvent(event))
-		{
-			if (event.type == Event::Closed)
-				window.close();
-		}
-
-		//Create a background
-		createBack(window);
-		createMap(window);
+    Plant** plants;
+    plants = new Plant * [plants_created];
+    Zombie** zombies = new Zombie * [noOfZombies];
+    for (int i = 0; i < noOfZombies; i++) {
+        zombies[i] = new Zombie(1280-100, rand() % 680);
+    }
 
 
 
 
-		window.setSize(sf::Vector2u(550, 340));
-		window.display();
-	}
-	return 0;
+    while (window.isOpen()) {
+
+
+        Event event;
+        while (window.pollEvent(event)) {
+            if (event.type == Event::Closed)
+                window.close();
+            if (event.type == Event::MouseButtonPressed && event.mouseButton.button == Mouse::Left) {
+                // Get the mouse click position
+                coordinates clickPosition;
+                clickPosition.x = event.mouseButton.x;
+                clickPosition.y = event.mouseButton.y;
+
+                plants = addPlants(plants, plants_created, clickPosition.x, clickPosition.y);
+
+
+            }
+        }
+        for (int i = 0; i < plants_created; i++) {
+            if (plants[i]->clock.getElapsedTime().asSeconds() > plants[i]->cooldown) {
+
+                plants[i]->fireBullet();
+                plants[i]->clock.restart();
+            }
+        }
+        for (int i = 0; i < plants_created; i++) {
+            plants[i]->updateBullet();
+        }
+        for (int i = 0; i < noOfZombies; i++) {
+            zombies[i]->move();
+        }
+        window.clear();
+        window.draw(s_map);
+        for (int i = 0; i < noOfZombies; i++) {
+            zombies[i]->draw(window);
+        }
+
+        for (int i = 0; i < plants_created; i++) {
+            plants[i]->draw(window);
+            plants[i]->drawBullet(window);
+
+        }
+        window.display();
+    }
+    return 0;
 }
