@@ -33,7 +33,7 @@ public:
         texture.loadFromFile("./Images/plant.png");
         texture.setSmooth(true);
         sprite.setTexture(texture);
-        sprite.scale(0.5, 0.5);
+        sprite.setTextureRect(IntRect(0, 0, 100, 100));
         sprite.setPosition(position.x, position.y);
 
     }
