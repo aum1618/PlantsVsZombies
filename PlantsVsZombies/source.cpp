@@ -3,21 +3,12 @@
 #include <iostream>
 #include <ctime>
 #include <cmath>
-#include "Plant.h"
-#include "Zombie.h"
+#include "PlantFactory.h"
+#include "ZombieFactory.h"
+#include "Cursor.h"
 #include "Shop.h"
 using namespace sf;
 using namespace std;
-
-
-bool isPlantThere(Plant** plants, int plants_created, float x, float y) {
-    for (int i = 0; i < plants_created; i++) {
-        if (plants[i]->position.x == x && plants[i]->position.y == y) {
-			return true;
-		}
-	}
-	return false;
-}
 
 
 int main() {
@@ -43,28 +34,12 @@ int main() {
     s_map.setPosition(0, 0);
     window.setVerticalSyncEnabled(true);
 
-    //Cursor sprites
-    sf::Cursor cursor;
-    sf::Cursor defaultCursor;
-    defaultCursor.loadFromSystem(sf::Cursor::Arrow);
-    sf::Image cursorimg;
-    sf::Sprite cursorsprite;
 
-    int plants_created = 0;
-    int noOfZombies = 20;
+    GameCursor cursor;
+    PlantFactory plantFactory;
     Shop sh;
-    Plant** plants;
-    plants = new Plant * [plants_created];
-    Zombie** zombies = new Zombie * [noOfZombies];
-    for (int i = 0; i < noOfZombies; i++) {
-        int newX = (rand() % 1001) + 1300;  // Generates random number between 1300 and 2300
-        int newY = (rand() % 899);          // Generates random number between 0 and 900
-
-        // Make newX and newY multiples of 100
-        newX = newX / 100 * 100;
-        newY = newY / 100 * 100;
-        zombies[i] = new Zombie(newX,newY);
-    }
+    
+   ZombieFactory zombieFactory(20);
 
     while (window.isOpen()) {
 
@@ -81,102 +56,50 @@ int main() {
                 clickPosition.x=floor(clickPosition.x / 100.0f) * 100.0f;
                 clickPosition.y=floor(clickPosition.y / 100.0f) * 100.0f;
 
-                //Changing cursor according to shop
-                    if ((clickPosition.x >= 100 && clickPosition.x <= 200) && (clickPosition.y >= 0 && clickPosition.y <= 100)) {
-                        if (cursorimg.loadFromFile("./Images/peeshooter.png")) {
-                            cursor.loadFromPixels(cursorimg.getPixelsPtr(), cursorimg.getSize(), Vector2u(16, 16));
-                            window.setMouseCursor(cursor);
-                        }
-                    }
-                    if ((clickPosition.x >= 200 && clickPosition.x <= 300) && (clickPosition.y >= 0 && clickPosition.y <= 100)) {
-                        if (cursorimg.loadFromFile("./Images/repeater.png")) {
-                            cursor.loadFromPixels(cursorimg.getPixelsPtr(), cursorimg.getSize(), Vector2u(16, 16));
-                            window.setMouseCursor(cursor);
-                        }
-                    }
-                    if ((clickPosition.x >= 300 && clickPosition.x <= 400) && (clickPosition.y >= 0 && clickPosition.y <= 100)) {
-                        if (cursorimg.loadFromFile("./Images/snowpea.png")) {
-                            cursor.loadFromPixels(cursorimg.getPixelsPtr(), cursorimg.getSize(), Vector2u(16, 16));
-                            window.setMouseCursor(cursor);
-                        }
-                    }
-                    if ((clickPosition.x >= 400 && clickPosition.x <= 500) && (clickPosition.y >= 0 && clickPosition.y <= 100)) {
-                        if (cursorimg.loadFromFile("./Images/fumeshroom.png")) {
-                            cursor.loadFromPixels(cursorimg.getPixelsPtr(), cursorimg.getSize(), Vector2u(16, 16));
-                            window.setMouseCursor(cursor);
-                        }
-                    }
-                    if ((clickPosition.x >= 500 && clickPosition.x <= 600) && (clickPosition.y >= 0 && clickPosition.y <= 100)) {
-                        if (cursorimg.loadFromFile("./Images/wallnut.png")) {
-                            cursor.loadFromPixels(cursorimg.getPixelsPtr(), cursorimg.getSize(), Vector2u(16, 16));
-                            window.setMouseCursor(cursor);
-                        }
-                    }
-                    if ((clickPosition.x >= 600 && clickPosition.x <= 700) && (clickPosition.y >= 0 && clickPosition.y <= 100)) {
-                        if (cursorimg.loadFromFile("./Images/cherrybomb.png")) {
-                            cursor.loadFromPixels(cursorimg.getPixelsPtr(), cursorimg.getSize(), Vector2u(16, 16));
-                            window.setMouseCursor(cursor);
-                        }
-                    }
-                    if ((clickPosition.x >= 700 && clickPosition.x <= 800) && (clickPosition.y >= 0 && clickPosition.y <= 100)) {
-                        if (cursorimg.loadFromFile("./Images/sunflower.png")) {
-                            cursor.loadFromPixels(cursorimg.getPixelsPtr(), cursorimg.getSize(), Vector2u(16, 16));
-                            window.setMouseCursor(cursor);
-                        }
-                    }
-                    if ((clickPosition.x >= 800 && clickPosition.x <= 900) && (clickPosition.y >= 0 && clickPosition.y <= 100)) {
-                        if (cursorimg.loadFromFile("./Images/shovel.png")) {
-                            cursor.loadFromPixels(cursorimg.getPixelsPtr(), cursorimg.getSize(), Vector2u(16, 16));
-                            window.setMouseCursor(cursor);
-                        }
-                    }
-                    if ((clickPosition.x >= 0 && clickPosition.x <= 1300) && (clickPosition.y >= 100 && clickPosition.y <= 900)) {
-                            window.setMouseCursor(defaultCursor);
-                    }
-
-                if (!isPlantThere(plants, plants_created, clickPosition.x, clickPosition.y)) {
+                cursor.renderCursor(clickPosition);
+                if (!plantFactory.isPlantThere( clickPosition.x, clickPosition.y)) {
                     if(clickPosition.y>100)
-                    plants = addPlants(plants, plants_created, clickPosition.x, clickPosition.y);
+                    plantFactory.createPlant(clickPosition.x, clickPosition.y);
 				}
 
 
             }
         }
-        for (int i = 0; i < plants_created; i++) {
-            if (plants[i]->clock.getElapsedTime().asSeconds() > plants[i]->cooldown) {
+        for (int i = 0; i < plantFactory.plants_created; i++) {
+            if (plantFactory.plants[i]->clock.getElapsedTime().asSeconds() > plantFactory.plants[i]->cooldown) {
 
-                plants[i]->fireBullet();
-                plants[i]->clock.restart();
+                plantFactory.plants[i]->fireBullet();
+                plantFactory.plants[i]->clock.restart();
             }
         }
-        for (int i = 0; i < plants_created; i++) {
-            plants[i]->updateBullet();
+        for (int i = 0; i < plantFactory.plants_created; i++) {
+            plantFactory.plants[i]->updateBullet();
         }
-        for (int i = 0; i < noOfZombies; i++) {
-            zombies[i]->move();
+        for (int i = 0; i < zombieFactory.zombies_created; i++) {
+            zombieFactory.zombies[i]->move();
         }  
-        for (int i = 0; i < plants_created; i++) {
-            if (plants[i]->clock.getElapsedTime().asSeconds() > plants[i]->cooldown) {
-                plants[i]->fireBullet();
-                plants[i]->clock.restart();
+        for (int i = 0; i < plantFactory.plants_created; i++) {
+            if (plantFactory.plants[i]->clock.getElapsedTime().asSeconds() > plantFactory.plants[i]->cooldown) {
+                plantFactory.plants[i]->fireBullet();
+                plantFactory.plants[i]->clock.restart();
             }
-            plants[i]->updateBullet();
+            plantFactory.plants[i]->updateBullet();
 
             // Check for collision with zombies
-            for (int j = 0; j < noOfZombies; j++) {
-                if (plants[i]->bullet->exist && zombies[j]->isAlive) {
-                    FloatRect bulletBounds = plants[i]->bullet->sprite.getGlobalBounds();
-                    FloatRect zombieBounds = zombies[j]->sprite.getGlobalBounds();
+            for (int j = 0; j < zombieFactory.zombies_created; j++) {
+                if (plantFactory.plants[i]->bullet->exist && zombieFactory.zombies[j]->isAlive) {
+                    FloatRect bulletBounds =plantFactory.plants[i]->bullet->sprite.getGlobalBounds();
+                    FloatRect zombieBounds = zombieFactory.zombies[j]->sprite.getGlobalBounds();
 
                     if (bulletBounds.intersects(zombieBounds)) {
                         // Bullet hits the zombie
-                        zombies[j]->health -= plants[i]->damage;
-                        if (zombies[j]->health <= 0) {
+                        zombieFactory.zombies[j]->health -= plantFactory.plants[i]->damage;
+                        if (zombieFactory.zombies[j]->health <= 0) {
                             // Zombie is killed
-                            zombies[j]->isAlive = false;
+                            zombieFactory.zombies[j]->isAlive = false;
                         }
                         // Remove the bullet
-                        plants[i]->bullet->exist = false;
+                        plantFactory.plants[i]->bullet->exist = false;
                     }
                 }
             }
@@ -184,15 +107,16 @@ int main() {
         window.clear();
         window.draw(s_map);
         sh.draw(window);
-        for (int i = 0; i < noOfZombies; i++) {
-            zombies[i]->draw(window);
+        for (int i = 0; i < zombieFactory.zombies_created; i++) {
+            zombieFactory.zombies[i]->draw(window);
         }
 
-        for (int i = 0; i < plants_created; i++) {
-            plants[i]->draw(window);
-            plants[i]->drawBullet(window);
+        for (int i = 0; i < plantFactory.plants_created; i++) {
+            plantFactory.plants[i]->draw(window);
+            plantFactory.plants[i]->drawBullet(window);
 
         }
+        cursor.applyCursor(window);
         window.display();
     }
     return 0;

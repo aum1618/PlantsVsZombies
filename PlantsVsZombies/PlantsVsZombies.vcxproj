@@ -141,9 +141,12 @@
   <ItemGroup>
     <ClInclude Include="Bullet.h" />
     <ClInclude Include="cordinates.h" />
+    <ClInclude Include="Cursor.h" />
     <ClInclude Include="Plant.h" />
+    <ClInclude Include="PlantFactory.h" />
     <ClInclude Include="Shop.h" />
     <ClInclude Include="Zombie.h" />
+    <ClInclude Include="ZombieFactory.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
