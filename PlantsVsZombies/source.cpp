@@ -3,23 +3,12 @@
 #include <iostream>
 #include <ctime>
 #include <cmath>
-#include "Plant.h"
-#include "Zombie.h"
 #include "PlantFactory.h"
 #include "ZombieFactory.h"
+#include "Cursor.h"
 #include "Shop.h"
 using namespace sf;
 using namespace std;
-
-
-bool isPlantThere(Plant** plants, int plants_created, float x, float y) {
-    for (int i = 0; i < plants_created; i++) {
-        if (plants[i]->position.x == x && plants[i]->position.y == y) {
-			return true;
-		}
-	}
-	return false;
-}
 
 
 int main() {
@@ -45,12 +34,8 @@ int main() {
     s_map.setPosition(0, 0);
     window.setVerticalSyncEnabled(true);
 
-    //Cursor sprites
-    sf::Cursor cursor;
-    sf::Cursor defaultCursor;
-    defaultCursor.loadFromSystem(sf::Cursor::Arrow);
-    sf::Image cursorimg;
-    sf::Sprite cursorsprite;
+
+    GameCursor cursor;
     PlantFactory plantFactory;
     Shop sh;
     
@@ -71,60 +56,8 @@ int main() {
                 clickPosition.x=floor(clickPosition.x / 100.0f) * 100.0f;
                 clickPosition.y=floor(clickPosition.y / 100.0f) * 100.0f;
 
-                //Changing cursor according to shop
-                    if ((clickPosition.x >= 100 && clickPosition.x <= 200) && (clickPosition.y >= 0 && clickPosition.y <= 100)) {
-                        if (cursorimg.loadFromFile("./Images/peeshooter.png")) {
-                            cursor.loadFromPixels(cursorimg.getPixelsPtr(), cursorimg.getSize(), Vector2u(16, 16));
-                            window.setMouseCursor(cursor);
-                        }
-                    }
-                    if ((clickPosition.x >= 200 && clickPosition.x <= 300) && (clickPosition.y >= 0 && clickPosition.y <= 100)) {
-                        if (cursorimg.loadFromFile("./Images/repeater.png")) {
-                            cursor.loadFromPixels(cursorimg.getPixelsPtr(), cursorimg.getSize(), Vector2u(16, 16));
-                            window.setMouseCursor(cursor);
-                        }
-                    }
-                    if ((clickPosition.x >= 300 && clickPosition.x <= 400) && (clickPosition.y >= 0 && clickPosition.y <= 100)) {
-                        if (cursorimg.loadFromFile("./Images/snowpea.png")) {
-                            cursor.loadFromPixels(cursorimg.getPixelsPtr(), cursorimg.getSize(), Vector2u(16, 16));
-                            window.setMouseCursor(cursor);
-                        }
-                    }
-                    if ((clickPosition.x >= 400 && clickPosition.x <= 500) && (clickPosition.y >= 0 && clickPosition.y <= 100)) {
-                        if (cursorimg.loadFromFile("./Images/fumeshroom.png")) {
-                            cursor.loadFromPixels(cursorimg.getPixelsPtr(), cursorimg.getSize(), Vector2u(16, 16));
-                            window.setMouseCursor(cursor);
-                        }
-                    }
-                    if ((clickPosition.x >= 500 && clickPosition.x <= 600) && (clickPosition.y >= 0 && clickPosition.y <= 100)) {
-                        if (cursorimg.loadFromFile("./Images/wallnut.png")) {
-                            cursor.loadFromPixels(cursorimg.getPixelsPtr(), cursorimg.getSize(), Vector2u(16, 16));
-                            window.setMouseCursor(cursor);
-                        }
-                    }
-                    if ((clickPosition.x >= 600 && clickPosition.x <= 700) && (clickPosition.y >= 0 && clickPosition.y <= 100)) {
-                        if (cursorimg.loadFromFile("./Images/cherrybomb.png")) {
-                            cursor.loadFromPixels(cursorimg.getPixelsPtr(), cursorimg.getSize(), Vector2u(16, 16));
-                            window.setMouseCursor(cursor);
-                        }
-                    }
-                    if ((clickPosition.x >= 700 && clickPosition.x <= 800) && (clickPosition.y >= 0 && clickPosition.y <= 100)) {
-                        if (cursorimg.loadFromFile("./Images/sunflower.png")) {
-                            cursor.loadFromPixels(cursorimg.getPixelsPtr(), cursorimg.getSize(), Vector2u(16, 16));
-                            window.setMouseCursor(cursor);
-                        }
-                    }
-                    if ((clickPosition.x >= 800 && clickPosition.x <= 900) && (clickPosition.y >= 0 && clickPosition.y <= 100)) {
-                        if (cursorimg.loadFromFile("./Images/shovel.png")) {
-                            cursor.loadFromPixels(cursorimg.getPixelsPtr(), cursorimg.getSize(), Vector2u(16, 16));
-                            window.setMouseCursor(cursor);
-                        }
-                    }
-                    if ((clickPosition.x >= 0 && clickPosition.x <= 1300) && (clickPosition.y >= 100 && clickPosition.y <= 900)) {
-                            window.setMouseCursor(defaultCursor);
-                    }
-
-                if (!isPlantThere(plantFactory.plants, plantFactory.plants_created, clickPosition.x, clickPosition.y)) {
+                cursor.renderCursor(clickPosition);
+                if (!plantFactory.isPlantThere( clickPosition.x, clickPosition.y)) {
                     if(clickPosition.y>100)
                     plantFactory.createPlant(clickPosition.x, clickPosition.y);
 				}
@@ -183,6 +116,7 @@ int main() {
             plantFactory.plants[i]->drawBullet(window);
 
         }
+        cursor.applyCursor(window);
         window.display();
     }
     return 0;

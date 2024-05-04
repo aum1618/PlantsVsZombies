@@ -29,6 +29,14 @@ public:
 		plants = temp;
 
 	}
+	bool isPlantThere( float x, float y) {
+		for (int i = 0; i < plants_created; i++) {
+			if (plants[i]->position.x == x && plants[i]->position.y == y) {
+				return true;
+			}
+		}
+		return false;
+	}
 	~PlantFactory() {
 		for (int i = 0; i < plants_created; i++) {
 			delete plants[i];
