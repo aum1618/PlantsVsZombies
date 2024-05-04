@@ -47,6 +47,12 @@ struct Zombie {
 	}
 	void draw(RenderWindow& window) {
 		if (isAlive) {
+			/*if (health == 2) {
+				sprite.setTextureRect(IntRect(0, 30, 100, 70));
+			}
+			if (health == 1) {
+				sprite.setTextureRect(IntRect(0, 60, 100, 30));
+			}*/
 			window.draw(sprite);
 		}
 	}
