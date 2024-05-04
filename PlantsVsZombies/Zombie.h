@@ -20,7 +20,7 @@ struct Zombie {
 		health = 3;
 		cordintes.x = x;
 		cordintes.y = y;
-		speed = 4;
+		speed = 200;
 		isAlive = true;
 		texture.loadFromFile("./Images/zombie.png");
 		texture.setSmooth(true);
@@ -30,9 +30,9 @@ struct Zombie {
 	}
 	void move() {
 		if (isAlive) {
-			if (clock.getElapsedTime().asSeconds() > 0.1) {
+			if (clock.getElapsedTime().asMilliseconds() > speed) {
 				frame++;
-				cordintes.x -= speed;
+				cordintes.x -= 10;
 				sprite.setPosition(cordintes.x, cordintes.y);
 				sprite.setTextureRect(IntRect(100 *(
 					frame
