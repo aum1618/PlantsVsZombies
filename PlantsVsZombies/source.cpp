@@ -5,6 +5,8 @@
 #include <cmath>
 #include "Plant.h"
 #include "Zombie.h"
+#include "PlantFactory.h"
+#include "ZombieFactory.h"
 #include "Shop.h"
 using namespace sf;
 using namespace std;
@@ -49,22 +51,10 @@ int main() {
     defaultCursor.loadFromSystem(sf::Cursor::Arrow);
     sf::Image cursorimg;
     sf::Sprite cursorsprite;
-
-    int plants_created = 0;
-    int noOfZombies = 20;
+    PlantFactory plantFactory;
     Shop sh;
-    Plant** plants;
-    plants = new Plant * [plants_created];
-    Zombie** zombies = new Zombie * [noOfZombies];
-    for (int i = 0; i < noOfZombies; i++) {
-        int newX = (rand() % 1001) + 1300;  // Generates random number between 1300 and 2300
-        int newY = (rand() % 899);          // Generates random number between 0 and 900
-
-        // Make newX and newY multiples of 100
-        newX = newX / 100 * 100;
-        newY = newY / 100 * 100;
-        zombies[i] = new Zombie(newX,newY);
-    }
+    
+   ZombieFactory zombieFactory(20);
 
     while (window.isOpen()) {
 
@@ -134,49 +124,49 @@ int main() {
                             window.setMouseCursor(defaultCursor);
                     }
 
-                if (!isPlantThere(plants, plants_created, clickPosition.x, clickPosition.y)) {
+                if (!isPlantThere(plantFactory.plants, plantFactory.plants_created, clickPosition.x, clickPosition.y)) {
                     if(clickPosition.y>100)
-                    plants = addPlants(plants, plants_created, clickPosition.x, clickPosition.y);
+                    plantFactory.createPlant(clickPosition.x, clickPosition.y);
 				}
 
 
             }
         }
-        for (int i = 0; i < plants_created; i++) {
-            if (plants[i]->clock.getElapsedTime().asSeconds() > plants[i]->cooldown) {
+        for (int i = 0; i < plantFactory.plants_created; i++) {
+            if (plantFactory.plants[i]->clock.getElapsedTime().asSeconds() > plantFactory.plants[i]->cooldown) {
 
-                plants[i]->fireBullet();
-                plants[i]->clock.restart();
+                plantFactory.plants[i]->fireBullet();
+                plantFactory.plants[i]->clock.restart();
             }
         }
-        for (int i = 0; i < plants_created; i++) {
-            plants[i]->updateBullet();
+        for (int i = 0; i < plantFactory.plants_created; i++) {
+            plantFactory.plants[i]->updateBullet();
         }
-        for (int i = 0; i < noOfZombies; i++) {
-            zombies[i]->move();
+        for (int i = 0; i < zombieFactory.zombies_created; i++) {
+            zombieFactory.zombies[i]->move();
         }  
-        for (int i = 0; i < plants_created; i++) {
-            if (plants[i]->clock.getElapsedTime().asSeconds() > plants[i]->cooldown) {
-                plants[i]->fireBullet();
-                plants[i]->clock.restart();
+        for (int i = 0; i < plantFactory.plants_created; i++) {
+            if (plantFactory.plants[i]->clock.getElapsedTime().asSeconds() > plantFactory.plants[i]->cooldown) {
+                plantFactory.plants[i]->fireBullet();
+                plantFactory.plants[i]->clock.restart();
             }
-            plants[i]->updateBullet();
+            plantFactory.plants[i]->updateBullet();
 
             // Check for collision with zombies
-            for (int j = 0; j < noOfZombies; j++) {
-                if (plants[i]->bullet->exist && zombies[j]->isAlive) {
-                    FloatRect bulletBounds = plants[i]->bullet->sprite.getGlobalBounds();
-                    FloatRect zombieBounds = zombies[j]->sprite.getGlobalBounds();
+            for (int j = 0; j < zombieFactory.zombies_created; j++) {
+                if (plantFactory.plants[i]->bullet->exist && zombieFactory.zombies[j]->isAlive) {
+                    FloatRect bulletBounds =plantFactory.plants[i]->bullet->sprite.getGlobalBounds();
+                    FloatRect zombieBounds = zombieFactory.zombies[j]->sprite.getGlobalBounds();
 
                     if (bulletBounds.intersects(zombieBounds)) {
                         // Bullet hits the zombie
-                        zombies[j]->health -= plants[i]->damage;
-                        if (zombies[j]->health <= 0) {
+                        zombieFactory.zombies[j]->health -= plantFactory.plants[i]->damage;
+                        if (zombieFactory.zombies[j]->health <= 0) {
                             // Zombie is killed
-                            zombies[j]->isAlive = false;
+                            zombieFactory.zombies[j]->isAlive = false;
                         }
                         // Remove the bullet
-                        plants[i]->bullet->exist = false;
+                        plantFactory.plants[i]->bullet->exist = false;
                     }
                 }
             }
@@ -184,13 +174,13 @@ int main() {
         window.clear();
         window.draw(s_map);
         sh.draw(window);
-        for (int i = 0; i < noOfZombies; i++) {
-            zombies[i]->draw(window);
+        for (int i = 0; i < zombieFactory.zombies_created; i++) {
+            zombieFactory.zombies[i]->draw(window);
         }
 
-        for (int i = 0; i < plants_created; i++) {
-            plants[i]->draw(window);
-            plants[i]->drawBullet(window);
+        for (int i = 0; i < plantFactory.plants_created; i++) {
+            plantFactory.plants[i]->draw(window);
+            plantFactory.plants[i]->drawBullet(window);
 
         }
         window.display();

@@ -1,0 +1,43 @@
+#include <iostream>
+#include <SFML/Graphics.hpp>
+#include "Zombie.h"
+using namespace sf;
+using namespace std;
+
+
+
+class ZombieFactory {
+public:
+	Zombie** zombies;
+	int zombies_created;
+	ZombieFactory(int numZombies = 0) {
+		zombies_created = numZombies;
+		zombies = new Zombie * [zombies_created];
+		for (int i = 0; i < numZombies; i++) {
+			int newX = (rand() % 1001) + 1300;  // Generates random number between 1300 and 2300
+			int newY = (rand() % 899);          // Generates random number between 0 and 900
+
+			// Make newX and newY multiples of 100
+			newX = newX / 100 * 100;
+			newY = newY / 100 * 100;
+			zombies[i] = new Zombie(newX, newY);
+		}
+	}
+	void createZombie() {
+		Zombie* newZombie = new Zombie();
+		Zombie** temp = new Zombie * [zombies_created + 1];
+		for (int i = 0; i < zombies_created; i++) {
+			temp[i] = zombies[i];
+		}
+		temp[zombies_created] = newZombie;
+		zombies_created++;
+		delete[] zombies;
+		zombies = temp;
+	}
+	~ZombieFactory() {
+		for (int i = 0; i < zombies_created; i++) {
+			delete zombies[i];
+		}
+		delete[] zombies;
+	}
+};
