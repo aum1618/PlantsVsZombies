@@ -24,7 +24,7 @@ public:
     Plant(float x = 0, float y = 0) {
         //cout << "Plant created" << endl;
         health = 100;
-        damage = 10;
+        damage = 1;
         cost = 50;
         cooldown = 1;
         bullet = new Bullet(x+100, y+30);

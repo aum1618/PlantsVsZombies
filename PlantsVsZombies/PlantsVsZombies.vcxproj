@@ -142,6 +142,7 @@
     <ClInclude Include="Bullet.h" />
     <ClInclude Include="cordinates.h" />
     <ClInclude Include="Plant.h" />
+    <ClInclude Include="Shop.h" />
     <ClInclude Include="Zombie.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

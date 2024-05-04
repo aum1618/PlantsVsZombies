@@ -19,7 +19,7 @@ public:
     Clock clock;
     Bullet(float x = 0, float y = 0) {
         damage = 10;
-        speed = 10;
+        speed = 5;
         exist = false;
         direction = true;
 
