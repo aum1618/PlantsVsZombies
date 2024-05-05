@@ -5,8 +5,10 @@
 #include <cmath>
 #include "PlantFactory.h"
 #include "ZombieFactory.h"
+#include "Sun.h"
 #include "Cursor.h"
 #include "Shop.h"
+#include "LawnMowerFactory.h"
 using namespace sf;
 using namespace std;
 
@@ -36,10 +38,12 @@ int main() {
 
 
     GameCursor cursor;
-    PlantFactory plantFactory;
     Shop sh;
     
+    PlantFactory plantFactory;
    ZombieFactory zombieFactory(20);
+   SunFactory sunFactory(50);
+   LawnMowerFactory lawnMowerFactory(5);
 
     while (window.isOpen()) {
 
@@ -53,18 +57,44 @@ int main() {
                 coordinates clickPosition;
                 clickPosition.x = event.mouseButton.x;
                 clickPosition.y = event.mouseButton.y;
-                clickPosition.x=floor(clickPosition.x / 100.0f) * 100.0f;
-                clickPosition.y=floor(clickPosition.y / 100.0f) * 100.0f;
 
                 cursor.renderCursor(clickPosition);
-                if (!plantFactory.isPlantThere( clickPosition.x, clickPosition.y)) {
-                    if(clickPosition.y>100)
+                if (sunFactory.isSunThere(clickPosition.x, clickPosition.y)) {
+                sunFactory.moveSunToOrigin(clickPosition.x, clickPosition.y);
+                }
+                else {
+
+                 if (!plantFactory.isPlantThere( clickPosition.x, clickPosition.y)) {
+                     //limit it between 200 and 700 at y axis and 200 and 1100 at x axis
+                    if(clickPosition.y>=200 && clickPosition.y<=700 && clickPosition.x>=200 && clickPosition.x<=1100 && cursor.getCurrentCursor()!="default")
                     plantFactory.createPlant(clickPosition.x, clickPosition.y);
 				}
+                if (cursor.getCurrentCursor() == "shovel" && plantFactory.isPlantThere(clickPosition.x, clickPosition.y)) {
+					plantFactory.removePlant(clickPosition.x, clickPosition.y);
+				}
+                }
+
 
 
             }
         }
+        //check for collision of lawnmower with zombies. If collision occurs, kill the zombie and set the lawnmower to move
+
+        for (int i = 0; i < lawnMowerFactory.lawnmowers_created; i++) {
+            if (lawnMowerFactory.lawnmowers[i]->exist) {
+                for (int j = 0; j < zombieFactory.zombies_created; j++) {
+                    if (zombieFactory.zombies[j]->isAlive) {
+						FloatRect lawnmowerBounds = lawnMowerFactory.lawnmowers[i]->sprite.getGlobalBounds();
+						FloatRect zombieBounds = zombieFactory.zombies[j]->sprite.getGlobalBounds();
+                        if (lawnmowerBounds.intersects(zombieBounds)) {
+							zombieFactory.zombies[j]->isAlive = false;
+							lawnMowerFactory.lawnmowers[i]->shouldMove = true;
+						}
+					}
+				}
+			}
+		}
+
         for (int i = 0; i < plantFactory.plants_created; i++) {
             if (plantFactory.plants[i]->clock.getElapsedTime().asSeconds() > plantFactory.plants[i]->cooldown) {
 
@@ -104,9 +134,11 @@ int main() {
                 }
             }
         }
+        sunFactory.move();
+        lawnMowerFactory.move();
+
         window.clear();
         window.draw(s_map);
-        sh.draw(window);
         for (int i = 0; i < zombieFactory.zombies_created; i++) {
             zombieFactory.zombies[i]->draw(window);
         }
@@ -116,6 +148,9 @@ int main() {
             plantFactory.plants[i]->drawBullet(window);
 
         }
+        lawnMowerFactory.draw(window);
+        sunFactory.draw(window);
+        sh.draw(window);
         cursor.applyCursor(window);
         window.display();
     }
