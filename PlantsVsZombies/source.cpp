@@ -61,13 +61,10 @@ int main() {
                     if(clickPosition.y>100)
                     plantFactory.createPlant(clickPosition.x, clickPosition.y);
 				}
-
-
             }
         }
         for (int i = 0; i < plantFactory.plants_created; i++) {
             if (plantFactory.plants[i]->clock.getElapsedTime().asSeconds() > plantFactory.plants[i]->cooldown) {
-
                 plantFactory.plants[i]->fireBullet();
                 plantFactory.plants[i]->clock.restart();
             }

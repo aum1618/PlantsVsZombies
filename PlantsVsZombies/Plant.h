@@ -26,7 +26,7 @@ public:
         health = 100;
         damage = 1;
         cost = 50;
-        cooldown = 1;
+        cooldown = 2;
         bullet = new Bullet(x, y);
         position.x = x;
         position.y = y;
@@ -81,7 +81,66 @@ public:
         }
     }
 };
-
+class PeeShooter :public Plant {
+public:
+    PeeShooter(float x, float y) {
+        health = 100;
+        damage = 1;
+        cost = 100;
+        cooldown = 2;
+        bullet = new Bullet(x, y);
+        position.x = x;
+        position.y = y;
+        texture.loadFromFile("./Images/plant.png");
+        texture.setSmooth(true);
+        sprite.setTexture(texture);
+        sprite.setTextureRect(IntRect(0, 0, 100, 100));
+        sprite.setPosition(position.x, position.y);
+    }
+    PeeShooter(const PeeShooter& plant) {
+        //cout << "Plant copied" << endl;
+        health = plant.health;
+        damage = plant.damage;
+        cost = plant.cost;
+        cooldown = plant.cooldown;
+        bullet = new Bullet(*plant.bullet);
+        position.x = plant.position.x;
+        position.y = plant.position.y;
+        texture = plant.texture;
+        sprite = plant.sprite;
+        clock = plant.clock;
+    }
+};
+class SunFlower :public Plant {
+public:
+    SunFlower(float x, float y) {
+        health = 100;
+        damage = 0;
+        cost = 100;
+        cooldown = 10;
+        //bullet = new Bullet(x, y);
+        position.x = x;
+        position.y = y;
+        texture.loadFromFile("./Images/sunflower.png");
+        texture.setSmooth(true);
+        sprite.setTexture(texture);
+        sprite.setTextureRect(IntRect(0, 0, 100, 100));
+        sprite.setPosition(position.x, position.y);
+    }
+    SunFlower(const SunFlower& plant) {
+        //cout << "Plant copied" << endl;
+        health = plant.health;
+        damage = plant.damage;
+        cost = plant.cost;
+        cooldown = plant.cooldown;
+        bullet = new Bullet(*plant.bullet);
+        position.x = plant.position.x;
+        position.y = plant.position.y;
+        texture = plant.texture;
+        sprite = plant.sprite;
+        clock = plant.clock;
+    }
+};
 
 
 Plant** addPlants(Plant** plantArray, int& size, float x, float y) {
