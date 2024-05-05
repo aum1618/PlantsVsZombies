@@ -12,8 +12,8 @@
 using namespace sf;
 using namespace std;
 
-
-int main() {
+int main()
+{
     srand(time(0));
     const int GAME_ROWS = 9;
     const int GAME_COLS = 13;
@@ -22,7 +22,8 @@ int main() {
     const int GAME_HEIGHT = GAME_ROWS * CELL_SIZE;
     RenderWindow window(VideoMode(GAME_WIDTH, GAME_HEIGHT, 32), "Plants Vs Zombies");
     Image icon;
-    if (!icon.loadFromFile("./Images/Icon.png")) {
+    if (!icon.loadFromFile("./Images/Icon.png"))
+    {
         return 1;
     }
     window.setIcon(32, 32, icon.getPixelsPtr());
@@ -36,95 +37,112 @@ int main() {
     s_map.setPosition(0, 0);
     window.setVerticalSyncEnabled(true);
 
-
     GameCursor cursor;
     Shop sh;
-    
+
     PlantFactory plantFactory;
-   ZombieFactory zombieFactory(20);
-   SunFactory sunFactory(50);
-   LawnMowerFactory lawnMowerFactory(5);
+    ZombieFactory zombieFactory(20);
+    SunFactory sunFactory(50);
+    LawnMowerFactory lawnMowerFactory(5);
 
-    while (window.isOpen()) {
-
+    while (window.isOpen())
+    {
 
         Event event;
-        while (window.pollEvent(event)) {
+        while (window.pollEvent(event))
+        {
             if (event.type == Event::Closed)
                 window.close();
-            if (event.type == Event::MouseButtonPressed && event.mouseButton.button == Mouse::Left) {
+            if (event.type == Event::MouseButtonPressed && event.mouseButton.button == Mouse::Left)
+            {
                 // Get the mouse click position
                 coordinates clickPosition;
                 clickPosition.x = event.mouseButton.x;
                 clickPosition.y = event.mouseButton.y;
 
                 cursor.renderCursor(clickPosition);
-                if (sunFactory.isSunThere(clickPosition.x, clickPosition.y)) {
-                sunFactory.moveSunToOrigin(clickPosition.x, clickPosition.y);
+                if (sunFactory.isSunThere(clickPosition.x, clickPosition.y))
+                {
+                    sunFactory.moveSunToOrigin(clickPosition.x, clickPosition.y);
                 }
-                else {
+                else
+                {
 
-                 if (!plantFactory.isPlantThere( clickPosition.x, clickPosition.y)) {
-                     //limit it between 200 and 700 at y axis and 200 and 1100 at x axis
-                    if(clickPosition.y>=200 && clickPosition.y<=700 && clickPosition.x>=200 && clickPosition.x<=1100 && cursor.getCurrentCursor()!="default")
-                    plantFactory.createPlant(clickPosition.x, clickPosition.y);
-				}
-                if (cursor.getCurrentCursor() == "shovel" && plantFactory.isPlantThere(clickPosition.x, clickPosition.y)) {
-					plantFactory.removePlant(clickPosition.x, clickPosition.y);
-				}
+                    if (!plantFactory.isPlantThere(clickPosition.x, clickPosition.y))
+                    {
+                        // limit it between 200 and 700 at y axis and 200 and 1100 at x axis
+                        if (clickPosition.y >= 200 && clickPosition.y <= 700 && clickPosition.x >= 200 && clickPosition.x <= 1100 && cursor.getCurrentCursor() != "default")
+                            plantFactory.createPlant(clickPosition.x, clickPosition.y);
+                    }
+                    if (cursor.getCurrentCursor() == "shovel" && plantFactory.isPlantThere(clickPosition.x, clickPosition.y))
+                    {
+                        plantFactory.removePlant(clickPosition.x, clickPosition.y);
+                    }
                 }
-
-
-
             }
         }
-        //check for collision of lawnmower with zombies. If collision occurs, kill the zombie and set the lawnmower to move
+        // check for collision of lawnmower with zombies. If collision occurs, kill the zombie and set the lawnmower to move
 
-        for (int i = 0; i < lawnMowerFactory.lawnmowers_created; i++) {
-            if (lawnMowerFactory.lawnmowers[i]->exist) {
-                for (int j = 0; j < zombieFactory.zombies_created; j++) {
-                    if (zombieFactory.zombies[j]->isAlive) {
-						FloatRect lawnmowerBounds = lawnMowerFactory.lawnmowers[i]->sprite.getGlobalBounds();
-						FloatRect zombieBounds = zombieFactory.zombies[j]->sprite.getGlobalBounds();
-                        if (lawnmowerBounds.intersects(zombieBounds)) {
-							zombieFactory.zombies[j]->isAlive = false;
-							lawnMowerFactory.lawnmowers[i]->shouldMove = true;
-						}
-					}
-				}
-			}
-		}
+        for (int i = 0; i < lawnMowerFactory.lawnmowers_created; i++)
+        {
+            if (lawnMowerFactory.lawnmowers[i]->exist)
+            {
+                for (int j = 0; j < zombieFactory.zombies_created; j++)
+                {
+                    if (zombieFactory.zombies[j]->isAlive)
+                    {
+                        FloatRect lawnmowerBounds = lawnMowerFactory.lawnmowers[i]->sprite.getGlobalBounds();
+                        FloatRect zombieBounds = zombieFactory.zombies[j]->sprite.getGlobalBounds();
+                        if (lawnmowerBounds.intersects(zombieBounds))
+                        {
+                            zombieFactory.zombies[j]->isAlive = false;
+                            lawnMowerFactory.lawnmowers[i]->shouldMove = true;
+                        }
+                    }
+                }
+            }
+        }
 
-        for (int i = 0; i < plantFactory.plants_created; i++) {
-            if (plantFactory.plants[i]->clock.getElapsedTime().asSeconds() > plantFactory.plants[i]->cooldown) {
+        for (int i = 0; i < plantFactory.plants_created; i++)
+        {
+            if (plantFactory.plants[i]->clock.getElapsedTime().asSeconds() > plantFactory.plants[i]->cooldown)
+            {
 
                 plantFactory.plants[i]->fireBullet();
                 plantFactory.plants[i]->clock.restart();
             }
         }
-        for (int i = 0; i < plantFactory.plants_created; i++) {
+        for (int i = 0; i < plantFactory.plants_created; i++)
+        {
             plantFactory.plants[i]->updateBullet();
         }
-        for (int i = 0; i < zombieFactory.zombies_created; i++) {
+        for (int i = 0; i < zombieFactory.zombies_created; i++)
+        {
             zombieFactory.zombies[i]->move();
-        }  
-        for (int i = 0; i < plantFactory.plants_created; i++) {
-            if (plantFactory.plants[i]->clock.getElapsedTime().asSeconds() > plantFactory.plants[i]->cooldown) {
+        }
+        for (int i = 0; i < plantFactory.plants_created; i++)
+        {
+            if (plantFactory.plants[i]->clock.getElapsedTime().asSeconds() > plantFactory.plants[i]->cooldown)
+            {
                 plantFactory.plants[i]->fireBullet();
                 plantFactory.plants[i]->clock.restart();
             }
             plantFactory.plants[i]->updateBullet();
 
             // Check for collision with zombies
-            for (int j = 0; j < zombieFactory.zombies_created; j++) {
-                if (plantFactory.plants[i]->bullet->exist && zombieFactory.zombies[j]->isAlive) {
-                    FloatRect bulletBounds =plantFactory.plants[i]->bullet->sprite.getGlobalBounds();
+            for (int j = 0; j < zombieFactory.zombies_created; j++)
+            {
+                if (plantFactory.plants[i]->bullet->exist && zombieFactory.zombies[j]->isAlive)
+                {
+                    FloatRect bulletBounds = plantFactory.plants[i]->bullet->sprite.getGlobalBounds();
                     FloatRect zombieBounds = zombieFactory.zombies[j]->sprite.getGlobalBounds();
 
-                    if (bulletBounds.intersects(zombieBounds)) {
+                    if (bulletBounds.intersects(zombieBounds))
+                    {
                         // Bullet hits the zombie
                         zombieFactory.zombies[j]->health -= plantFactory.plants[i]->damage;
-                        if (zombieFactory.zombies[j]->health <= 0) {
+                        if (zombieFactory.zombies[j]->health <= 0)
+                        {
                             // Zombie is killed
                             zombieFactory.zombies[j]->isAlive = false;
                         }
@@ -139,14 +157,15 @@ int main() {
 
         window.clear();
         window.draw(s_map);
-        for (int i = 0; i < zombieFactory.zombies_created; i++) {
+        for (int i = 0; i < zombieFactory.zombies_created; i++)
+        {
             zombieFactory.zombies[i]->draw(window);
         }
 
-        for (int i = 0; i < plantFactory.plants_created; i++) {
+        for (int i = 0; i < plantFactory.plants_created; i++)
+        {
             plantFactory.plants[i]->draw(window);
             plantFactory.plants[i]->drawBullet(window);
-
         }
         lawnMowerFactory.draw(window);
         sunFactory.draw(window);
