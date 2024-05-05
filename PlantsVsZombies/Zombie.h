@@ -6,7 +6,8 @@ using namespace sf;
 using namespace std;
 #include "cordinates.h";
 
-struct Zombie {
+class Zombie {
+public:
 	int health;
 	float speed;
 	bool isAlive;
@@ -28,7 +29,7 @@ struct Zombie {
 		sprite.setTextureRect(IntRect(0, 0, 100, 100));
 		sprite.setPosition(x, y);
 	}
-	void move() {
+	virtual void move() {
 		if (isAlive) {
 			if (clock.getElapsedTime().asSeconds() > 0.1) {
 				frame++;
@@ -58,3 +59,101 @@ struct Zombie {
 	}
 };
 
+class FootballZombie :public Zombie {
+public:
+	FootballZombie(float x = 0, float y = 0) {
+		health = 3;
+		cordintes.x = x;
+		cordintes.y = y;
+		speed = 4;
+		isAlive = true;
+		texture.loadFromFile("./Images/zombie.png");
+		texture.setSmooth(true);
+		sprite.setTexture(texture);
+		sprite.setTextureRect(IntRect(0, 0, 100, 100));
+		sprite.setPosition(x, y);
+	}
+	virtual void move() {
+		if (isAlive) {
+			if (clock.getElapsedTime().asSeconds() > 0.1) {
+				frame++;
+				cordintes.x -= speed;
+				sprite.setPosition(cordintes.x, cordintes.y);
+				sprite.setTextureRect(IntRect(100 * (
+					frame
+					), 0, 100, 100));
+				clock.restart();
+				frame = frame % numframes;
+				if (cordintes.x < 0) {
+					isAlive = false;
+				}
+			}
+		}
+	}
+};
+
+class FlyingZombie :public Zombie {
+public:
+	FlyingZombie(float x = 0, float y = 0) {
+		health = 3;
+		cordintes.x = x;
+		cordintes.y = y;
+		speed = 4;
+		isAlive = true;
+		texture.loadFromFile("./Images/zombie.png");
+		texture.setSmooth(true);
+		sprite.setTexture(texture);
+		sprite.setTextureRect(IntRect(0, 0, 100, 100));
+		sprite.setPosition(x, y);
+	}
+	virtual void move() {
+		if (isAlive) {
+			if (clock.getElapsedTime().asSeconds() > 0.1) {
+				frame++;
+				cordintes.x -= speed;
+				sprite.setPosition(cordintes.x, cordintes.y);
+				sprite.setTextureRect(IntRect(100 * (
+					frame
+					), 0, 100, 100));
+				clock.restart();
+				frame = frame % numframes;
+				if (cordintes.x < 0) {
+					isAlive = false;
+				}
+			}
+		}
+	}
+};
+
+class DancingZombie :public Zombie {
+public:
+	DancingZombie(float x = 0, float y = 0) {
+		health = 3;
+		cordintes.x = x;
+		cordintes.y = y;
+		speed = 4;
+		isAlive = true;
+		texture.loadFromFile("./Images/zombie.png");
+		texture.setSmooth(true);
+		sprite.setTexture(texture);
+		sprite.setTextureRect(IntRect(0, 0, 100, 100));
+		sprite.setPosition(x, y);
+	}
+	virtual void move() {
+		if (isAlive) {
+			if (clock.getElapsedTime().asSeconds() > 0.1) {
+				frame++;
+				cordintes.x -= speed;
+				sprite.setPosition(cordintes.x, cordintes.y);
+				sprite.setTextureRect(IntRect(100 * (
+					frame
+					), 0, 100, 100));
+				clock.restart();
+				frame = frame % numframes;
+				if (cordintes.x < 0) {
+					isAlive = false;
+				}
+			}
+		}
+	}
+};
