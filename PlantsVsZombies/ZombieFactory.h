@@ -15,7 +15,7 @@ public:
 		zombies = new Zombie * [zombies_created];
 		for (int i = 0; i < numZombies; i++) {
 			int newX = (rand() % 1001) + 1300;  // Generates random number between 1300 and 2300
-			int newY = (rand() % 899);          // Generates random number between 0 and 900
+			int newY = (rand() % 499)+200;          // Generates random number between 0 and 900
 
 			// Make newX and newY multiples of 100
 			newX = newX / 100 * 100;
@@ -33,6 +33,17 @@ public:
 		zombies_created++;
 		delete[] zombies;
 		zombies = temp;
+	}
+	bool isZombieThere(float x, float y) {
+		for (int i = 0; i < zombies_created; i++) {
+			// Get the bounds of the zombie sprite
+			FloatRect zombieBounds = zombies[i]->sprite.getGlobalBounds();
+			// Check if the coordinates (x, y) are within the bounds of the zombie sprite
+			if (zombieBounds.contains(x, y)) {
+				return true;
+			}
+		}
+		return false;
 	}
 	~ZombieFactory() {
 		for (int i = 0; i < zombies_created; i++) {
