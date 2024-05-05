@@ -56,7 +56,7 @@ public:
 		}
         if ((clickPosition.x >= 700 && clickPosition.x <= 800) && (clickPosition.y >= 0 && clickPosition.y <= 100)) {
 			setCursor("./Images/sunflower.png");
-            			type="sunflower";
+            type="sunflower";
 		}
         if ((clickPosition.x >= 800 && clickPosition.x <= 900) && (clickPosition.y >= 0 && clickPosition.y <= 100)) {
 			setCursor("./Images/shovel.png");

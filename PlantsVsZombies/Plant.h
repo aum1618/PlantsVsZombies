@@ -117,7 +117,7 @@ public:
         health = 100;
         damage = 0;
         cost = 100;
-        cooldown = 10;
+        /*cooldown = 10;*/
         //bullet = new Bullet(x, y);
         position.x = x;
         position.y = y;
@@ -133,6 +133,36 @@ public:
         damage = plant.damage;
         cost = plant.cost;
         cooldown = plant.cooldown;
+       /* bullet = new Bullet(*plant.bullet);*/
+        position.x = plant.position.x;
+        position.y = plant.position.y;
+        texture = plant.texture;
+        sprite = plant.sprite;
+        clock = plant.clock;
+    }
+};
+class Repeater :public Plant {
+public:
+    Repeater(float x, float y) {
+        health = 100;
+        damage = 1;
+        cost = 200;
+        cooldown = 1;
+        //bullet = new Bullet(x, y);
+        position.x = x;
+        position.y = y;
+        texture.loadFromFile("./Images/repeater.png");
+        texture.setSmooth(true);
+        sprite.setTexture(texture);
+        sprite.setTextureRect(IntRect(0, 0, 100, 100));
+        sprite.setPosition(position.x, position.y);
+    }
+    Repeater(const Repeater& plant) {
+        //cout << "Plant copied" << endl;
+        health = plant.health;
+        damage = plant.damage;
+        cost = plant.cost;
+        cooldown = plant.cooldown;
         bullet = new Bullet(*plant.bullet);
         position.x = plant.position.x;
         position.y = plant.position.y;
@@ -141,8 +171,126 @@ public:
         clock = plant.clock;
     }
 };
-
-
+class WallNut :public Plant {
+public:
+    WallNut(float x, float y) {
+        health = 100;
+        damage = 3;
+        cost = 50;
+        /*cooldown = 1;*/
+        //bullet = new Bullet(x, y);
+        position.x = x;
+        position.y = y;
+        texture.loadFromFile("./Images/wallnut.png");
+        texture.setSmooth(true);
+        sprite.setTexture(texture);
+        sprite.setTextureRect(IntRect(0, 0, 100, 100));
+        sprite.setPosition(position.x, position.y);
+    }
+    WallNut(const WallNut& plant) {
+        //cout << "Plant copied" << endl;
+        health = plant.health;
+        damage = plant.damage;
+        cost = plant.cost;
+        cooldown = plant.cooldown;
+        /*bullet = new Bullet(*plant.bullet);*/
+        position.x = plant.position.x;
+        position.y = plant.position.y;
+        texture = plant.texture;
+        sprite = plant.sprite;
+        clock = plant.clock;
+    }
+};
+class SnowPea :public Plant {
+public:
+    SnowPea(float x, float y) {
+        health = 100;
+        damage = 0;
+        cost = 200;
+        /*cooldown = 1;*/
+        //bullet = new Bullet(x, y);
+        position.x = x;
+        position.y = y;
+        texture.loadFromFile("./Images/snowpea.png");
+        texture.setSmooth(true);
+        sprite.setTexture(texture);
+        sprite.setTextureRect(IntRect(0, 0, 100, 100));
+        sprite.setPosition(position.x, position.y);
+    }
+    SnowPea(const SnowPea& plant) {
+        //cout << "Plant copied" << endl;
+        health = plant.health;
+        damage = plant.damage;
+        cost = plant.cost;
+        cooldown = plant.cooldown;
+        bullet = new Bullet(*plant.bullet);
+        position.x = plant.position.x;
+        position.y = plant.position.y;
+        texture = plant.texture;
+        sprite = plant.sprite;
+        clock = plant.clock;
+    }
+};
+class CherryBomb :public Plant {
+public:
+    CherryBomb(float x, float y) {
+        health = 100;
+        damage = 3;
+        cost = 150;
+        /*cooldown = 1;*/
+        //bullet = new Bullet(x, y);
+        position.x = x;
+        position.y = y;
+        texture.loadFromFile("./Images/cherrybomb.png");
+        texture.setSmooth(true);
+        sprite.setTexture(texture);
+        sprite.setTextureRect(IntRect(0, 0, 100, 100));
+        sprite.setPosition(position.x, position.y);
+    }
+    CherryBomb(const CherryBomb& plant) {
+        //cout << "Plant copied" << endl;
+        health = plant.health;
+        damage = plant.damage;
+        cost = plant.cost;
+        cooldown = plant.cooldown;
+        /*bullet = new Bullet(*plant.bullet);*/
+        position.x = plant.position.x;
+        position.y = plant.position.y;
+        texture = plant.texture;
+        sprite = plant.sprite;
+        clock = plant.clock;
+    }
+};
+class FumeShroom :public Plant {
+public:
+    FumeShroom(float x, float y) {
+        health = 100;
+        damage = 3;
+        cost = 75;
+        /*cooldown = 1;*/
+        //bullet = new Bullet(x, y);
+        position.x = x;
+        position.y = y;
+        texture.loadFromFile("./Images/fumeshroom.png");
+        texture.setSmooth(true);
+        sprite.setTexture(texture);
+        sprite.setTextureRect(IntRect(0, 0, 100, 100));
+        sprite.setPosition(position.x, position.y);
+    }
+    FumeShroom(const FumeShroom& plant) {
+        //cout << "Plant copied" << endl;
+        health = plant.health;
+        damage = plant.damage;
+        cost = plant.cost;
+        cooldown = plant.cooldown;
+        bullet = new Bullet(*plant.bullet);
+        position.x = plant.position.x;
+        position.y = plant.position.y;
+        texture = plant.texture;
+        sprite = plant.sprite;
+        clock = plant.clock;
+    }
+};
 Plant** addPlants(Plant** plantArray, int& size, float x, float y) {
     // Allocate memory for a larger array
     int newCapacity = size + 1;
