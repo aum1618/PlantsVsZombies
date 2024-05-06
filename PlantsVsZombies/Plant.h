@@ -74,7 +74,7 @@ public:
         health = 100;
         cost = 50;
         cooldown = 1;
-        bullet = new Bullet(x, y);
+        bullet = new Bullet(x+100, y+30);
         position.x = x;
         position.y = y;
         texture.loadFromFile("./Images/plant.png");
@@ -101,8 +101,8 @@ public:
         if (!bullet->exist)
         {
             bullet->exist = true;
-            bullet->position.x = position.x;
-            bullet->position.y = position.y;
+            bullet->position.x = position.x+100;
+            bullet->position.y = position.y+30;
             bullet->direction = false; // Bullets move left
         }
     }

@@ -21,7 +21,7 @@ public:
 		health = 3;
 		cordintes.x = x;
 		cordintes.y = y;
-		speed = 200;
+		speed = 150;
 		isAlive = true;
 		texture.loadFromFile("./Images/zombie.png");
 		texture.setSmooth(true);
@@ -33,7 +33,7 @@ public:
 		if (isAlive) {
 			if (clock.getElapsedTime().asMilliseconds() > speed) {
 				frame++;
-				cordintes.x -= 10;
+				cordintes.x -= 2;
 				sprite.setPosition(cordintes.x, cordintes.y);
 				sprite.setTextureRect(IntRect(100 *(
 					frame

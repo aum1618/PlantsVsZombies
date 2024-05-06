@@ -36,6 +36,12 @@ int main()
     s_map.setScale(1.0f, 1.0f);
     s_map.setPosition(0, 0);
     window.setVerticalSyncEnabled(true);
+    Texture grid;
+grid.loadFromFile("./Images/grid.png");
+Sprite s_grid;
+s_grid.setTexture(grid);
+s_grid.setPosition(200, 200);
+
 
     GameCursor cursor;
     Shop sh;
@@ -155,6 +161,7 @@ int main()
 
         window.clear();
         window.draw(s_map);
+        window.draw(s_grid);
         for (int i = 0; i < zombieFactory.zombies_created; i++)
         {
             zombieFactory.zombies[i]->draw(window);
