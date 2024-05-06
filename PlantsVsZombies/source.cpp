@@ -72,7 +72,7 @@ int main()
                     {
                         // limit it between 200 and 700 at y axis and 200 and 1100 at x axis
                         if (clickPosition.y >= 200 && clickPosition.y <= 700 && clickPosition.x >= 200 && clickPosition.x <= 1100 && cursor.getCurrentCursor() != "default")
-                            plantFactory.createPlant(clickPosition.x, clickPosition.y);
+                            plantFactory.createPlant(clickPosition.x, clickPosition.y,cursor.getCurrentCursor());
                     }
                     if (cursor.getCurrentCursor() == "shovel" && plantFactory.isPlantThere(clickPosition.x, clickPosition.y))
                     {
