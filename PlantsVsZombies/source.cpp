@@ -102,29 +102,8 @@ int main()
                 }
             }
         }
+        // Bullet creation and updatind logic
 
-        for (int i = 0; i < plantFactory.plants_created; i++)
-        {
-            if (
-                plantFactory.plants[i]->bullet!=nullptr
-                )
-            { 
-            if (plantFactory.plants[i]->clock.getElapsedTime().asSeconds() > plantFactory.plants[i]->cooldown)
-            {
-
-                plantFactory.plants[i]->fireBullet();
-                plantFactory.plants[i]->clock.restart();
-            }
-            }
-        
-        for (int i = 0; i < plantFactory.plants_created; i++)
-        {
-            plantFactory.plants[i]->updateBullet();
-        }
-        for (int i = 0; i < zombieFactory.zombies_created; i++)
-        {
-            zombieFactory.zombies[i]->move();
-        }
         for (int i = 0; i < plantFactory.plants_created; i++)
         {
             if (
@@ -166,9 +145,13 @@ int main()
             }
         }
             
-        }
+        
         sunFactory.move();
         lawnMowerFactory.move();
+        for (int i = 0; i < zombieFactory.zombies_created; i++)
+        {
+            zombieFactory.zombies[i]->move();
+        }
 
         window.clear();
         window.draw(s_map);
