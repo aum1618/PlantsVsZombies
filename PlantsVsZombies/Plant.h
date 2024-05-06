@@ -12,22 +12,18 @@ class Plant
 {
 public:
     int health;
-    int damage;
     int cost;
-    int cooldown;
-    Bullet *bullet;
     coordinates position;
     Sprite sprite;
     Texture texture;
     Clock clock;
+    int cooldown;
+Bullet *bullet;
     Plant(float x = 0, float y = 0)
     {
         // cout << "Plant created" << endl;
         health = 100;
-        damage = 1;
         cost = 50;
-        cooldown = 2;
-        bullet = new Bullet(x, y);
         position.x = x;
         position.y = y;
         texture.loadFromFile("./Images/plant.png");
@@ -35,21 +31,22 @@ public:
         sprite.setTexture(texture);
         sprite.setTextureRect(IntRect(0, 0, 100, 100));
         sprite.setPosition(position.x, position.y);
+        bullet = nullptr;
+        cooldown = 1;
     }
     // create a copy constructor
     Plant(const Plant &plant)
     {
         // cout << "Plant copied" << endl;
         health = plant.health;
-        damage = plant.damage;
         cost = plant.cost;
-        cooldown = plant.cooldown;
-        bullet = new Bullet(*plant.bullet);
         position.x = plant.position.x;
         position.y = plant.position.y;
         texture = plant.texture;
         sprite = plant.sprite;
         clock = plant.clock;
+bullet = plant.bullet;
+		cooldown = plant.cooldown;
     }
     void draw(RenderWindow &window)
     {
@@ -60,6 +57,44 @@ public:
         position.x = x;
         position.y = y;
         sprite.setPosition(position.x, position.y);
+    }
+    virtual void fireBullet()
+	{
+	}
+    virtual void updateBullet() {};
+    virtual void drawBullet(RenderWindow& window) {};
+};
+
+class Shooter : public Plant
+{
+public:
+
+    Shooter(float x=0, float y=0)
+    {
+        health = 100;
+        cost = 50;
+        cooldown = 1;
+        bullet = new Bullet(x, y);
+        position.x = x;
+        position.y = y;
+        texture.loadFromFile("./Images/plant.png");
+        texture.setSmooth(true);
+        sprite.setTexture(texture);
+        sprite.setTextureRect(IntRect(0, 0, 100, 100));
+        sprite.setPosition(position.x, position.y);
+    }
+    Shooter(const Shooter& plant)
+    {
+        // cout << "Plant copied" << endl;
+        health = plant.health;
+        cost = plant.cost;
+        cooldown = plant.cooldown;
+        bullet = new Bullet(*plant.bullet);
+        position.x = plant.position.x;
+        position.y = plant.position.y;
+        texture = plant.texture;
+        sprite = plant.sprite;
+        clock = plant.clock;
     }
     void fireBullet()
     {
@@ -82,7 +117,7 @@ public:
             }
         }
     }
-    void drawBullet(RenderWindow &window)
+    void drawBullet(RenderWindow& window)
     {
         if (bullet->exist)
         {
@@ -90,13 +125,41 @@ public:
         }
     }
 };
-class PeeShooter : public Plant
+class NonShooter : public Plant
 {
 public:
-    PeeShooter(float x, float y)
+    NonShooter(float x = 0, float y = 0)
     {
         health = 100;
-        damage = 1;
+        cost = 50;
+        position.x = x;
+        position.y = y;
+        texture.loadFromFile("./Images/plant.png");
+        texture.setSmooth(true);
+        sprite.setTexture(texture);
+        sprite.setTextureRect(IntRect(0, 0, 100, 100));
+        sprite.setPosition(position.x, position.y);
+    }
+    NonShooter(const NonShooter& plant)
+    {
+        // cout << "Plant copied" << endl;
+        health = plant.health;
+        cost = plant.cost;
+        position.x = plant.position.x;
+        position.y = plant.position.y;
+        texture = plant.texture;
+        sprite = plant.sprite;
+        clock = plant.clock;
+    }
+
+};
+
+class PeeShooter : public Shooter
+{
+public:
+    PeeShooter(float x=0, float y=0)
+    {
+        health = 100;
         cost = 100;
         cooldown = 2;
         bullet = new Bullet(x, y);
@@ -110,9 +173,7 @@ public:
     }
     PeeShooter(const PeeShooter &plant)
     {
-        // cout << "Plant copied" << endl;
         health = plant.health;
-        damage = plant.damage;
         cost = plant.cost;
         cooldown = plant.cooldown;
         bullet = new Bullet(*plant.bullet);
@@ -123,16 +184,13 @@ public:
         clock = plant.clock;
     }
 };
-class SunFlower : public Plant
+class SunFlower : public NonShooter
 {
 public:
     SunFlower(float x, float y)
     {
         health = 100;
-        damage = 0;
         cost = 100;
-        /*cooldown = 10;*/
-        // bullet = new Bullet(x, y);
         position.x = x;
         position.y = y;
         texture.loadFromFile("./Images/sunflower.png");
@@ -143,12 +201,8 @@ public:
     }
     SunFlower(const SunFlower &plant)
     {
-        // cout << "Plant copied" << endl;
         health = plant.health;
-        damage = plant.damage;
         cost = plant.cost;
-        cooldown = plant.cooldown;
-        /* bullet = new Bullet(*plant.bullet);*/
         position.x = plant.position.x;
         position.y = plant.position.y;
         texture = plant.texture;
@@ -156,16 +210,15 @@ public:
         clock = plant.clock;
     }
 };
-class Repeater : public Plant
+class Repeater : public Shooter
 {
 public:
     Repeater(float x, float y)
     {
         health = 100;
-        damage = 1;
         cost = 200;
         cooldown = 1;
-        // bullet = new Bullet(x, y);
+        bullet = new Bullet(x, y);
         position.x = x;
         position.y = y;
         texture.loadFromFile("./Images/repeater.png");
@@ -178,7 +231,6 @@ public:
     {
         // cout << "Plant copied" << endl;
         health = plant.health;
-        damage = plant.damage;
         cost = plant.cost;
         cooldown = plant.cooldown;
         bullet = new Bullet(*plant.bullet);
@@ -189,16 +241,13 @@ public:
         clock = plant.clock;
     }
 };
-class WallNut : public Plant
+class WallNut : public NonShooter
 {
 public:
     WallNut(float x, float y)
     {
         health = 100;
-        damage = 3;
         cost = 50;
-        /*cooldown = 1;*/
-        // bullet = new Bullet(x, y);
         position.x = x;
         position.y = y;
         texture.loadFromFile("./Images/wallnut.png");
@@ -211,10 +260,7 @@ public:
     {
         // cout << "Plant copied" << endl;
         health = plant.health;
-        damage = plant.damage;
         cost = plant.cost;
-        cooldown = plant.cooldown;
-        /*bullet = new Bullet(*plant.bullet);*/
         position.x = plant.position.x;
         position.y = plant.position.y;
         texture = plant.texture;
@@ -222,16 +268,15 @@ public:
         clock = plant.clock;
     }
 };
-class SnowPea : public Plant
+class SnowPea : public Shooter
 {
 public:
     SnowPea(float x, float y)
     {
         health = 100;
-        damage = 0;
         cost = 200;
-        /*cooldown = 1;*/
-        // bullet = new Bullet(x, y);
+        cooldown = 1;
+         bullet = new Bullet(x, y);
         position.x = x;
         position.y = y;
         texture.loadFromFile("./Images/snowpea.png");
@@ -244,7 +289,6 @@ public:
     {
         // cout << "Plant copied" << endl;
         health = plant.health;
-        damage = plant.damage;
         cost = plant.cost;
         cooldown = plant.cooldown;
         bullet = new Bullet(*plant.bullet);
@@ -255,16 +299,14 @@ public:
         clock = plant.clock;
     }
 };
-class CherryBomb : public Plant
+class CherryBomb : public NonShooter
 {
 public:
     CherryBomb(float x, float y)
     {
         health = 100;
-        damage = 3;
         cost = 150;
-        /*cooldown = 1;*/
-        // bullet = new Bullet(x, y);
+        
         position.x = x;
         position.y = y;
         texture.loadFromFile("./Images/cherrybomb.png");
@@ -277,10 +319,7 @@ public:
     {
         // cout << "Plant copied" << endl;
         health = plant.health;
-        damage = plant.damage;
         cost = plant.cost;
-        cooldown = plant.cooldown;
-        /*bullet = new Bullet(*plant.bullet);*/
         position.x = plant.position.x;
         position.y = plant.position.y;
         texture = plant.texture;
@@ -288,16 +327,15 @@ public:
         clock = plant.clock;
     }
 };
-class FumeShroom : public Plant
+class FumeShroom : public Shooter
 {
 public:
     FumeShroom(float x, float y)
     {
         health = 100;
-        damage = 3;
         cost = 75;
-        /*cooldown = 1;*/
-        // bullet = new Bullet(x, y);
+        cooldown = 1;
+         bullet = new Bullet(x, y);
         position.x = x;
         position.y = y;
         texture.loadFromFile("./Images/fumeshroom.png");
@@ -310,7 +348,6 @@ public:
     {
         // cout << "Plant copied" << endl;
         health = plant.health;
-        damage = plant.damage;
         cost = plant.cost;
         cooldown = plant.cooldown;
         bullet = new Bullet(*plant.bullet);
@@ -321,26 +358,4 @@ public:
         clock = plant.clock;
     }
 };
-Plant **addPlants(Plant **plantArray, int &size, float x, float y)
-{
-    // Allocate memory for a larger array
-    int newCapacity = size + 1;
-    Plant **newArray;
-    newArray = new Plant *[newCapacity];
 
-    // Copy existing elements to the new array
-    for (int i = 0; i < size; ++i)
-    {
-        newArray[i] = new Plant(*plantArray[i]);
-    }
-
-    // Deallocate memory for the old array
-    delete[] plantArray;
-
-    // Update plantArray to point to the new array
-    newArray[size] = new Plant(x, y);
-
-    // Update the size
-    size++;
-    return newArray;
-}

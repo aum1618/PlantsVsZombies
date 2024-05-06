@@ -18,7 +18,7 @@ public:
     Texture texture;
     Clock clock;
     Bullet(float x = 0, float y = 0) {
-        damage = 10;
+        damage = 1;
         speed = 5;
         exist = false;
         direction = true;

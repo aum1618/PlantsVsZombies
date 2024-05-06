@@ -105,13 +105,18 @@ int main()
 
         for (int i = 0; i < plantFactory.plants_created; i++)
         {
+            if (
+                plantFactory.plants[i]->bullet!=nullptr
+                )
+            { 
             if (plantFactory.plants[i]->clock.getElapsedTime().asSeconds() > plantFactory.plants[i]->cooldown)
             {
 
                 plantFactory.plants[i]->fireBullet();
                 plantFactory.plants[i]->clock.restart();
             }
-        }
+            }
+        
         for (int i = 0; i < plantFactory.plants_created; i++)
         {
             plantFactory.plants[i]->updateBullet();
@@ -122,35 +127,45 @@ int main()
         }
         for (int i = 0; i < plantFactory.plants_created; i++)
         {
-            if (plantFactory.plants[i]->clock.getElapsedTime().asSeconds() > plantFactory.plants[i]->cooldown)
-            {
-                plantFactory.plants[i]->fireBullet();
-                plantFactory.plants[i]->clock.restart();
-            }
-            plantFactory.plants[i]->updateBullet();
+            if (
+                plantFactory.plants[i]->bullet != nullptr
+                ) {
 
-            // Check for collision with zombies
-            for (int j = 0; j < zombieFactory.zombies_created; j++)
-            {
-                if (plantFactory.plants[i]->bullet->exist && zombieFactory.zombies[j]->isAlive)
+
+                if (plantFactory.plants[i]->clock.getElapsedTime().asSeconds() > plantFactory.plants[i]->cooldown)
                 {
-                    FloatRect bulletBounds = plantFactory.plants[i]->bullet->sprite.getGlobalBounds();
-                    FloatRect zombieBounds = zombieFactory.zombies[j]->sprite.getGlobalBounds();
+                    plantFactory.plants[i]->fireBullet();
+                    plantFactory.plants[i]->clock.restart();
+                }
+                plantFactory.plants[i]->updateBullet();
 
-                    if (bulletBounds.intersects(zombieBounds))
-                    {
-                        // Bullet hits the zombie
-                        zombieFactory.zombies[j]->health -= plantFactory.plants[i]->damage;
-                        if (zombieFactory.zombies[j]->health <= 0)
+
+                // Check for collision with zombies
+                for (int j = 0; j < zombieFactory.zombies_created; j++)
+                {
+                    if (plantFactory.plants)
+                        if (plantFactory.plants[i]->bullet->exist && zombieFactory.zombies[j]->isAlive)
                         {
-                            // Zombie is killed
-                            zombieFactory.zombies[j]->isAlive = false;
+                            FloatRect bulletBounds = plantFactory.plants[i]->bullet->sprite.getGlobalBounds();
+                            FloatRect zombieBounds = zombieFactory.zombies[j]->sprite.getGlobalBounds();
+
+                            if (bulletBounds.intersects(zombieBounds))
+                            {
+                                // Bullet hits the zombie
+                                zombieFactory.zombies[j]->health -= plantFactory.plants[i]->bullet->damage;
+                                if (zombieFactory.zombies[j]->health <= 0)
+                                {
+                                    // Zombie is killed
+                                    zombieFactory.zombies[j]->isAlive = false;
+                                }
+                                // Remove the bullet
+                                plantFactory.plants[i]->bullet->exist = false;
+                            }
                         }
-                        // Remove the bullet
-                        plantFactory.plants[i]->bullet->exist = false;
-                    }
                 }
             }
+        }
+            
         }
         sunFactory.move();
         lawnMowerFactory.move();
