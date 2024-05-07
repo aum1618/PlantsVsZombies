@@ -5,6 +5,7 @@
 #include <ctime>
 #include "cordinates.h";
 #include "bullet.h";
+#include "Sun.h";
 using namespace sf;
 using namespace std;
 
@@ -19,6 +20,9 @@ public:
     Clock clock;
     int cooldown;
 Bullet *bullet;
+string type;
+
+
     Plant(float x = 0, float y = 0)
     {
         // cout << "Plant created" << endl;
@@ -33,6 +37,7 @@ Bullet *bullet;
         sprite.setPosition(position.x, position.y);
         bullet = nullptr;
         cooldown = 1;
+        type = "Plant";
     }
     // create a copy constructor
     Plant(const Plant &plant)
@@ -47,7 +52,12 @@ Bullet *bullet;
         clock = plant.clock;
 bullet = plant.bullet;
 		cooldown = plant.cooldown;
+type = "Plant";
     }
+    void getSun() {
+
+    }
+
     void draw(RenderWindow &window)
     {
         window.draw(sprite);
@@ -82,6 +92,7 @@ public:
         sprite.setTexture(texture);
         sprite.setTextureRect(IntRect(0, 0, 100, 100));
         sprite.setPosition(position.x, position.y);
+        type="Shooter";
     }
     Shooter(const Shooter& plant)
     {
@@ -95,6 +106,7 @@ public:
         texture = plant.texture;
         sprite = plant.sprite;
         clock = plant.clock;
+type = "Shooter";
     }
     void fireBullet()
     {
@@ -139,6 +151,7 @@ public:
         sprite.setTexture(texture);
         sprite.setTextureRect(IntRect(0, 0, 100, 100));
         sprite.setPosition(position.x, position.y);
+        type = "NonShooter";
     }
     NonShooter(const NonShooter& plant)
     {
@@ -150,6 +163,7 @@ public:
         texture = plant.texture;
         sprite = plant.sprite;
         clock = plant.clock;
+type = "NonShooter";
     }
 
 };
@@ -170,6 +184,7 @@ public:
         sprite.setTexture(texture);
         sprite.setTextureRect(IntRect(0, 0, 100, 100));
         sprite.setPosition(position.x, position.y);
+        type = "PeeShooter";
     }
     PeeShooter(const PeeShooter &plant)
     {
@@ -182,6 +197,7 @@ public:
         texture = plant.texture;
         sprite = plant.sprite;
         clock = plant.clock;
+type = "PeeShooter";
     }
 };
 class SunFlower : public NonShooter
@@ -191,6 +207,7 @@ public:
     {
         health = 100;
         cost = 100;
+        cooldown = 3;
         position.x = x;
         position.y = y;
         texture.loadFromFile("./Images/sunflower.png");
@@ -198,18 +215,24 @@ public:
         sprite.setTexture(texture);
         sprite.setTextureRect(IntRect(0, 0, 100, 100));
         sprite.setPosition(position.x, position.y);
+        type = "SunFlower";
     }
-    SunFlower(const SunFlower &plant)
+    SunFlower(const SunFlower& plant)
     {
         health = plant.health;
+        cooldown = 3;
         cost = plant.cost;
         position.x = plant.position.x;
         position.y = plant.position.y;
         texture = plant.texture;
         sprite = plant.sprite;
         clock = plant.clock;
+        type = "SunFlower";
     }
+  
+
 };
+
 class Repeater : public Shooter
 {
 public:
@@ -226,6 +249,7 @@ public:
         sprite.setTexture(texture);
         sprite.setTextureRect(IntRect(0, 0, 100, 100));
         sprite.setPosition(position.x, position.y);
+        type = "Repeater";
     }
     Repeater(const Repeater &plant)
     {
@@ -239,6 +263,7 @@ public:
         texture = plant.texture;
         sprite = plant.sprite;
         clock = plant.clock;
+type = "Repeater";
     }
 };
 class WallNut : public NonShooter
@@ -255,6 +280,7 @@ public:
         sprite.setTexture(texture);
         sprite.setTextureRect(IntRect(0, 0, 100, 100));
         sprite.setPosition(position.x, position.y);
+        type = "WallNut";
     }
     WallNut(const WallNut &plant)
     {
@@ -266,6 +292,7 @@ public:
         texture = plant.texture;
         sprite = plant.sprite;
         clock = plant.clock;
+type = "WallNut";
     }
 };
 class SnowPea : public Shooter
@@ -284,6 +311,7 @@ public:
         sprite.setTexture(texture);
         sprite.setTextureRect(IntRect(0, 0, 100, 100));
         sprite.setPosition(position.x, position.y);
+        type = "SnowPea";
     }
     SnowPea(const SnowPea &plant)
     {
@@ -297,6 +325,7 @@ public:
         texture = plant.texture;
         sprite = plant.sprite;
         clock = plant.clock;
+type = "SnowPea";
     }
 };
 class CherryBomb : public NonShooter
@@ -314,6 +343,7 @@ public:
         sprite.setTexture(texture);
         sprite.setTextureRect(IntRect(0, 0, 100, 100));
         sprite.setPosition(position.x, position.y);
+        type = "CherryBomb";
     }
     CherryBomb(const CherryBomb &plant)
     {
@@ -325,6 +355,7 @@ public:
         texture = plant.texture;
         sprite = plant.sprite;
         clock = plant.clock;
+        type = "CherryBomb";
     }
 };
 class FumeShroom : public Shooter
@@ -343,6 +374,7 @@ public:
         sprite.setTexture(texture);
         sprite.setTextureRect(IntRect(0, 0, 100, 100));
         sprite.setPosition(position.x, position.y);
+type = "FumeShroom";
     }
     FumeShroom(const FumeShroom &plant)
     {
@@ -356,6 +388,7 @@ public:
         texture = plant.texture;
         sprite = plant.sprite;
         clock = plant.clock;
+type = "FumeShroom";
     }
 };
 

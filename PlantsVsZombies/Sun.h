@@ -1,3 +1,6 @@
+#ifndef SUN_H
+#define SUN_H
+
 #include <iostream>
 #include <SFML/Graphics.hpp>
 #include "cordinates.h"
@@ -6,10 +9,12 @@ using namespace std;
 
 //animate sun it will fall down from the top of the screen you have to rotate it while it is falling
 
-struct Sun {
+class Sun {
+public:
 	int value;
 	bool exist;
 	bool animating;
+	bool willMove;
 	coordinates position;
 	Sprite sprite;
 	Texture texture;
@@ -18,12 +23,12 @@ struct Sun {
 		value = 25;
 		texture.loadFromFile("./Images/sun.png");
 		sprite.setTexture(texture);
-		sprite.setOrigin(texture.getSize().x / 2, texture.getSize().y / 2);
 		sprite.setPosition(x, y);
 		position.x = x;
 		exist = true;
 		animating = false;
 		position.y = y;
+		willMove = true;
 	}
 	Sun(const Sun& sun) {
 		value = sun.value;
@@ -33,6 +38,7 @@ struct Sun {
 		position.y = sun.position.y;
 		exist = sun.exist;
 		animating = sun.animating;
+		willMove = sun.willMove;
 	}
 	void draw(RenderWindow& window) {
 		if (exist || animating) {
@@ -40,7 +46,7 @@ struct Sun {
 		}
 	}
 	void move() {
-		if (exist) {
+		if (exist && willMove) {
 
 		if (clock.getElapsedTime().asMilliseconds() > 50) {
 			clock.restart();
@@ -80,6 +86,12 @@ struct Sun {
 	
 
 };
+#endif // !SUN_H
+
+#ifndef SUNFACTORY_H
+#define SUNFACTORY_H
+
+
 
 
 
@@ -135,6 +147,18 @@ public:
 		}
 	}
 
+	void addSunFromPlant(float x, float y) {
+		Sun** temp = new Sun * [suns_created + 1];
+		for (int i = 0; i < suns_created; i++) {
+			temp[i] = suns[i];
+		}
+		temp[suns_created] = new Sun(x, y);
+		temp[suns_created]->willMove = false;
+		delete[] suns;
+		suns = temp;
+		suns_created++;
+	}
+
 	void removeSun(float x, float y) {
 		for (int i = 0; i < suns_created; i++) {
 			if (suns[i]->position.x == x && suns[i]->position.y == y) {
@@ -161,3 +185,6 @@ public:
 		delete[] suns;
 	}
 };
+
+#endif // !SUNFACTORY_H
+

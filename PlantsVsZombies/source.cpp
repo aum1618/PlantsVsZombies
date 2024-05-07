@@ -47,7 +47,7 @@ s_grid.setPosition(200, 200);
     Shop sh;
 
     PlantFactory plantFactory;
-    ZombieFactory zombieFactory(20);
+    ZombieFactory zombieFactory(100);
     SunFactory sunFactory(50);
     LawnMowerFactory lawnMowerFactory(5);
 
@@ -66,6 +66,7 @@ s_grid.setPosition(200, 200);
                 clickPosition.x = event.mouseButton.x;
                 clickPosition.y = event.mouseButton.y;
 
+
                 cursor.renderCursor(clickPosition);
                 if (sunFactory.isSunThere(clickPosition.x, clickPosition.y))
                 {
@@ -76,6 +77,7 @@ s_grid.setPosition(200, 200);
 
                     if (!plantFactory.isPlantThere(clickPosition.x, clickPosition.y))
                     {
+
                         // limit it between 200 and 700 at y axis and 200 and 1100 at x axis
                         if (clickPosition.y >= 200 && clickPosition.y <= 700 && clickPosition.x >= 200 && clickPosition.x <= 1100 && cursor.getCurrentCursor() != "default")
                             plantFactory.createPlant(clickPosition.x, clickPosition.y,cursor.getCurrentCursor());
@@ -111,18 +113,18 @@ s_grid.setPosition(200, 200);
         // Bullet creation and updatind logic
 
         for (int i = 0; i < plantFactory.plants_created; i++)
+
         {
-            if (
-                plantFactory.plants[i]->bullet != nullptr
-                ) {
-
-
                 if (plantFactory.plants[i]->clock.getElapsedTime().asSeconds() > plantFactory.plants[i]->cooldown)
                 {
                     plantFactory.plants[i]->fireBullet();
                     plantFactory.plants[i]->clock.restart();
                 }
                 plantFactory.plants[i]->updateBullet();
+            if (
+                plantFactory.plants[i]->bullet != nullptr 
+                ) {
+
 
 
                 // Check for collision with zombies
@@ -150,6 +152,8 @@ s_grid.setPosition(200, 200);
                 }
             }
         }
+
+       
             
         
         sunFactory.move();
