@@ -19,6 +19,7 @@ public:
     Clock clock;
     int cooldown;
 Bullet *bullet;
+string type;
     Plant(float x = 0, float y = 0)
     {
         // cout << "Plant created" << endl;
@@ -33,6 +34,7 @@ Bullet *bullet;
         sprite.setPosition(position.x, position.y);
         bullet = nullptr;
         cooldown = 1;
+        type = "Plant";
     }
     // create a copy constructor
     Plant(const Plant &plant)
@@ -45,8 +47,9 @@ Bullet *bullet;
         texture = plant.texture;
         sprite = plant.sprite;
         clock = plant.clock;
-bullet = plant.bullet;
+        bullet = plant.bullet;
 		cooldown = plant.cooldown;
+        type = "Plant";
     }
     void draw(RenderWindow &window)
     {
@@ -98,12 +101,15 @@ public:
     }
     void fireBullet()
     {
+        if (clock.getElapsedTime().asSeconds() > cooldown) {
+
         if (!bullet->exist)
         {
             bullet->exist = true;
             bullet->position.x = position.x+100;
             bullet->position.y = position.y+30;
             bullet->direction = false; // Bullets move left
+        }
         }
     }
     void updateBullet()
@@ -213,12 +219,15 @@ public:
 class Repeater : public Shooter
 {
 public:
+    Bullet* bullet2;
+    Clock clock2;
     Repeater(float x, float y)
     {
         health = 100;
         cost = 200;
         cooldown = 1;
         bullet = new Bullet(x, y);
+        bullet2 = new Bullet(x, y);
         position.x = x;
         position.y = y;
         texture.loadFromFile("./Images/repeater.png");
@@ -226,6 +235,7 @@ public:
         sprite.setTexture(texture);
         sprite.setTextureRect(IntRect(0, 0, 100, 100));
         sprite.setPosition(position.x, position.y);
+        type = "Repeater";
     }
     Repeater(const Repeater &plant)
     {
@@ -234,11 +244,70 @@ public:
         cost = plant.cost;
         cooldown = plant.cooldown;
         bullet = new Bullet(*plant.bullet);
+        bullet2 = new Bullet(plant.position.x , plant.position.y);
         position.x = plant.position.x;
         position.y = plant.position.y;
         texture = plant.texture;
         sprite = plant.sprite;
         clock = plant.clock;
+        type = "Repeater";
+        clock2 = plant.clock2;
+    }
+    void fireBullet()
+    {
+        if (clock.getElapsedTime().asSeconds() > cooldown) {
+
+        if (!bullet->exist)
+        {
+            cout << "fired1\n";
+            bullet->exist = true;
+            bullet->position.x = position.x + 100;
+            bullet->position.y = position.y + 30;
+            bullet->direction = false; // Bullets move left
+        }
+            clock.restart();
+        }
+        if (clock2.getElapsedTime().asSeconds() > 1.5) {
+        if (!bullet2->exist)
+        {
+            cout << "friend2\n" << endl;
+            bullet2->exist = true;
+            bullet2->position.x = position.x + 100;
+            bullet2->position.y = position.y + 30;
+            bullet2->direction = false; // Bullets move left
+        }
+        clock2.restart();
+        }
+    }
+    void updateBullet()
+    {
+        if (bullet->exist)
+        {
+            bullet->move();
+            if (bullet->reachedRightEdge(1920))
+            {
+                bullet->exist = false;
+            }
+        }
+        if (bullet2->exist)
+        {
+            bullet2->move();
+            if (bullet2->reachedRightEdge(1920))
+            {
+                bullet2->exist = false;
+            }
+        }
+    }
+    void drawBullet(RenderWindow& window)
+    {
+        if (bullet->exist)
+        {
+            bullet->draw(window);
+        }
+        if (bullet2->exist)
+        {
+            bullet2->draw(window);
+        }
     }
 };
 class WallNut : public NonShooter

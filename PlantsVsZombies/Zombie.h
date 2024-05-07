@@ -37,7 +37,8 @@ public:
 				sprite.setPosition(cordintes.x, cordintes.y);
 				sprite.setTextureRect(IntRect(100 *(
 					frame
-					), 0, 100, 100));
+					), 100, 100, 100));
+				sprite.setScale(1.1, 1.1);
 				clock.restart();
 				frame=frame%numframes;
 				if (cordintes.x < 0) {
