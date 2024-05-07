@@ -113,8 +113,6 @@ int main()
         for (int i = 0; i < plantFactory.plants_created; i++)
 
         {
-
-
                 plantFactory.plants[i]->fireBullet();
 
                 plantFactory.plants[i]->updateBullet();
