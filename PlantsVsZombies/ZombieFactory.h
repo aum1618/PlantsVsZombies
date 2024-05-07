@@ -45,6 +45,18 @@ public:
 		}
 		return false;
 	}
+	void deleteZombiesInRect(float x1, float y1, float x2, float y2) {
+		for (int i = 0; i < zombies_created; i++) {
+			// Get the bounds of the zombie sprite
+			FloatRect zombieBounds = zombies[i]->sprite.getGlobalBounds();
+			// Check if the coordinates (x, y) are within the bounds of the zombie sprite
+			if (zombieBounds.left >= x1 && zombieBounds.left <= x2 && zombieBounds.top >= y1 && zombieBounds.top <= y2) {
+				delete zombies[i];
+				zombies[i] = zombies[zombies_created - 1];
+				zombies_created--;
+			}
+		}
+	}
 	~ZombieFactory() {
 		for (int i = 0; i < zombies_created; i++) {
 			delete zombies[i];
