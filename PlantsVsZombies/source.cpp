@@ -37,11 +37,10 @@ int main()
     s_map.setPosition(0, 0);
     window.setVerticalSyncEnabled(true);
     Texture grid;
-grid.loadFromFile("./Images/grid.png");
-Sprite s_grid;
-s_grid.setTexture(grid);
-s_grid.setPosition(200, 200);
-
+    grid.loadFromFile("./Images/grid.png");
+    Sprite s_grid;
+    s_grid.setTexture(grid);
+    s_grid.setPosition(200, 200);
 
     GameCursor cursor;
     Shop sh;
@@ -66,7 +65,6 @@ s_grid.setPosition(200, 200);
                 clickPosition.x = event.mouseButton.x;
                 clickPosition.y = event.mouseButton.y;
 
-
                 cursor.renderCursor(clickPosition);
                 if (sunFactory.isSunThere(clickPosition.x, clickPosition.y))
                 {
@@ -80,7 +78,7 @@ s_grid.setPosition(200, 200);
 
                         // limit it between 200 and 700 at y axis and 200 and 1100 at x axis
                         if (clickPosition.y >= 200 && clickPosition.y <= 700 && clickPosition.x >= 200 && clickPosition.x <= 1100 && cursor.getCurrentCursor() != "default")
-                            plantFactory.createPlant(clickPosition.x, clickPosition.y,cursor.getCurrentCursor());
+                            plantFactory.createPlant(clickPosition.x, clickPosition.y, cursor.getCurrentCursor());
                     }
                     if (cursor.getCurrentCursor() == "shovel" && plantFactory.isPlantThere(clickPosition.x, clickPosition.y))
                     {
@@ -115,72 +113,67 @@ s_grid.setPosition(200, 200);
         for (int i = 0; i < plantFactory.plants_created; i++)
 
         {
-                if (plantFactory.plants[i]->clock.getElapsedTime().asSeconds() > plantFactory.plants[i]->cooldown)
-                {
-                    plantFactory.plants[i]->fireBullet();
-                    plantFactory.plants[i]->clock.restart();
-                }
+            if (plantFactory.plants[i]->bullet != nullptr)
+            {
+
+                plantFactory.plants[i]->fireBullet();
+
                 plantFactory.plants[i]->updateBullet();
-            if (
-                plantFactory.plants[i]->bullet != nullptr 
-                ) {
-
-
-
-                // Check for collision with zombies
-                for (int j = 0; j < zombieFactory.zombies_created; j++)
+                if (
+                    plantFactory.plants[i]->bullet != nullptr)
                 {
-                    if (plantFactory.plants)
-                        if (plantFactory.plants[i]->bullet->exist && zombieFactory.zombies[j]->isAlive)
-                        {
-                            FloatRect bulletBounds = plantFactory.plants[i]->bullet->sprite.getGlobalBounds();
-                            FloatRect zombieBounds = zombieFactory.zombies[j]->sprite.getGlobalBounds();
 
-                            if (bulletBounds.intersects(zombieBounds))
+                    // Check for collision with zombies
+                    for (int j = 0; j < zombieFactory.zombies_created; j++)
+                    {
+                        if (plantFactory.plants)
+                            if (plantFactory.plants[i]->bullet->exist && zombieFactory.zombies[j]->isAlive)
                             {
-                                // Bullet hits the zombie
-                                zombieFactory.zombies[j]->health -= plantFactory.plants[i]->bullet->damage;
-                                if (zombieFactory.zombies[j]->health <= 0)
+                                FloatRect bulletBounds = plantFactory.plants[i]->bullet->sprite.getGlobalBounds();
+                                FloatRect zombieBounds = zombieFactory.zombies[j]->sprite.getGlobalBounds();
+
+                                if (bulletBounds.intersects(zombieBounds))
                                 {
-                                    // Zombie is killed
-                                    zombieFactory.zombies[j]->isAlive = false;
+                                    // Bullet hits the zombie
+                                    zombieFactory.zombies[j]->health -= plantFactory.plants[i]->bullet->damage;
+                                    if (zombieFactory.zombies[j]->health <= 0)
+                                    {
+                                        // Zombie is killed
+                                        zombieFactory.zombies[j]->isAlive = false;
+                                    }
+                                    // Remove the bullet
+                                    plantFactory.plants[i]->bullet->exist = false;
                                 }
-                                // Remove the bullet
-                                plantFactory.plants[i]->bullet->exist = false;
                             }
-                        }
+                    }
                 }
             }
-        }
 
-       
-            
-        
-        sunFactory.move();
-        lawnMowerFactory.move();
-        for (int i = 0; i < zombieFactory.zombies_created; i++)
-        {
-            zombieFactory.zombies[i]->move();
-        }
+            sunFactory.move();
+            lawnMowerFactory.move();
+            for (int i = 0; i < zombieFactory.zombies_created; i++)
+            {
+                zombieFactory.zombies[i]->move();
+            }
 
-        window.clear();
-        window.draw(s_map);
-        window.draw(s_grid);
-        for (int i = 0; i < zombieFactory.zombies_created; i++)
-        {
-            zombieFactory.zombies[i]->draw(window);
-        }
+            window.clear();
+            window.draw(s_map);
+            window.draw(s_grid);
+            for (int i = 0; i < zombieFactory.zombies_created; i++)
+            {
+                zombieFactory.zombies[i]->draw(window);
+            }
 
-        for (int i = 0; i < plantFactory.plants_created; i++)
-        {
-            plantFactory.plants[i]->draw(window);
-            plantFactory.plants[i]->drawBullet(window);
+            for (int i = 0; i < plantFactory.plants_created; i++)
+            {
+                plantFactory.plants[i]->draw(window);
+                plantFactory.plants[i]->drawBullet(window);
+            }
+            lawnMowerFactory.draw(window);
+            sunFactory.draw(window);
+            sh.draw(window);
+            cursor.applyCursor(window);
+            window.display();
         }
-        lawnMowerFactory.draw(window);
-        sunFactory.draw(window);
-        sh.draw(window);
-        cursor.applyCursor(window);
-        window.display();
+        return 0;
     }
-    return 0;
-}
