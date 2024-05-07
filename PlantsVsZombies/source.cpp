@@ -113,8 +113,7 @@ int main()
         for (int i = 0; i < plantFactory.plants_created; i++)
 
         {
-            if (plantFactory.plants[i]->bullet != nullptr)
-            {
+
 
                 plantFactory.plants[i]->fireBullet();
 
