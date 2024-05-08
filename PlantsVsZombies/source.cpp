@@ -46,8 +46,8 @@ int main()
     Shop sh;
 
     PlantFactory plantFactory;
-    ZombieFactory zombieFactory(100);
-    SunFactory sunFactory(50);
+    ZombieFactory zombieFactory(20);
+    SunFactory sunFactory(20);
     LawnMowerFactory lawnMowerFactory(5);
 
     while (window.isOpen())
@@ -180,6 +180,42 @@ int main()
                     }
                 }
             }
+        for (int i = 0; i < plantFactory.plants_created; i++)
+        {
+            for (int j = 0; j < zombieFactory.zombies_created; j++)
+            {
+                if (plantFactory.plants[i]->type == "CherryBomb") {
+                    if (plantFactory.plants[i]->clock.getElapsedTime().asSeconds() >= plantFactory.plants[i]->cooldown) {
+                        /*zombieFactory.killZombie(plantFactory.plants[i]->position.x + 100, plantFactory.plants[i]->position.y);
+                        zombieFactory.killZombie(plantFactory.plants[i]->position.x - 100, plantFactory.plants[i]->position.y);
+                        zombieFactory.killZombie(plantFactory.plants[i]->position.x, plantFactory.plants[i]->position.y+100);
+                        zombieFactory.killZombie(plantFactory.plants[i]->position.x, plantFactory.plants[i]->position.y-100);
+                        zombieFactory.killZombie(plantFactory.plants[i]->position.x + 100, plantFactory.plants[i]->position.y+100);
+                        zombieFactory.killZombie(plantFactory.plants[i]->position.x + 100, plantFactory.plants[i]->position.y - 100);
+                        zombieFactory.killZombie(plantFactory.plants[i]->position.x - 100, plantFactory.plants[i]->position.y + 100);
+                        zombieFactory.killZombie(plantFactory.plants[i]->position.x - 100, plantFactory.plants[i]->position.y - 100);*/
+                        zombieFactory.deleteZombiesInRect(plantFactory.plants[i]->position.x-100, plantFactory.plants[i]->position.y - 100, plantFactory.plants[i]->position.x + 100, plantFactory.plants[i]->position.y + 100);
+                        plantFactory.plants[i]->health = 0;
+                    }
+                }
+            }
+        }
+        for (int i = 0; i < zombieFactory.zombies_created; i++)
+        {
+            for (int j = 0; j < plantFactory.plants_created; j++)
+            {
+                    FloatRect wallNutBounds = plantFactory.plants[j]->sprite.getGlobalBounds();
+                    FloatRect zombieBounds = zombieFactory.zombies[i]->sprite.getGlobalBounds();
+                    cout << zombieBounds.height << zombieBounds.width << zombieBounds.left << zombieBounds.top << endl;
+                    if (wallNutBounds.intersects(zombieBounds))
+                    {
+                        zombieFactory.zombies[i]->isMoving = false;
+                        plantFactory.plants[j]->health -= 1;
+                    }
+                    if (plantFactory.plants[j]->health <= 0)
+                        plantFactory.removePlant(plantFactory.plants[j]->position.x, plantFactory.plants[j]->position.y);
+            }
+        }
 
             sunFactory.move();
             lawnMowerFactory.move();

@@ -1,12 +1,13 @@
 ﻿#pragma once
 #include <SFML/Graphics.hpp>
 #include <ctime>
-//#include"../SFML/Images/"
+// #include"../SFML/Images/"
 using namespace sf;
 using namespace std;
 #include "cordinates.h";
 
-class Zombie {
+class Zombie
+{
 public:
 	int health;
 	float speed;
@@ -18,7 +19,9 @@ public:
 	int numframes = 5;
 	int frame = 0;
 	bool shouldMove;
-	Zombie(float x = 0, float y = 0) {
+	bool isMoving;
+	Zombie(float x = 0, float y = 0)
+	{
 		health = 3;
 		cordintes.x = x;
 		cordintes.y = y;
@@ -30,31 +33,50 @@ public:
 		sprite.setTextureRect(IntRect(0, 0, 100, 100));
 		sprite.setPosition(x, y);
 		shouldMove = true;
+		isMoving = true;
 	}
-	virtual void move() {
-		if (clock.getElapsedTime().asSeconds() > 5) {
+	virtual void move()
+	{
+		if (clock.getElapsedTime().asSeconds() > 5)
+		{
 			shouldMove = true;
 		}
 
-		if (isAlive && shouldMove) {
-			if (clock.getElapsedTime().asMilliseconds() > speed) {
-				frame++;
-				cordintes.x -= 2;
-				sprite.setPosition(cordintes.x, cordintes.y);
-				sprite.setTextureRect(IntRect(100 *(
-					frame
-					), 100, 100, 100));
-				sprite.setScale(1.1, 1.1);
-				clock.restart();
-				frame=frame%numframes;
-				if (cordintes.x < 0) {
-					isAlive = false;
+		if (isAlive && shouldMove)
+		{
+			if (clock.getElapsedTime().asMilliseconds() > speed)
+			{
+				if (isMoving)
+				{
+					frame++;
+					cordintes.x -= 2;
+					sprite.setPosition(cordintes.x, cordintes.y);
+					sprite.setTextureRect(IntRect(100 * (frame), 0, 100, 100));
+					// sprite.setScale(1.1, 1.1);
+					clock.restart();
+					frame = frame % numframes;
+					if (cordintes.x < 0)
+					{
+						isAlive = false;
+					}
+				}
+				else
+				{
+					frame++;
+					sprite.setTextureRect(IntRect(100 * (frame), 100, 100, 100));
+					sprite.setScale(1.1, 1.1);
+					clock.restart();
+					frame = frame % numframes;
+
+					isMoving = true;
 				}
 			}
 		}
 	}
-	void draw(RenderWindow& window) {
-		if (isAlive) {
+	void draw(RenderWindow &window)
+	{
+		if (isAlive)
+		{
 			/*if (health == 2) {
 				sprite.setTextureRect(IntRect(0, 30, 100, 70));
 			}
@@ -64,10 +86,23 @@ public:
 			window.draw(sprite);
 		}
 	}
+	// void checkWallNutCollision(Plant** plants, int numPlants) {
+	//	for (int i = 0; i < numPlants; i++) {
+	//		if (plants[i]->type == "WallNut") {
+	//			FloatRect wallNutBounds = plants[i]->sprite.getGlobalBounds();
+	//			if (wallNutBounds.intersects(sprite.getGlobalBounds())) {
+	//				isMoving = false; // Adjust as needed
+	//				plants[i]->health -= 20;
+	//
+	//				return;
+	//			}
+	//		}
+	//	}
+	// }
 };
 
-//class FootballZombie :public Zombie {
-//public:
+// class FootballZombie :public Zombie {
+// public:
 //	FootballZombie(float x = 0, float y = 0) {
 //		health = 3;
 //		cordintes.x = x;
@@ -97,10 +132,10 @@ public:
 //			}
 //		}
 //	}
-//};
+// };
 //
-//class FlyingZombie :public Zombie {
-//public:
+// class FlyingZombie :public Zombie {
+// public:
 //	FlyingZombie(float x = 0, float y = 0) {
 //		health = 3;
 //		cordintes.x = x;
@@ -130,10 +165,10 @@ public:
 //			}
 //		}
 //	}
-//};
+// };
 //
-//class DancingZombie :public Zombie {
-//public:
+// class DancingZombie :public Zombie {
+// public:
 //	DancingZombie(float x = 0, float y = 0) {
 //		health = 3;
 //		cordintes.x = x;
@@ -163,4 +198,4 @@ public:
 //			}
 //		}
 //	}
-//};
+// };
