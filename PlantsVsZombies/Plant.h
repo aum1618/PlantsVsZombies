@@ -26,6 +26,7 @@ public:
     int destination;
     int destinationy;
     bool freezeAll;
+    bool hasFrozen;
 
     SunFactory sunFactory;
     Plant(float x = 0, float y = 0)
@@ -354,6 +355,7 @@ public:
         int newY = -100;          // Generates random number between 0 and 900
         bomb = new Bomb(destination, newY);
         freezeAll = false;
+        hasFrozen = false;
     }
     SnowPea(const SnowPea &plant)
     {
@@ -371,6 +373,7 @@ public:
         destinationy = plant.destinationy;
         bomb = new Bomb(*plant.bomb);
         freezeAll = plant.freezeAll;
+hasFrozen = plant.hasFrozen;
     }
     void fireBullet()
     {
@@ -403,6 +406,7 @@ public:
             if (bomb->reachedRightEdge(destinationy)) {
                 bomb->exist = false;
                 freezeAll = true;
+                cout << "Bomb reached destination" << endl;
             }
         }
     }

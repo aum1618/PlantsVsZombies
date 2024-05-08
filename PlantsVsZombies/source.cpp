@@ -44,6 +44,7 @@ int main()
 
     GameCursor cursor;
     Shop sh;
+    int currency = 0;
 
     PlantFactory plantFactory;
     ZombieFactory zombieFactory(20);
@@ -68,14 +69,14 @@ int main()
                 if (sunFactory.isSunThere(clickPosition.x, clickPosition.y))
                 {
                     sunFactory.moveSunToOrigin(clickPosition.x, clickPosition.y);
+                    currency += 10;
+                    cout << "Currency: " << currency << endl;
                 }
                 else
                 {
 
                     if (!plantFactory.isPlantThere(clickPosition.x, clickPosition.y))
                     {
-                        cout << "Plant not there" << endl;
-                        cout << "Cursor: " << cursor.getCurrentCursor() << endl;
                         // limit it between 200 and 700 at y axis and 200 and 1100 at x axis
                         if (clickPosition.y >= 200 && clickPosition.y <= 700 && clickPosition.x >= 200 && clickPosition.x <= 1100 && cursor.getCurrentCursor() != "default")
                             plantFactory.createPlant(clickPosition.x, clickPosition.y, cursor.getCurrentCursor());
@@ -85,23 +86,17 @@ int main()
                         for (int i = 0; i < plantFactory.plants_created; i++)
 						{
                             if (plantFactory.plants[i]->type == "SunFlower") {
-                                cout << "Sunflower" << endl;
                              if (  plantFactory.plants[i]->sunFactory.isSunThere(clickPosition.x, clickPosition.y))
 							 {
-                                 cout << "Sunflower sun there";
                                  for (int j = 0; j < plantFactory.plants[i]->sunFactory.suns_created; j++) {
                                      plantFactory.plants[i]->sunFactory.suns[j]->clock.restart();
                                  }
 								 plantFactory.plants[i]->sunFactory.moveSunToOrigin(clickPosition.x, clickPosition.y);
-							 }
+currency += 10;
+cout << "Currency: " << currency << endl;
+                             }
                             }
-                            if (plantFactory.plants[i]->type == "SnowPea") {
-                                if (plantFactory.plants[i]->freezeAll) {
-                                    int tempx = plantFactory.plants[i]->destination / 100 * 100;
-                                    int tempy = plantFactory.plants[i]->destinationy / 100 * 100;
-                                    zombieFactory.freezeZombies(tempx,tempy);
-                                }
-                            }
+                          
 
 						}
                     if (cursor.getCurrentCursor() == "shovel" && plantFactory.isPlantThere(clickPosition.x, clickPosition.y))
@@ -137,6 +132,14 @@ int main()
         for (int i = 0; i < plantFactory.plants_created; i++)
 
         {
+            if (plantFactory.plants[i]->type == "SnowPea") {
+                if (plantFactory.plants[i]->freezeAll && !plantFactory.plants[i]->hasFrozen) {
+                    int tempx = plantFactory.plants[i]->destination / 100 * 100;
+                    int tempy = plantFactory.plants[i]->destinationy / 100 * 100;
+                    zombieFactory.freezeZombies(tempx-100, tempy-100);
+                   plantFactory.plants[i]->hasFrozen = true;
+                }
+            }
                 plantFactory.plants[i]->fireBullet();
 
                 plantFactory.plants[i]->updateBullet();
@@ -194,7 +197,7 @@ int main()
                         zombieFactory.killZombie(plantFactory.plants[i]->position.x + 100, plantFactory.plants[i]->position.y - 100);
                         zombieFactory.killZombie(plantFactory.plants[i]->position.x - 100, plantFactory.plants[i]->position.y + 100);
                         zombieFactory.killZombie(plantFactory.plants[i]->position.x - 100, plantFactory.plants[i]->position.y - 100);*/
-                        zombieFactory.deleteZombiesInRect(plantFactory.plants[i]->position.x-100, plantFactory.plants[i]->position.y - 100, plantFactory.plants[i]->position.x + 100, plantFactory.plants[i]->position.y + 100);
+                        zombieFactory.deleteZombiesInRect(plantFactory.plants[i]->position.x-100, plantFactory.plants[i]->position.y - 100);
                         plantFactory.plants[i]->health = 0;
                     }
                 }
@@ -206,7 +209,6 @@ int main()
             {
                     FloatRect wallNutBounds = plantFactory.plants[j]->sprite.getGlobalBounds();
                     FloatRect zombieBounds = zombieFactory.zombies[i]->sprite.getGlobalBounds();
-                    cout << zombieBounds.height << zombieBounds.width << zombieBounds.left << zombieBounds.top << endl;
                     if (wallNutBounds.intersects(zombieBounds))
                     {
                         zombieFactory.zombies[i]->isMoving = false;

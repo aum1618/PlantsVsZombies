@@ -56,7 +56,6 @@ public:
 		}
 		}
 		else if (animating){
-			cout << "Animating" << endl;
 			// Calculate distance to origin
 			float dx = 0 - position.x; // Destination x is 0 (center of the screen)
 			float dy = 0 - position.y; // Destination y is 0 (top of the screen)

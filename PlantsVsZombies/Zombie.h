@@ -16,7 +16,8 @@ public:
 	Sprite sprite;
 	Texture texture;
 	Clock clock;
-	int numframes = 5;
+	Clock clock2;
+ 	int numframes = 10;
 	int frame = 0;
 	bool shouldMove;
 	bool isMoving;
@@ -29,6 +30,7 @@ public:
 		isAlive = true;
 		texture.loadFromFile("./Images/zombie.png");
 		texture.setSmooth(true);
+		
 		sprite.setTexture(texture);
 		sprite.setTextureRect(IntRect(0, 0, 100, 100));
 		sprite.setPosition(x, y);
@@ -37,9 +39,10 @@ public:
 	}
 	virtual void move()
 	{
-		if (clock.getElapsedTime().asSeconds() > 5)
+		if (clock2.getElapsedTime().asSeconds() > 5)
 		{
 			shouldMove = true;
+			clock2.restart();
 		}
 
 		if (isAlive && shouldMove)
@@ -64,7 +67,6 @@ public:
 				{
 					frame++;
 					sprite.setTextureRect(IntRect(100 * (frame), 100, 100, 100));
-					sprite.setScale(1.1, 1.1);
 					clock.restart();
 					frame = frame % numframes;
 
