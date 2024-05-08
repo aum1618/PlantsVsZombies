@@ -27,6 +27,7 @@ public:
 
     void setDefaultCursor() {
         cursor.loadFromSystem(sf::Cursor::Arrow);
+type = "default";
     }
 
     void renderCursor(coordinates clickPosition) {

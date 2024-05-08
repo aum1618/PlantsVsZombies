@@ -1,6 +1,4 @@
-#ifndef SUN_H
-#define SUN_H
-
+#pragma once
 #include <iostream>
 #include <SFML/Graphics.hpp>
 #include "cordinates.h"
@@ -22,7 +20,9 @@ public:
 	Sun(float x = 0, float y = 0) {
 		value = 25;
 		texture.loadFromFile("./Images/sun.png");
+	
 		sprite.setTexture(texture);
+		sprite.setOrigin(25, 25);
 		sprite.setPosition(x, y);
 		position.x = x;
 		exist = true;
@@ -56,6 +56,7 @@ public:
 		}
 		}
 		else if (animating){
+			cout << "Animating" << endl;
 			// Calculate distance to origin
 			float dx = 0 - position.x; // Destination x is 0 (center of the screen)
 			float dy = 0 - position.y; // Destination y is 0 (top of the screen)
@@ -71,6 +72,7 @@ public:
 			float speedX = dx / time;
 			float speedY = dy / time;
 
+
 			// Move the sun towards the top of the screen
 			if (clock.getElapsedTime().asMilliseconds() < time) {
 				float deltaTime = clock.restart().asMilliseconds();
@@ -78,6 +80,13 @@ public:
 				position.y += speedY * deltaTime;
 				sprite.setPosition(position.x, position.y);
 			}
+else {
+				position.x = 0;	
+position.y = 0;
+				animating = false;
+				exist = false;
+			}
+			
 		}
 	}
 	void animate() {
@@ -86,10 +95,7 @@ public:
 	
 
 };
-#endif // !SUN_H
 
-#ifndef SUNFACTORY_H
-#define SUNFACTORY_H
 
 
 
@@ -159,6 +165,33 @@ public:
 		suns_created++;
 	}
 
+	void removeNonExistantSun() {
+for (int i = 0; i < suns_created; i++) {
+			if (!suns[i]->exist && !suns[i]->animating) {
+				delete suns[i];
+				for (int j = i; j < suns_created - 1; j++) {
+					suns[j] = suns[j + 1];
+				}
+				suns_created--;
+				Sun** temp = new Sun * [suns_created];
+				for (int j = 0; j < suns_created; j++) {
+					temp[j] = suns[j];
+				}
+				delete[] suns;
+				suns = temp;
+			}
+		}	
+	}
+	int getExistantSunCount() {
+		int count = 0;
+		for (int i = 0; i < suns_created; i++) {
+			if (suns[i]->exist) {
+				count++;
+			}
+		}
+		return count;
+	}
+
 	void removeSun(float x, float y) {
 		for (int i = 0; i < suns_created; i++) {
 			if (suns[i]->position.x == x && suns[i]->position.y == y) {
@@ -186,5 +219,4 @@ public:
 	}
 };
 
-#endif // !SUNFACTORY_H
 

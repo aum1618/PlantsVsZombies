@@ -17,6 +17,7 @@ public:
 	Clock clock;
 	int numframes = 5;
 	int frame = 0;
+	bool shouldMove;
 	Zombie(float x = 0, float y = 0) {
 		health = 3;
 		cordintes.x = x;
@@ -28,9 +29,14 @@ public:
 		sprite.setTexture(texture);
 		sprite.setTextureRect(IntRect(0, 0, 100, 100));
 		sprite.setPosition(x, y);
+		shouldMove = true;
 	}
 	virtual void move() {
-		if (isAlive) {
+		if (clock.getElapsedTime().asSeconds() > 5) {
+			shouldMove = true;
+		}
+
+		if (isAlive && shouldMove) {
 			if (clock.getElapsedTime().asMilliseconds() > speed) {
 				frame++;
 				cordintes.x -= 2;

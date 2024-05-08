@@ -18,7 +18,7 @@ public:
 			int newY = (rand() % 499)+200;          // Generates random number between 0 and 900
 
 			// Make newX and newY multiples of 100
-			newX = newX / 100 * 100;
+			
 			newY = newY / 100 * 100;
 			zombies[i] = new Zombie(newX, newY);
 		}
@@ -45,6 +45,26 @@ public:
 		}
 		return false;
 	}
+	//create a function to freeze zombies present inside a rectangle  fro 5 seconds
+	void freezeZombies(int x,int y) {
+		cout << x << " " << y;
+		int leftEdge = x;
+		int rightEdge = x + 300;
+		int topEdge = y;
+		int bottomEdge = y + 300;
+
+		for (int i = 0; i < zombies_created; i++) {
+			if (zombies[i]->cordintes.x >= leftEdge && zombies[i]->cordintes.x <= rightEdge && zombies[i]->cordintes.y >= topEdge && zombies[i]->cordintes.y <= bottomEdge) {
+				cout << "Zombie found in the box" << endl;
+				zombies[i]->shouldMove = false;
+				zombies[i]->clock.restart();
+		}
+
+		}
+	}
+	
+
+
 	~ZombieFactory() {
 		for (int i = 0; i < zombies_created; i++) {
 			delete zombies[i];

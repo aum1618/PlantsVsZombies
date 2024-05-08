@@ -139,6 +139,7 @@
     <None Include="README.md" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Bomb.h" />
     <ClInclude Include="Bullet.h" />
     <ClInclude Include="cordinates.h" />
     <ClInclude Include="Cursor.h" />

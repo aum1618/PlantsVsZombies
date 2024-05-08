@@ -6,6 +6,7 @@
 #include "cordinates.h";
 #include "bullet.h";
 #include "Sun.h";
+#include "Bomb.h";
 using namespace sf;
 using namespace std;
 
@@ -19,8 +20,14 @@ public:
     Texture texture;
     Clock clock;
     int cooldown;
-    Bullet *bullet;
+    BulletFactory bulletFactory;
     string type;
+    Bomb* bomb;
+    int destination;
+    int destinationy;
+    bool freezeAll;
+
+    SunFactory sunFactory;
     Plant(float x = 0, float y = 0)
     {
         // cout << "Plant created" << endl;
@@ -33,9 +40,9 @@ public:
         sprite.setTexture(texture);
         sprite.setTextureRect(IntRect(0, 0, 100, 100));
         sprite.setPosition(position.x, position.y);
-        bullet = nullptr;
         cooldown = 1;
         type = "Plant";
+        bomb = nullptr;
     }
     // create a copy constructor
     Plant(const Plant &plant)
@@ -48,9 +55,9 @@ public:
         texture = plant.texture;
         sprite = plant.sprite;
         clock = plant.clock;
-        bullet = plant.bullet;
         cooldown = plant.cooldown;
         type = "Plant";
+        bomb = nullptr;
     }
 
     void draw(RenderWindow &window)
@@ -78,7 +85,6 @@ public:
         health = 100;
         cost = 50;
         cooldown = 1;
-        bullet = new Bullet(x + 100, y + 30);
         position.x = x;
         position.y = y;
         texture.loadFromFile("./Images/plant.png");
@@ -94,7 +100,6 @@ public:
         health = plant.health;
         cost = plant.cost;
         cooldown = plant.cooldown;
-        bullet = new Bullet(*plant.bullet);
         position.x = plant.position.x;
         position.y = plant.position.y;
         texture = plant.texture;
@@ -106,33 +111,29 @@ public:
     {
         if (clock.getElapsedTime().asSeconds() > cooldown)
         {
-
-            if (!bullet->exist)
-            {
-                bullet->exist = true;
-                bullet->position.x = position.x + 100;
-                bullet->position.y = position.y + 30;
-                bullet->direction = false; // Bullets move left
-            }
+            cout << "Bullet fired" << endl;
+            bulletFactory.removeNonExistantBullets();
+            bulletFactory.addBullet(position.x + 100, position.y + 30);
+            clock.restart();
         }
     }
     void updateBullet()
     {
-        if (bullet->exist)
+        for (int i = 0; i < bulletFactory.bulletCount; i++) {
+
+        if (bulletFactory.bullets[i]->exist)
         {
-            bullet->move();
-            if (bullet->reachedRightEdge(1920))
+            bulletFactory.bullets[i]->move();
+            if (bulletFactory.bullets[i]->reachedRightEdge(1300))
             {
-                bullet->exist = false;
+                bulletFactory.bullets[i]->exist = false;
             }
+        }
         }
     }
     void drawBullet(RenderWindow &window)
     {
-        if (bullet->exist)
-        {
-            bullet->draw(window);
-        }
+        bulletFactory.drawBullets(window);
     }
 };
 class NonShooter : public Plant
@@ -173,7 +174,6 @@ public:
         health = 100;
         cost = 100;
         cooldown = 2;
-        bullet = new Bullet(x, y);
         position.x = x;
         position.y = y;
         texture.loadFromFile("./Images/plant.png");
@@ -188,7 +188,6 @@ public:
         health = plant.health;
         cost = plant.cost;
         cooldown = plant.cooldown;
-        bullet = new Bullet(*plant.bullet);
         position.x = plant.position.x;
         position.y = plant.position.y;
         texture = plant.texture;
@@ -204,7 +203,7 @@ public:
     {
         health = 100;
         cost = 100;
-        cooldown = 3;
+        cooldown = 10;
         position.x = x;
         position.y = y;
         texture.loadFromFile("./Images/sunflower.png");
@@ -217,7 +216,7 @@ public:
     SunFlower(const SunFlower &plant)
     {
         health = plant.health;
-        cooldown = 3;
+        cooldown = 10;
         cost = plant.cost;
         position.x = plant.position.x;
         position.y = plant.position.y;
@@ -226,20 +225,46 @@ public:
         clock = plant.clock;
         type = "SunFlower";
     }
+    //make function to add sun there should only be 1 sun at a time
+    void fireBullet()
+	{
+		float elapsed1 = clock.getElapsedTime().asSeconds();
+		if (elapsed1 >= cooldown)
+		{
+            int count=0;
+            for (int i = 0; i < sunFactory.suns_created; i++)
+			{
+				if (sunFactory.suns[i]->exist)
+				{
+					count++;
+				}
+			}
+            if (count >= 1) {
+                clock.restart();
+            }
+            else {
+
+			sunFactory.addSunFromPlant(position.x + 50, position.y - 25);
+			clock.restart();
+            }
+		}
+	}
+    void updateBullet() {
+        sunFactory.move();
+	}
+    void drawBullet(RenderWindow &window) {
+        sunFactory.draw(window);
+    }
 };
 
 class Repeater : public Shooter
 {
 public:
-    Bullet *bullet2;
-    Clock clock2;
     Repeater(float x, float y)
     {
         health = 100;
         cost = 200;
-        cooldown = 1;
-        bullet = new Bullet(x, y);
-        bullet2 = new Bullet(x, y);
+        cooldown = 2;
         position.x = x;
         position.y = y;
         texture.loadFromFile("./Images/repeater.png");
@@ -248,6 +273,7 @@ public:
         sprite.setTextureRect(IntRect(0, 0, 100, 100));
         sprite.setPosition(position.x, position.y);
         type = "Repeater";
+        
     }
     Repeater(const Repeater &plant)
     {
@@ -255,75 +281,27 @@ public:
         health = plant.health;
         cost = plant.cost;
         cooldown = plant.cooldown;
-        bullet = new Bullet(*plant.bullet);
-        bullet2 = new Bullet(plant.position.x, plant.position.y);
         position.x = plant.position.x;
         position.y = plant.position.y;
         texture = plant.texture;
         sprite = plant.sprite;
         clock = plant.clock;
         type = "Repeater";
-        clock2 = plant.clock2;
     }
-    void fireBullet()
-    {
-        if (clock.getElapsedTime().asSeconds() > cooldown)
-        {
+    void fireBullet() {
+        float elapsed1 = clock.getElapsedTime().asSeconds();
 
-            if (!bullet->exist)
-            {
-                cout << "fired1\n";
-                bullet->exist = true;
-                bullet->position.x = position.x + 100;
-                bullet->position.y = position.y + 30;
-                bullet->direction = false; // Bullets move left
-            }
-            clock.restart();
+        // Fire first bullet after base cooldown
+        if (elapsed1 >= cooldown) {
+            bulletFactory.removeNonExistantBullets();
+            bulletFactory.addBullet(position.x + 90, position.y + 30);
+            bulletFactory.addBullet(position.x + 130, position.y + 30);
+            clock.restart();  // Restart timer for first bullet
         }
-        if (clock2.getElapsedTime().asSeconds() > 1.5)
-        {
-            if (!bullet2->exist)
-            {
-                cout << "friend2\n"
-                     << endl;
-                bullet2->exist = true;
-                bullet2->position.x = position.x + 100;
-                bullet2->position.y = position.y + 30;
-                bullet2->direction = false; // Bullets move left
-            }
-            clock2.restart();
-        }
+
+       
     }
-    void updateBullet()
-    {
-        if (bullet->exist)
-        {
-            bullet->move();
-            if (bullet->reachedRightEdge(1920))
-            {
-                bullet->exist = false;
-            }
-        }
-        if (bullet2->exist)
-        {
-            bullet2->move();
-            if (bullet2->reachedRightEdge(1920))
-            {
-                bullet2->exist = false;
-            }
-        }
-    }
-    void drawBullet(RenderWindow &window)
-    {
-        if (bullet->exist)
-        {
-            bullet->draw(window);
-        }
-        if (bullet2->exist)
-        {
-            bullet2->draw(window);
-        }
-    }
+   
 };
 class WallNut : public NonShooter
 {
@@ -357,12 +335,12 @@ public:
 class SnowPea : public Shooter
 {
 public:
+
     SnowPea(float x, float y)
     {
         health = 100;
         cost = 200;
-        cooldown = 1;
-        bullet = new Bullet(x, y);
+        cooldown = 4;
         position.x = x;
         position.y = y;
         texture.loadFromFile("./Images/snowpea.png");
@@ -371,6 +349,11 @@ public:
         sprite.setTextureRect(IntRect(0, 0, 100, 100));
         sprite.setPosition(position.x, position.y);
         type = "SnowPea";
+        destination = (rand() % 201) + 900;  // Generates random number between 1300 and 2300
+        destinationy = (rand() % 501) + 200;
+        int newY = -100;          // Generates random number between 0 and 900
+        bomb = new Bomb(destination, newY);
+        freezeAll = false;
     }
     SnowPea(const SnowPea &plant)
     {
@@ -378,14 +361,58 @@ public:
         health = plant.health;
         cost = plant.cost;
         cooldown = plant.cooldown;
-        bullet = new Bullet(*plant.bullet);
         position.x = plant.position.x;
         position.y = plant.position.y;
         texture = plant.texture;
         sprite = plant.sprite;
         clock = plant.clock;
         type = "SnowPea";
+        destination = plant.destination;
+        destinationy = plant.destinationy;
+        bomb = new Bomb(*plant.bomb);
+        freezeAll = plant.freezeAll;
     }
+    void fireBullet()
+    {
+        if (clock.getElapsedTime().asSeconds() > cooldown)
+        {
+            cout << "Bullet fired" << endl;
+            bulletFactory.removeNonExistantBullets();
+            bulletFactory.addBullet(position.x + 100, position.y + 30);
+            if (!bomb->exist) {
+                bomb->exist = true;
+            }
+            clock.restart();
+        }
+    }
+    void updateBullet()
+    {
+        for (int i = 0; i < bulletFactory.bulletCount; i++) {
+
+            if (bulletFactory.bullets[i]->exist)
+            {
+                bulletFactory.bullets[i]->move();
+                if (bulletFactory.bullets[i]->reachedRightEdge(1300))
+                {
+                    bulletFactory.bullets[i]->exist = false;
+                }
+            }
+        }
+        if (bomb->exist) {
+            bomb->move();
+            if (bomb->reachedRightEdge(destinationy)) {
+                bomb->exist = false;
+                freezeAll = true;
+            }
+        }
+    }
+    void drawBullet(RenderWindow& window)
+    {
+        bulletFactory.drawBullets(window);
+        if(bomb->exist)
+        bomb->draw(window);
+    }
+
 };
 class CherryBomb : public NonShooter
 {
@@ -425,7 +452,6 @@ public:
         health = 100;
         cost = 75;
         cooldown = 1;
-        bullet = new Bullet(x, y);
         position.x = x;
         position.y = y;
         texture.loadFromFile("./Images/fumeshroom.png");
@@ -441,7 +467,6 @@ public:
         health = plant.health;
         cost = plant.cost;
         cooldown = plant.cooldown;
-        bullet = new Bullet(*plant.bullet);
         position.x = plant.position.x;
         position.y = plant.position.y;
         texture = plant.texture;

@@ -7,6 +7,8 @@
 using namespace sf;
 using namespace std;
 
+
+
 class Bullet {
 public:
     int damage;
@@ -65,6 +67,78 @@ public:
         return position.x >= windowWidth;
     }
 };
+
+
+
+class BulletFactory {
+public:
+    Bullet ** bullets;
+    int bulletCount;
+    BulletFactory(int count=0) {
+		bulletCount = count;
+		bullets = new Bullet*[bulletCount];
+        for (int i = 0; i < bulletCount; i++) {
+			bullets[i] = new Bullet();
+		}
+	}
+    BulletFactory(const BulletFactory& bulletFactory) {
+		bulletCount = bulletFactory.bulletCount;
+		bullets = new Bullet*[bulletCount];
+        for (int i = 0; i < bulletCount; i++) {
+			bullets[i] = new Bullet(*bulletFactory.bullets[i]);
+		}
+	}
+    void addBullet(float x, float y) {
+        Bullet** temp = new Bullet * [bulletCount + 1];
+        for (int i = 0; i < bulletCount; i++) {
+            temp[i] = bullets[i];
+        }
+        temp[bulletCount] = new Bullet(x, y);
+        temp[bulletCount]->exist = true;
+        temp[bulletCount]->direction = false;
+        delete[] bullets;
+        bullets = temp;
+        bulletCount++;
+    }
+    void moveBullets() {
+        for (int i = 0; i < bulletCount; i++) {
+            if (bullets[i]->exist) {
+				bullets[i]->move();
+			}
+		}
+	}
+    void drawBullets(RenderWindow& window) {
+        for (int i = 0; i < bulletCount; i++) {
+            if (bullets[i]->exist) {
+				bullets[i]->draw(window);
+			}
+		}
+	}
+    void removeNonExistantBullets() {
+        		Bullet** temp = new Bullet * [bulletCount];
+		int j = 0;
+        for (int i = 0; i < bulletCount; i++) {
+            if (bullets[i]->exist) {
+				temp[j] = bullets[i];
+				j++;
+			}
+            else {
+				delete bullets[i];
+			}
+		}
+		delete[] bullets;
+		bullets = temp;
+		bulletCount = j;
+    }
+    ~BulletFactory() {
+        for (int i = 0; i < bulletCount; i++) {
+			delete bullets[i];
+		}
+		delete[] bullets;
+	}
+};
+
+
 
 //class PeaShooter : public Bullet {
 //public:
