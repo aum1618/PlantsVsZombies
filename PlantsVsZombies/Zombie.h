@@ -16,7 +16,7 @@ public:
 	Sprite sprite;
 	Texture texture;
 	Clock clock;
-	int numframes = 5;
+	int numframes = 9;
 	int frame = 0;
 	bool shouldMove;
 	bool isMoving;
@@ -52,7 +52,6 @@ public:
 					cordintes.x -= 2;
 					sprite.setPosition(cordintes.x, cordintes.y);
 					sprite.setTextureRect(IntRect(100 * (frame), 0, 100, 100));
-					// sprite.setScale(1.1, 1.1);
 					clock.restart();
 					frame = frame % numframes;
 					if (cordintes.x < 0)
@@ -64,7 +63,6 @@ public:
 				{
 					frame++;
 					sprite.setTextureRect(IntRect(100 * (frame), 100, 100, 100));
-					sprite.setScale(1.1, 1.1);
 					clock.restart();
 					frame = frame % numframes;
 
