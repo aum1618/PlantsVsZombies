@@ -17,6 +17,7 @@ public:
 	Clock clock;
 	int numframes = 5;
 	int frame = 0;
+	bool isMoving;
 	Zombie(float x = 0, float y = 0) {
 		health = 3;
 		cordintes.x = x;
@@ -28,21 +29,35 @@ public:
 		sprite.setTexture(texture);
 		sprite.setTextureRect(IntRect(0, 0, 100, 100));
 		sprite.setPosition(x, y);
+		isMoving = true;
 	}
 	virtual void move() {
 		if (isAlive) {
 			if (clock.getElapsedTime().asMilliseconds() > speed) {
-				frame++;
-				cordintes.x -= 2;
-				sprite.setPosition(cordintes.x, cordintes.y);
-				sprite.setTextureRect(IntRect(100 *(
-					frame
-					), 100, 100, 100));
-				sprite.setScale(1.1, 1.1);
-				clock.restart();
-				frame=frame%numframes;
-				if (cordintes.x < 0) {
-					isAlive = false;
+				if (isMoving) {
+					frame++;
+					cordintes.x -= 2;
+					sprite.setPosition(cordintes.x, cordintes.y);
+					sprite.setTextureRect(IntRect(100 * (
+						frame
+						), 0, 100, 100));
+					//sprite.setScale(1.1, 1.1);
+					clock.restart();
+					frame = frame % numframes;
+					if (cordintes.x < 0) {
+						isAlive = false;
+					}
+				}
+				else {
+					frame++;
+					sprite.setTextureRect(IntRect(100 * (
+						frame
+						), 100, 100, 100));
+					sprite.setScale(1.1, 1.1);
+					clock.restart();
+					frame = frame % numframes;
+					
+					isMoving = true;
 				}
 			}
 		}
@@ -58,6 +73,19 @@ public:
 			window.draw(sprite);
 		}
 	}
+	//void checkWallNutCollision(Plant** plants, int numPlants) {
+	//	for (int i = 0; i < numPlants; i++) {
+	//		if (plants[i]->type == "WallNut") {
+	//			FloatRect wallNutBounds = plants[i]->sprite.getGlobalBounds();
+	//			if (wallNutBounds.intersects(sprite.getGlobalBounds())) {
+	//				isMoving = false; // Adjust as needed
+	//				plants[i]->health -= 20;
+	//	
+	//				return;
+	//			}
+	//		}
+	//	}
+	//}
 };
 
 //class FootballZombie :public Zombie {

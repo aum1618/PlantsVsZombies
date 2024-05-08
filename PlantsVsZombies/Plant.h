@@ -390,6 +390,7 @@ public:
 class CherryBomb : public NonShooter
 {
 public:
+    int radius;
     CherryBomb(float x, float y)
     {
         health = 100;
@@ -403,6 +404,7 @@ public:
         sprite.setTextureRect(IntRect(0, 0, 100, 100));
         sprite.setPosition(position.x, position.y);
         type = "CherryBomb";
+        radius = 1;
     }
     CherryBomb(const CherryBomb &plant)
     {
@@ -414,6 +416,7 @@ public:
         texture = plant.texture;
         sprite = plant.sprite;
         clock = plant.clock;
+        radius = plant.radius;
         type = "CherryBomb";
     }
 };
