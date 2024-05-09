@@ -26,6 +26,7 @@ public:
     int destination;
     int destinationy;
     bool freezeAll;
+    bool hasFrozen;
 
     SunFactory sunFactory;
     Plant(float x = 0, float y = 0)
@@ -80,6 +81,7 @@ public:
 class Shooter : public Plant
 {
 public:
+
     Shooter(float x = 0, float y = 0)
     {
         health = 100;
@@ -117,7 +119,7 @@ public:
             clock.restart();
         }
     }
-    void updateBullet()
+    virtual void updateBullet()
     {
         for (int i = 0; i < bulletFactory.bulletCount; i++) {
 
@@ -172,7 +174,7 @@ public:
     PeeShooter(float x = 0, float y = 0)
     {
         health = 100;
-        cost = 100;
+        cost = 50;
         cooldown = 2;
         position.x = x;
         position.y = y;
@@ -339,7 +341,7 @@ public:
     SnowPea(float x, float y)
     {
         health = 100;
-        cost = 200;
+        cost = 100;
         cooldown = 4;
         position.x = x;
         position.y = y;
@@ -354,6 +356,7 @@ public:
         int newY = -100;          // Generates random number between 0 and 900
         bomb = new Bomb(destination, newY);
         freezeAll = false;
+        hasFrozen = false;
     }
     SnowPea(const SnowPea &plant)
     {
@@ -371,6 +374,7 @@ public:
         destinationy = plant.destinationy;
         bomb = new Bomb(*plant.bomb);
         freezeAll = plant.freezeAll;
+hasFrozen = plant.hasFrozen;
     }
     void fireBullet()
     {
@@ -403,6 +407,7 @@ public:
             if (bomb->reachedRightEdge(destinationy)) {
                 bomb->exist = false;
                 freezeAll = true;
+                cout << "Bomb reached destination" << endl;
             }
         }
     }
@@ -477,4 +482,17 @@ public:
         clock = plant.clock;
         type = "FumeShroom";
     }
+    /*virtual void updateBullet() {
+        for (int i = 0; i < bulletFactory.bulletCount; i++) {
+
+            if (bulletFactory.bullets[i]->exist)
+            {
+                bulletFactory.bullets[i]->move();
+                if (bulletFactory.bullets[i]->reachedRightEdge(1300))
+                {
+                    bulletFactory.bullets[i]->exist = false;
+                }
+            }
+        }
+    }*/
 };

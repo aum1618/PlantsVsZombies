@@ -27,35 +27,35 @@ public:
 
     void setDefaultCursor() {
         cursor.loadFromSystem(sf::Cursor::Arrow);
-type = "default";
+        type = "default";
     }
 
-    void renderCursor(coordinates clickPosition) {
-        if ((clickPosition.x >= 100 && clickPosition.x <= 200) && (clickPosition.y >= 0 && clickPosition.y <= 100)) {
+    void renderCursor(coordinates clickPosition,int currency) {
+        if ((clickPosition.x >= 100 && clickPosition.x <= 200) && (clickPosition.y >= 0 && clickPosition.y <= 100) && currency >=50) {
 			setCursor("./Images/peeshooter.png");
             type="peashooter";
 		}
-        if ((clickPosition.x >= 200 && clickPosition.x <= 300) && (clickPosition.y >= 0 && clickPosition.y <= 100)) {
+        if ((clickPosition.x >= 200 && clickPosition.x <= 300) && (clickPosition.y >= 0 && clickPosition.y <= 100) && currency >= 200) {
 			setCursor("./Images/repeater.png");
             type="repeater";
 		}
-        if ((clickPosition.x >= 300 && clickPosition.x <= 400) && (clickPosition.y >= 0 && clickPosition.y <= 100)) {
+        if ((clickPosition.x >= 300 && clickPosition.x <= 400) && (clickPosition.y >= 0 && clickPosition.y <= 100) && currency >= 100) {
 			setCursor("./Images/snowpea.png");
             type="snowpea";
 		}
-        if ((clickPosition.x >= 400 && clickPosition.x <= 500) && (clickPosition.y >= 0 && clickPosition.y <= 100)) {
+        if ((clickPosition.x >= 400 && clickPosition.x <= 500) && (clickPosition.y >= 0 && clickPosition.y <= 100) && currency >= 75) {
 			setCursor("./Images/fumeshroom.png");
             type="fumeshroom";
 		}
-        if ((clickPosition.x >= 500 && clickPosition.x <= 600) && (clickPosition.y >= 0 && clickPosition.y <= 100)) {
+        if ((clickPosition.x >= 500 && clickPosition.x <= 600) && (clickPosition.y >= 0 && clickPosition.y <= 100) && currency >= 50) {
 			setCursor("./Images/wallnut.png");
             type="wallnut";
 		}
-        if ((clickPosition.x >= 600 && clickPosition.x <= 700) && (clickPosition.y >= 0 && clickPosition.y <= 100)) {
+        if ((clickPosition.x >= 600 && clickPosition.x <= 700) && (clickPosition.y >= 0 && clickPosition.y <= 100) && currency >= 150) {
 			setCursor("./Images/cherrybomb.png");
             type="cherrybomb";
 		}
-        if ((clickPosition.x >= 700 && clickPosition.x <= 800) && (clickPosition.y >= 0 && clickPosition.y <= 100)) {
+        if ((clickPosition.x >= 700 && clickPosition.x <= 800) && (clickPosition.y >= 0 && clickPosition.y <= 100) && currency >= 100) {
 			setCursor("./Images/sunflower.png");
             type="sunflower";
 		}

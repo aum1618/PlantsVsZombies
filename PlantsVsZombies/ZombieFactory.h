@@ -54,38 +54,50 @@ public:
 	// create a function to freeze zombies present inside a rectangle  fro 5 seconds
 	void freezeZombies(int x, int y)
 	{
-		cout << x << " " << y;
-		int leftEdge = x;
-		int rightEdge = x + 300;
-		int topEdge = y;
-		int bottomEdge = y + 300;
+		// Determine the coordinates of the bottom right corner of the box
+		int rightEdge = x + 200;
+		int bottomEdge = y + 200;
 
+		// Iterate through zombies and freeze those within the box
 		for (int i = 0; i < zombies_created; i++)
 		{
-			if (zombies[i]->cordintes.x >= leftEdge && zombies[i]->cordintes.x <= rightEdge && zombies[i]->cordintes.y >= topEdge && zombies[i]->cordintes.y <= bottomEdge)
+			if (zombies[i]->cordintes.x >= x && zombies[i]->cordintes.x <= rightEdge &&
+				zombies[i]->cordintes.y >= y && zombies[i]->cordintes.y <= bottomEdge)
 			{
-				cout << "Zombie found in the box" << endl;
+				// Freeze the zombie
 				zombies[i]->shouldMove = false;
-				zombies[i]->clock.restart();
+				zombies[i]->clock2.restart();
 			}
 		}
 	}
 
-	void deleteZombiesInRect(float x1, float y1, float x2, float y2)
+	void deleteZombiesInRect(float x, float y)
 	{
+		// Determine the coordinates of the bottom right corner of the box
+		float x2 = x + 300;
+		float y2 = y;
+
+		// Iterate through zombies and delete those within the box
 		for (int i = 0; i < zombies_created; i++)
 		{
 			// Get the bounds of the zombie sprite
 			FloatRect zombieBounds = zombies[i]->sprite.getGlobalBounds();
-			// Check if the coordinates (x, y) are within the bounds of the zombie sprite
-			if (zombieBounds.left >= x1 && zombieBounds.left <= x2 && zombieBounds.top >= y1 && zombieBounds.top <= y2)
+			// Check if the zombie is within the box
+			if (zombieBounds.left >= x && zombieBounds.left <= x2 &&
+				zombieBounds.top >= y && zombieBounds.top <= y2)
 			{
+				// Delete the zombie
 				delete zombies[i];
+				// Move the last zombie to the current position to maintain continuity in the array
 				zombies[i] = zombies[zombies_created - 1];
+				// Decrease the count of zombies
 				zombies_created--;
+				// Decrement i to recheck the current position after swapping
+				i--;
 			}
 		}
 	}
+
 	~ZombieFactory()
 	{
 		for (int i = 0; i < zombies_created; i++)

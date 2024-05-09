@@ -16,16 +16,16 @@ public:
 	Sprite sprite;
 	Texture texture;
 	Clock clock;
+	Clock clock2;
 	int numframes = 9;
 	int frame = 0;
 	bool shouldMove;
-	bool isMoving;
 	Zombie(float x = 0, float y = 0)
 	{
 		health = 3;
 		cordintes.x = x;
 		cordintes.y = y;
-		speed = 150;
+		speed = 100;
 		isAlive = true;
 		texture.loadFromFile("./Images/zombie.png");
 		texture.setSmooth(true);
@@ -33,20 +33,20 @@ public:
 		sprite.setTextureRect(IntRect(0, 0, 100, 100));
 		sprite.setPosition(x, y);
 		shouldMove = true;
-		isMoving = true;
 	}
 	virtual void move()
 	{
-		if (clock.getElapsedTime().asSeconds() > 5)
+		if (clock2.getElapsedTime().asSeconds() > 5)
 		{
 			shouldMove = true;
+			clock2.restart();
 		}
 
 		if (isAlive && shouldMove)
 		{
 			if (clock.getElapsedTime().asMilliseconds() > speed)
 			{
-				if (isMoving)
+				if (shouldMove)
 				{
 					frame++;
 					cordintes.x -= 2;
@@ -59,16 +59,16 @@ public:
 						isAlive = false;
 					}
 				}
-				else
-				{
-					frame++;
-					sprite.setTextureRect(IntRect(100 * (frame), 100, 100, 100));
-					clock.restart();
-					frame = frame % numframes;
-
-					isMoving = true;
-				}
 			}
+		}
+		else
+		{
+			frame++;
+			sprite.setTextureRect(IntRect(100 * (frame), 100, 100, 100));
+			clock.restart();
+			frame = frame % numframes;
+
+			shouldMove = true;
 		}
 	}
 	void draw(RenderWindow &window)
