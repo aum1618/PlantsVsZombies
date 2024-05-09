@@ -81,6 +81,7 @@ public:
 class Shooter : public Plant
 {
 public:
+
     Shooter(float x = 0, float y = 0)
     {
         health = 100;
@@ -118,7 +119,7 @@ public:
             clock.restart();
         }
     }
-    void updateBullet()
+    virtual void updateBullet()
     {
         for (int i = 0; i < bulletFactory.bulletCount; i++) {
 
@@ -173,7 +174,7 @@ public:
     PeeShooter(float x = 0, float y = 0)
     {
         health = 100;
-        cost = 100;
+        cost = 50;
         cooldown = 2;
         position.x = x;
         position.y = y;
@@ -340,7 +341,7 @@ public:
     SnowPea(float x, float y)
     {
         health = 100;
-        cost = 200;
+        cost = 100;
         cooldown = 4;
         position.x = x;
         position.y = y;
@@ -481,4 +482,17 @@ public:
         clock = plant.clock;
         type = "FumeShroom";
     }
+    /*virtual void updateBullet() {
+        for (int i = 0; i < bulletFactory.bulletCount; i++) {
+
+            if (bulletFactory.bullets[i]->exist)
+            {
+                bulletFactory.bullets[i]->move();
+                if (bulletFactory.bullets[i]->reachedRightEdge(1300))
+                {
+                    bulletFactory.bullets[i]->exist = false;
+                }
+            }
+        }
+    }*/
 };

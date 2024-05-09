@@ -12,21 +12,11 @@
 using namespace sf;
 using namespace std;
 
-int main()
-{
-    srand(time(0));
-    const int GAME_ROWS = 9;
-    const int GAME_COLS = 13;
-    const int CELL_SIZE = 100;
-    const int GAME_WIDTH = GAME_COLS * CELL_SIZE;
-    const int GAME_HEIGHT = GAME_ROWS * CELL_SIZE;
-    RenderWindow window(VideoMode(GAME_WIDTH, GAME_HEIGHT, 32), "Plants Vs Zombies");
-    Image icon;
-    if (!icon.loadFromFile("./Images/Icon.png"))
-    {
-        return 1;
-    }
-    window.setIcon(32, 32, icon.getPixelsPtr());
+void renderGame(
+    int GAME_WIDTH,
+	int GAME_HEIGHT,
+	RenderWindow &window
+) {
     Texture map;
     map.loadFromFile("./Images/background.png");
     map.setRepeated(true);
@@ -41,6 +31,19 @@ int main()
     Sprite s_grid;
     s_grid.setTexture(grid);
     s_grid.setPosition(200, 200);
+
+    Texture disable;
+    disable.loadFromFile("./Images/disabler.png");
+    Sprite* disable_array = new Sprite[7];
+    for (int i = 0; i < 7; i++)
+    {
+        disable_array[i].setTexture(disable);
+        disable_array[i].setPosition(100 * (i + 1), 0);
+        // Sets opacity
+        sf::Color color = disable_array[i].getColor();
+        color.a = 180; // 50% of 255
+        disable_array[i].setColor(color);
+    }
 
     GameCursor cursor;
     Shop sh;
@@ -69,7 +72,7 @@ int main()
                 if (sunFactory.isSunThere(clickPosition.x, clickPosition.y))
                 {
                     sunFactory.moveSunToOrigin(clickPosition.x, clickPosition.y);
-                    currency += 10;
+                    currency += 25;
                     cout << "Currency: " << currency << endl;
                 }
                 else
@@ -79,32 +82,76 @@ int main()
                     {
                         // limit it between 200 and 700 at y axis and 200 and 1100 at x axis
                         if (clickPosition.y >= 200 && clickPosition.y <= 700 && clickPosition.x >= 200 && clickPosition.x <= 1100 && cursor.getCurrentCursor() != "default")
-                            plantFactory.createPlant(clickPosition.x, clickPosition.y, cursor.getCurrentCursor());
-                    }
-                    else {
-                    }
-                        for (int i = 0; i < plantFactory.plants_created; i++)
-						{
-                            if (plantFactory.plants[i]->type == "SunFlower") {
-                             if (  plantFactory.plants[i]->sunFactory.isSunThere(clickPosition.x, clickPosition.y))
-							 {
-                                 for (int j = 0; j < plantFactory.plants[i]->sunFactory.suns_created; j++) {
-                                     plantFactory.plants[i]->sunFactory.suns[j]->clock.restart();
-                                 }
-								 plantFactory.plants[i]->sunFactory.moveSunToOrigin(clickPosition.x, clickPosition.y);
-currency += 10;
-cout << "Currency: " << currency << endl;
-                             }
+                        {
+                            if (cursor.getCurrentCursor() == "peashooter" && currency >= 50)
+                            {
+                                plantFactory.createPlant(clickPosition.x, clickPosition.y, cursor.getCurrentCursor());
+                                currency -= 50;
+                                cout << "Currency is: " << currency << endl;
                             }
-                          
-
-						}
+                            else if (cursor.getCurrentCursor() == "repeater" && currency >= 200)
+                            {
+                                plantFactory.createPlant(clickPosition.x, clickPosition.y, cursor.getCurrentCursor());
+                                currency -= 200;
+                                cout << "Currency is: " << currency << endl;
+                            }
+                            else if (cursor.getCurrentCursor() == "snowpea" && currency >= 100)
+                            {
+                                plantFactory.createPlant(clickPosition.x, clickPosition.y, cursor.getCurrentCursor());
+                                currency -= 100;
+                                cout << "Currency is: " << currency << endl;
+                            }
+                            else if (cursor.getCurrentCursor() == "fumeshroom" && currency >= 75)
+                            {
+                                plantFactory.createPlant(clickPosition.x, clickPosition.y, cursor.getCurrentCursor());
+                                currency -= 75;
+                                cout << "Currency is: " << currency << endl;
+                            }
+                            else if (cursor.getCurrentCursor() == "wallnut" && currency >= 50)
+                            {
+                                plantFactory.createPlant(clickPosition.x, clickPosition.y, cursor.getCurrentCursor());
+                                currency -= 50;
+                                cout << "Currency is: " << currency << endl;
+                            }
+                            else if (cursor.getCurrentCursor() == "cherrybomb" && currency >= 150)
+                            {
+                                plantFactory.createPlant(clickPosition.x, clickPosition.y, cursor.getCurrentCursor());
+                                currency -= 150;
+                                cout << "Currency is: " << currency << endl;
+                            }
+                            else if (cursor.getCurrentCursor() == "sunflower" && currency >= 100)
+                            {
+                                plantFactory.createPlant(clickPosition.x, clickPosition.y, cursor.getCurrentCursor());
+                                currency -= 100;
+                                cout << "Currency is: " << currency << endl;
+                            }
+                        }
+                    }
+                    else
+                    {
+                    }
+                    for (int i = 0; i < plantFactory.plants_created; i++)
+                    {
+                        if (plantFactory.plants[i]->type == "SunFlower")
+                        {
+                            if (plantFactory.plants[i]->sunFactory.isSunThere(clickPosition.x, clickPosition.y))
+                            {
+                                for (int j = 0; j < plantFactory.plants[i]->sunFactory.suns_created; j++)
+                                {
+                                    plantFactory.plants[i]->sunFactory.suns[j]->clock.restart();
+                                }
+                                plantFactory.plants[i]->sunFactory.moveSunToOrigin(clickPosition.x, clickPosition.y);
+                                currency += 25;
+                                cout << "Currency: " << currency << endl;
+                            }
+                        }
+                    }
                     if (cursor.getCurrentCursor() == "shovel" && plantFactory.isPlantThere(clickPosition.x, clickPosition.y))
                     {
                         plantFactory.removePlant(clickPosition.x, clickPosition.y);
                     }
                 }
-                cursor.renderCursor(clickPosition);
+                cursor.renderCursor(clickPosition, currency);
             }
         }
 
@@ -132,26 +179,28 @@ cout << "Currency: " << currency << endl;
         for (int i = 0; i < plantFactory.plants_created; i++)
 
         {
-            if (plantFactory.plants[i]->type == "SnowPea") {
-                if (plantFactory.plants[i]->freezeAll && !plantFactory.plants[i]->hasFrozen) {
+            if (plantFactory.plants[i]->type == "SnowPea")
+            {
+                if (plantFactory.plants[i]->freezeAll && !plantFactory.plants[i]->hasFrozen)
+                {
                     int tempx = plantFactory.plants[i]->destination / 100 * 100;
                     int tempy = plantFactory.plants[i]->destinationy / 100 * 100;
-                    zombieFactory.freezeZombies(tempx-100, tempy-100);
-                   plantFactory.plants[i]->hasFrozen = true;
+                    zombieFactory.freezeZombies(tempx - 100, tempy - 100);
+                    plantFactory.plants[i]->hasFrozen = true;
                 }
             }
-                plantFactory.plants[i]->fireBullet();
+            plantFactory.plants[i]->fireBullet();
 
-                plantFactory.plants[i]->updateBullet();
-                if (
-                    plantFactory.plants[i]->bulletFactory.bulletCount != 0)
+            plantFactory.plants[i]->updateBullet();
+            if (plantFactory.plants[i]->bulletFactory.bulletCount != 0)
+            {
+
+                // Check for collision with zombies
+                for (int j = 0; j < zombieFactory.zombies_created; j++)
                 {
-
-                    // Check for collision with zombies
-                    for (int j = 0; j < zombieFactory.zombies_created; j++)
-                    {
-                        if (plantFactory.plants)
-                            for (int k = 0; k < plantFactory.plants[i]->bulletFactory.bulletCount; k++) {
+                    if (plantFactory.plants)
+                        for (int k = 0; k < plantFactory.plants[i]->bulletFactory.bulletCount; k++)
+                        {
 
                             if (plantFactory.plants[i]->bulletFactory.bullets[k]->exist && zombieFactory.zombies[j]->isAlive)
                             {
@@ -163,15 +212,16 @@ cout << "Currency: " << currency << endl;
                                     cout << "Bullet hit the zombie" << endl;
                                     // Bullet hits the zombie
                                     zombieFactory.zombies[j]->health -= plantFactory.plants[i]->bulletFactory.bullets[k]->damage;
-                                    if (plantFactory.plants[i]->type == "SnowPea") {
+                                    if (plantFactory.plants[i]->type == "SnowPea")
+                                    {
 
-                                    zombieFactory.zombies[j]->speed += 150;
+                                        zombieFactory.zombies[j]->speed += 150;
                                     }
                                     cout << "Zombie health after hit: " << zombieFactory.zombies[j]->health << endl;
 
                                     if (zombieFactory.zombies[j]->health == 0)
                                     {
-                                    
+
                                         // Zombie is killed
                                         zombieFactory.zombies[j]->isAlive = false;
                                     }
@@ -179,89 +229,159 @@ cout << "Currency: " << currency << endl;
                                     plantFactory.plants[i]->bulletFactory.bullets[k]->exist = false;
                                 }
                             }
-                            }
-                    }
+                        }
                 }
             }
+        }
         for (int i = 0; i < plantFactory.plants_created; i++)
         {
-            for (int j = 0; j < zombieFactory.zombies_created; j++)
+
+            if (plantFactory.plants[i]->type == "CherryBomb")
             {
-                if (plantFactory.plants[i]->type == "CherryBomb") {
-                    if (plantFactory.plants[i]->clock.getElapsedTime().asSeconds() >= plantFactory.plants[i]->cooldown) {
-                        zombieFactory.deleteZombiesInRect(plantFactory.plants[i]->position.x-100, plantFactory.plants[i]->position.y - 100);
-                        plantFactory.plants[i]->health = 0;
-                    }
+                if (plantFactory.plants[i]->clock.getElapsedTime().asSeconds() >= plantFactory.plants[i]->cooldown)
+                {
+                    zombieFactory.deleteZombiesInRect(plantFactory.plants[i]->position.x - 100, plantFactory.plants[i]->position.y - 100);
+                    plantFactory.plants[i]->health = 0;
                 }
             }
         }
         for (int i = 0; i < zombieFactory.zombies_created; i++)
         {
-            if (zombieFactory.zombies[i]->type == "dancing" && !zombieFactory.zombies[i]->hasSummoned) {
+            if (zombieFactory.zombies[i]->type == "dancing" && !zombieFactory.zombies[i]->hasSummoned)
+            {
                 int random = rand() % 100;
-if (random <10 && zombieFactory.zombies[i]->cordintes.x<=900) {
-    float zombieX = zombieFactory.zombies[i]->cordintes.x;
-float zombieY = zombieFactory.zombies[i]->cordintes.y;
+                if (random < 10 && zombieFactory.zombies[i]->cordintes.x <= 900)
+                {
+                    float zombieX = zombieFactory.zombies[i]->cordintes.x;
+                    float zombieY = zombieFactory.zombies[i]->cordintes.y;
 
-    int newY = zombieY;
-    if (zombieY == 200 || random % 2) {
-newY += 100;
-	}
- {
-		newY -= 100;
-    }
- cout << "Dancing zombie summoned" << endl;
- zombieFactory.createZombie(zombieX + 100, zombieY);
- zombieFactory.createZombie(zombieX - 100, zombieY);
-    zombieFactory.createZombie(zombieX,newY);
-    zombieFactory.createZombie(zombieX+100,newY);
-    zombieFactory.createZombie(zombieX-100,newY);
-    zombieFactory.zombies[i]->hasSummoned = true;
-				}
+                    int newY = zombieY;
+                    if (zombieY == 200 || random % 2)
+                    {
+                        newY += 100;
+                    }
+                    {
+                        newY -= 100;
+                    }
+                    cout << "Dancing zombie summoned" << endl;
+                    zombieFactory.createZombie(zombieX + 100, zombieY);
+                    zombieFactory.createZombie(zombieX - 100, zombieY);
+                    zombieFactory.createZombie(zombieX, newY);
+                    zombieFactory.createZombie(zombieX + 100, newY);
+                    zombieFactory.createZombie(zombieX - 100, newY);
+                    zombieFactory.zombies[i]->hasSummoned = true;
+                }
             }
-
 
             for (int j = 0; j < plantFactory.plants_created; j++)
             {
-                    FloatRect wallNutBounds = plantFactory.plants[j]->sprite.getGlobalBounds();
-                    FloatRect zombieBounds = zombieFactory.zombies[i]->sprite.getGlobalBounds();
-                    if (wallNutBounds.intersects(zombieBounds))
+                FloatRect wallNutBounds = plantFactory.plants[j]->sprite.getGlobalBounds();
+                FloatRect zombieBounds = zombieFactory.zombies[i]->sprite.getGlobalBounds();
+                if (wallNutBounds.intersects(zombieBounds))
+                {
+                    if (zombieFactory.zombies[i]->type != "flying")
                     {
-                        if (zombieFactory.zombies[i]->type != "flying") {
-                        zombieFactory.zombies[i]->isMoving = false;
+                        zombieFactory.zombies[i]->shouldMove = false;
                         plantFactory.plants[j]->health -= 1;
-                        }
                     }
-                    if (plantFactory.plants[j]->health <= 0)
-                        plantFactory.removePlant(plantFactory.plants[j]->position.x, plantFactory.plants[j]->position.y);
+                }
+                if (plantFactory.plants[j]->health <= 0)
+                    plantFactory.removePlant(plantFactory.plants[j]->position.x, plantFactory.plants[j]->position.y);
             }
         }
 
-            sunFactory.move();
-            lawnMowerFactory.move();
-            for (int i = 0; i < zombieFactory.zombies_created; i++)
-            {
-                zombieFactory.zombies[i]->move();
-            }
-
-            window.clear();
-            window.draw(s_map);
-            window.draw(s_grid);
-            for (int i = 0; i < zombieFactory.zombies_created; i++)
-            {
-                zombieFactory.zombies[i]->draw(window);
-            }
-
-            for (int i = 0; i < plantFactory.plants_created; i++)
-            {
-                plantFactory.plants[i]->draw(window);
-                plantFactory.plants[i]->drawBullet(window);
-            }
-            lawnMowerFactory.draw(window);
-            sunFactory.draw(window);
-            sh.draw(window);
-            cursor.applyCursor(window);
-            window.display();
+        sunFactory.move();
+        lawnMowerFactory.move();
+        for (int i = 0; i < zombieFactory.zombies_created; i++)
+        {
+            zombieFactory.zombies[i]->move();
         }
-        return 0;
+
+        window.clear();
+        window.draw(s_map);
+        window.draw(s_grid);
+        for (int i = 0; i < zombieFactory.zombies_created; i++)
+        {
+            zombieFactory.zombies[i]->draw(window);
+        }
+
+        for (int i = 0; i < plantFactory.plants_created; i++)
+        {
+            plantFactory.plants[i]->draw(window);
+            plantFactory.plants[i]->drawBullet(window);
+        }
+        lawnMowerFactory.draw(window);
+        sunFactory.draw(window);
+        sh.draw(window);
+        cursor.applyCursor(window);
+        for (int i = 0; i < 7; i++)
+        {
+            if (currency < 50)
+                window.draw(disable_array[i]);
+
+            else if (currency >= 50 && currency < 75)
+            {
+                if (i != 0 && i != 4)
+                {
+                    window.draw(disable_array[i]);
+                }
+            }
+            else if (currency >= 50 && currency <= 75)
+            {
+                if (i != 0 && i != 4 && i != 3)
+                {
+                    window.draw(disable_array[i]);
+                }
+            }
+            else if (currency >= 50 && currency <= 100)
+            {
+                if (i != 0 && i != 4 && i != 3 && i != 2 && i != 6)
+                {
+                    window.draw(disable_array[i]);
+                }
+            }
+            else if (currency >= 50 && currency < 150)
+            {
+                if (i != 0 && i != 4 && i != 3 && i != 2 && i != 6)
+                {
+                    window.draw(disable_array[i]);
+                }
+            }
+            else if (currency >= 50 && currency <= 150)
+            {
+                if (i != 0 && i != 4 && i != 3 && i != 2 && i != 6 && i != 5)
+                {
+                    window.draw(disable_array[i]);
+                }
+            }
+            else if (currency >= 50 && currency < 200)
+            {
+                if (i != 0 && i != 4 && i != 3 && i != 2 && i != 6 && i != 5)
+                {
+                    window.draw(disable_array[i]);
+                }
+            }
+        }
+        window.display();
     }
+    return;
+}
+
+int main()
+{
+    srand(time(0));
+    const int GAME_ROWS = 9;
+    const int GAME_COLS = 13;
+    const int CELL_SIZE = 100;
+    const int GAME_WIDTH = GAME_COLS * CELL_SIZE;
+    const int GAME_HEIGHT = GAME_ROWS * CELL_SIZE;
+    RenderWindow window(VideoMode(GAME_WIDTH, GAME_HEIGHT, 32), "Plants Vs Zombies");
+    Image icon;
+    if (!icon.loadFromFile("./Images/Icon.png"))
+    {
+        return 1;
+    }
+    window.setIcon(32, 32, icon.getPixelsPtr());
+    renderGame(GAME_WIDTH,GAME_HEIGHT,window);
+  
+}

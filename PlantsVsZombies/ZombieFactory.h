@@ -74,8 +74,8 @@ public:
 	void deleteZombiesInRect(float x, float y)
 	{
 		// Determine the coordinates of the bottom right corner of the box
-		float x2 = x + 200;
-		float y2 = y + 200;
+		float x2 = x + 300;
+		float y2 = y;
 
 		// Iterate through zombies and delete those within the box
 		for (int i = 0; i < zombies_created; i++)
