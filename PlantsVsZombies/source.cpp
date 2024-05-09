@@ -189,14 +189,6 @@ cout << "Currency: " << currency << endl;
             {
                 if (plantFactory.plants[i]->type == "CherryBomb") {
                     if (plantFactory.plants[i]->clock.getElapsedTime().asSeconds() >= plantFactory.plants[i]->cooldown) {
-                        /*zombieFactory.killZombie(plantFactory.plants[i]->position.x + 100, plantFactory.plants[i]->position.y);
-                        zombieFactory.killZombie(plantFactory.plants[i]->position.x - 100, plantFactory.plants[i]->position.y);
-                        zombieFactory.killZombie(plantFactory.plants[i]->position.x, plantFactory.plants[i]->position.y+100);
-                        zombieFactory.killZombie(plantFactory.plants[i]->position.x, plantFactory.plants[i]->position.y-100);
-                        zombieFactory.killZombie(plantFactory.plants[i]->position.x + 100, plantFactory.plants[i]->position.y+100);
-                        zombieFactory.killZombie(plantFactory.plants[i]->position.x + 100, plantFactory.plants[i]->position.y - 100);
-                        zombieFactory.killZombie(plantFactory.plants[i]->position.x - 100, plantFactory.plants[i]->position.y + 100);
-                        zombieFactory.killZombie(plantFactory.plants[i]->position.x - 100, plantFactory.plants[i]->position.y - 100);*/
                         zombieFactory.deleteZombiesInRect(plantFactory.plants[i]->position.x-100, plantFactory.plants[i]->position.y - 100);
                         plantFactory.plants[i]->health = 0;
                     }
@@ -205,14 +197,40 @@ cout << "Currency: " << currency << endl;
         }
         for (int i = 0; i < zombieFactory.zombies_created; i++)
         {
+            if (zombieFactory.zombies[i]->type == "dancing" && !zombieFactory.zombies[i]->hasSummoned) {
+                int random = rand() % 100;
+if (random <10 && zombieFactory.zombies[i]->cordintes.x<=900) {
+    float zombieX = zombieFactory.zombies[i]->cordintes.x;
+float zombieY = zombieFactory.zombies[i]->cordintes.y;
+
+    int newY = zombieY;
+    if (zombieY == 200 || random % 2) {
+newY += 100;
+	}
+ {
+		newY -= 100;
+    }
+ cout << "Dancing zombie summoned" << endl;
+ zombieFactory.createZombie(zombieX + 100, zombieY);
+ zombieFactory.createZombie(zombieX - 100, zombieY);
+    zombieFactory.createZombie(zombieX,newY);
+    zombieFactory.createZombie(zombieX+100,newY);
+    zombieFactory.createZombie(zombieX-100,newY);
+    zombieFactory.zombies[i]->hasSummoned = true;
+				}
+            }
+
+
             for (int j = 0; j < plantFactory.plants_created; j++)
             {
                     FloatRect wallNutBounds = plantFactory.plants[j]->sprite.getGlobalBounds();
                     FloatRect zombieBounds = zombieFactory.zombies[i]->sprite.getGlobalBounds();
                     if (wallNutBounds.intersects(zombieBounds))
                     {
+                        if (zombieFactory.zombies[i]->type != "flying") {
                         zombieFactory.zombies[i]->isMoving = false;
                         plantFactory.plants[j]->health -= 1;
+                        }
                     }
                     if (plantFactory.plants[j]->health <= 0)
                         plantFactory.removePlant(plantFactory.plants[j]->position.x, plantFactory.plants[j]->position.y);

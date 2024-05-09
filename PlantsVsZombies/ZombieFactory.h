@@ -21,12 +21,12 @@ public:
 			// Make newX and newY multiples of 100
 			newX = newX / 100 * 100;
 			newY = newY / 100 * 100;
-			zombies[i] = new Zombie(newX, newY);
+			zombies[i] = new DancingZombie(newX, newY);
 		}
 	}
-	void createZombie()
+	void createZombie(float x=0,float y=0)
 	{
-		Zombie *newZombie = new Zombie();
+		Zombie *newZombie = new Zombie(x,y);
 		Zombie **temp = new Zombie *[zombies_created + 1];
 		for (int i = 0; i < zombies_created; i++)
 		{
