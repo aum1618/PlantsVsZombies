@@ -309,7 +309,13 @@ void renderGame(
         {
             zombieFactory.zombies[i]->move();
         }
-
+        //For rolling mechanism of walnut
+        for (int i = 0; i < plantFactory.plants_created; i++) {
+            if (plantFactory.plants[i]->type == "WallNut" && plantFactory.plants[i]->isRolling) {
+                plantFactory.plants[i]->move();
+                cout << plantFactory.plants[i]->position.x << endl;
+            }
+        }
         window.clear();
         window.draw(s_map);
         window.draw(s_grid);

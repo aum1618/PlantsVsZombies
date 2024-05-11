@@ -13,6 +13,7 @@ using namespace std;
 class Plant
 {
 public:
+    bool isRolling;
     int health;
     int cost;
     coordinates position;
@@ -61,7 +62,7 @@ public:
         bomb = nullptr;
     }
 
-    void draw(RenderWindow &window)
+    virtual void draw(RenderWindow &window)
     {
         window.draw(sprite);
     }
@@ -76,6 +77,9 @@ public:
     }
     virtual void updateBullet() {};
     virtual void drawBullet(RenderWindow &window) {};
+    virtual void move() {
+
+    }
 };
 
 class Shooter : public Plant
@@ -320,6 +324,8 @@ public:
         sprite.setTextureRect(IntRect(0, 0, 100, 100));
         sprite.setPosition(position.x, position.y);
         type = "WallNut";
+        isRolling = true;
+        destination = 0;
     }
     WallNut(const WallNut &plant)
     {
@@ -332,7 +338,23 @@ public:
         sprite = plant.sprite;
         clock = plant.clock;
         type = "WallNut";
+        isRolling = plant.isRolling;
     }
+    virtual void draw(RenderWindow& window)
+    {
+        window.draw(sprite);
+    }
+    virtual void move()
+    {
+        float speed = 5.0f; // Adjust the speed as desired
+        // Move the WallNut towards its target x position
+        if (destination<position.x)
+        {
+            destination += speed;
+            sprite.setPosition(destination, position.y);
+        }
+    }
+
 };
 class SnowPea : public Shooter
 {
