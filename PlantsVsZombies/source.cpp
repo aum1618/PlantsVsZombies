@@ -13,8 +13,10 @@
 using namespace sf;
 using namespace std;
 void renderHome(int,int,RenderWindow&);
+void renderPauseScreen(int, int, RenderWindow&);
 void renderInstructions(int,int,RenderWindow&);
 void renderLeaderboard(int, int, RenderWindow&);
+void renderLevelScreen(int, int, RenderWindow&,int);
 void renderGame(
     int GAME_WIDTH,
 	int GAME_HEIGHT,
@@ -24,6 +26,11 @@ void renderGame(
     if (!font.loadFromFile("new.ttf")) {
         cout << "ERROR LOADING FONT" << endl;
     }
+    Texture pauseButton;
+    pauseButton.loadFromFile("./Images/pause.png");
+    Sprite pause;
+    pause.setPosition(1200,0);
+    pause.setTexture(pauseButton);
     Texture map;
     map.loadFromFile("./Images/background.png");
     map.setRepeated(true);
@@ -68,7 +75,7 @@ void renderGame(
 
     while (window.isOpen())
     {
-
+        bool paused = true;
         Event event;
         while (window.pollEvent(event))
         {
@@ -80,12 +87,17 @@ void renderGame(
                 coordinates clickPosition;
                 clickPosition.x = event.mouseButton.x;
                 clickPosition.y = event.mouseButton.y;
+                if ((clickPosition.x >= 1200 && clickPosition.x <= 1300) && (clickPosition.y >= 0 && clickPosition.y <= 100)) {
+                   /* while (paused) {
+                        if ((clickPosition.x <= 377 || clickPosition.x >= 923) && (clickPosition.y <= 318 && clickPosition.y >= 450))
+                            paused = false;*/
+                    renderPauseScreen(GAME_WIDTH, GAME_HEIGHT, window);
+                }
 
                 if (sunFactory.isSunThere(clickPosition.x, clickPosition.y))
                 {
                     sunFactory.moveSunToOrigin(clickPosition.x, clickPosition.y);
                     currency += 25;
-                    cout << "Currency: " << currency << endl;
                 }
                 else
                 {
@@ -99,43 +111,36 @@ void renderGame(
                             {
                                 plantFactory.createPlant(clickPosition.x, clickPosition.y, cursor.getCurrentCursor());
                                 currency -= 50;
-                                cout << "Currency is: " << currency << endl;
                             }
                             else if (cursor.getCurrentCursor() == "repeater" && currency >= 200)
                             {
                                 plantFactory.createPlant(clickPosition.x, clickPosition.y, cursor.getCurrentCursor());
                                 currency -= 200;
-                                cout << "Currency is: " << currency << endl;
                             }
                             else if (cursor.getCurrentCursor() == "snowpea" && currency >= 100)
                             {
                                 plantFactory.createPlant(clickPosition.x, clickPosition.y, cursor.getCurrentCursor());
                                 currency -= 100;
-                                cout << "Currency is: " << currency << endl;
                             }
                             else if (cursor.getCurrentCursor() == "fumeshroom" && currency >= 75)
                             {
                                 plantFactory.createPlant(clickPosition.x, clickPosition.y, cursor.getCurrentCursor());
                                 currency -= 75;
-                                cout << "Currency is: " << currency << endl;
                             }
                             else if (cursor.getCurrentCursor() == "wallnut" && currency >= 50)
                             {
                                 plantFactory.createPlant(clickPosition.x, clickPosition.y, cursor.getCurrentCursor());
                                 currency -= 50;
-                                cout << "Currency is: " << currency << endl;
                             }
                             else if (cursor.getCurrentCursor() == "cherrybomb" && currency >= 150)
                             {
                                 plantFactory.createPlant(clickPosition.x, clickPosition.y, cursor.getCurrentCursor());
                                 currency -= 150;
-                                cout << "Currency is: " << currency << endl;
                             }
                             else if (cursor.getCurrentCursor() == "sunflower" && currency >= 100)
                             {
                                 plantFactory.createPlant(clickPosition.x, clickPosition.y, cursor.getCurrentCursor());
                                 currency -= 100;
-                                cout << "Currency is: " << currency << endl;
                             }
                         }
                     }
@@ -154,7 +159,6 @@ void renderGame(
                                 }
                                 plantFactory.plants[i]->sunFactory.moveSunToOrigin(clickPosition.x, clickPosition.y);
                                 currency += 25;
-                                cout << "Currency: " << currency << endl;
                             }
                         }
                     }
@@ -221,7 +225,6 @@ void renderGame(
 
                                 if (bulletBounds.intersects(zombieBounds))
                                 {
-                                    cout << "Bullet hit the zombie" << endl;
                                     // Bullet hits the zombie
                                     zombieFactory.zombies[j]->health -= plantFactory.plants[i]->bulletFactory.bullets[k]->damage;
                                     if (plantFactory.plants[i]->type == "SnowPea")
@@ -229,7 +232,6 @@ void renderGame(
 
                                         zombieFactory.zombies[j]->speed += 150;
                                     }
-                                    cout << "Zombie health after hit: " << zombieFactory.zombies[j]->health << endl;
 
                                     if (zombieFactory.zombies[j]->health == 0)
                                     {
@@ -275,7 +277,6 @@ void renderGame(
                     {
                         newY -= 100;
                     }
-                    cout << "Dancing zombie summoned" << endl;
                     zombieFactory.createZombie(zombieX + 100, zombieY);
                     zombieFactory.createZombie(zombieX - 100, zombieY);
                     zombieFactory.createZombie(zombieX, newY);
@@ -375,11 +376,44 @@ void renderGame(
             }
         }
         window.draw(currencyText);
+        window.draw(pause);
         window.display();
     }
     return;
 }
-
+void renderPauseScreen(
+    int GAME_WIDTH,
+    int GAME_HEIGHT,
+    RenderWindow& window
+) {
+    Texture pauseScreen;
+    pauseScreen.loadFromFile("./Images/pausesccreen.png");
+    Sprite pause_screen;
+    pause_screen.setPosition(0, 0);
+    pause_screen.setTexture(pauseScreen);
+    while (window.isOpen()) {
+        Event event;
+        while (window.pollEvent(event)) {
+            if (event.type == Event::Closed) {
+                window.close();
+            }
+            if (event.type == Event::MouseButtonPressed && event.mouseButton.button == Mouse::Left) {
+                coordinates clickPosition;
+                clickPosition.x = event.mouseButton.x;
+                clickPosition.y = event.mouseButton.y;
+                if ((clickPosition.x >= 377 && clickPosition.x <= 923) && (clickPosition.y >= 318 && clickPosition.y <= 450)) {
+                    return;
+                }
+                else if ((clickPosition.x >= 205 && clickPosition.x <= 1095) && (clickPosition.y >= 440 && clickPosition.y <= 617)) {
+                    renderHome(GAME_WIDTH, GAME_HEIGHT, window);
+                }
+            }
+            }
+            window.clear();
+            window.draw(pause_screen);
+            window.display();
+        }
+    }
 void renderHome(
     int GAME_WIDTH,
     int GAME_HEIGHT,
@@ -480,6 +514,37 @@ void renderInstructions(int GAME_WIDTH,
 
         window.clear();
         window.draw(instructions);
+        window.display();
+    }
+}
+void renderLevelScreen(int GAME_WIDTH,
+    int GAME_HEIGHT,
+    RenderWindow& window, int level) {
+    Texture levelTexture;
+    levelTexture.loadFromFile("./Images/levelup.png");
+    Sprite levelScreen;
+    levelScreen.setTexture(levelTexture);
+    levelScreen.setPosition(0, 0);
+    Font font;
+    if (!font.loadFromFile("new.ttf")) {
+        cout << "ERROR LOADING FONT" << endl;
+    }
+    Text currencyText;
+    currencyText.setFont(font); // Set the font
+    currencyText.setCharacterSize(24); // Set the character size
+    currencyText.setFillColor(Color::Black); // Set the color
+    currencyText.setString(to_string(level)); // Set the content
+    currencyText.setPosition(420, 600); // Set the position on the screen
+    while (window.isOpen()) {
+        Event event;
+        while (window.pollEvent(event)) {
+            if (event.type == Event::Closed) {
+                window.close();
+            }
+        }
+
+        window.clear();
+        window.draw(levelScreen);
         window.display();
     }
 }

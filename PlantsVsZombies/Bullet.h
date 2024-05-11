@@ -137,38 +137,3 @@ public:
 		delete[] bullets;
 	}
 };
-
-
-
-//class PeaShooter : public Bullet {
-//public:
-//    PeaShooter(float x = 0, float y = 0) {
-//        damage = 1;
-//        speed = 5;
-//        exist = false;
-//        direction = true;
-//        texture.loadFromFile("./Images/shot.png");
-//        sprite.setTexture(texture);
-//        sprite.setOrigin(texture.getSize().x / 2, texture.getSize().y / 2);
-//        sprite.rotate(90);
-//        sprite.setPosition(x, y);
-//        position.x = x;
-//        position.y = y;
-//    }
-//};
-//class SnowPea : public Bullet {
-//public:
-//    SnowPea(float x = 0, float y = 0) {
-//        damage = 1;
-//        speed = 5;
-//        exist = false;
-//        direction = true;
-//        texture.loadFromFile("./Images/shot.png");
-//        sprite.setTexture(texture);
-//        sprite.setOrigin(texture.getSize().x / 2, texture.getSize().y / 2);
-//        sprite.rotate(90);
-//        sprite.setPosition(x, y);
-//        position.x = x;
-//        position.y = y;
-//    }
-//};

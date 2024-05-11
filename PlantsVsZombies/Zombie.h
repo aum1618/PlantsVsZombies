@@ -130,7 +130,6 @@ public:
 					frame++;
 					if (targetY != cordintes.y)
 					{
-						cout << "targetY: " << targetY << " cordintes.y: " << cordintes.y << endl;
 						if (targetY > cordintes.y)
 						{
 							cordintes.y += 4;
@@ -142,7 +141,6 @@ public:
 					}
 					else
 					{
-						cout << "cordinates: " << cordintes.x << endl;
 
 						cordintes.x -= 2;
 						int random = rand() % 100;
@@ -315,7 +313,6 @@ public:
 					frame++;
 					if (targetY != cordintes.y)
 					{
-						cout << "targetY: " << targetY << " cordintes.y: " << cordintes.y << endl;
 						if (targetY > cordintes.y)
 						{
 							cordintes.y += 2;
@@ -327,7 +324,6 @@ public:
 					}
 					else
 					{
-						cout << "cordinates: " << cordintes.x << endl;
 						int random = rand() % 100;
 						float newY = cordintes.y;
 						if (random == 1)
