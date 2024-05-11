@@ -4,6 +4,8 @@
 using namespace sf;
 using namespace std;
 #include "cordinates.h";
+#include "Player.h";
+
 
 struct Shop {
 	coordinates cordinates;
@@ -29,49 +31,49 @@ struct Shop {
 			disable_array[i].setColor(color);
 		}
 	}
-	void draw(RenderWindow& window,int currency) {
+	void draw(RenderWindow& window, Player& player) {
 		window.draw(sprite);
         for (int i = 0; i < 7; i++)
         {
-            if (currency < 50)
+            if (player.currency < 50)
                 window.draw(disable_array[i]);
 
-            else if (currency >= 50 && currency < 75)
+            else if (player.currency >= 50 && player.currency < 75)
             {
                 if (i != 0 && i != 4)
                 {
                     window.draw(disable_array[i]);
                 }
             }
-            else if (currency >= 50 && currency <= 75)
+            else if (player.currency >= 50 && player.currency <= 75)
             {
                 if (i != 0 && i != 4 && i != 3)
                 {
                     window.draw(disable_array[i]);
                 }
             }
-            else if (currency >= 50 && currency <= 100)
+            else if (player.currency >= 50 && player.currency <= 100)
             {
                 if (i != 0 && i != 4 && i != 3 && i != 2 && i != 6)
                 {
                     window.draw(disable_array[i]);
                 }
             }
-            else if (currency >= 50 && currency < 150)
+            else if (player.currency >= 50 && player.currency < 150)
             {
                 if (i != 0 && i != 4 && i != 3 && i != 2 && i != 6)
                 {
                     window.draw(disable_array[i]);
                 }
             }
-            else if (currency >= 50 && currency <= 150)
+            else if (player.currency >= 50 && player.currency <= 150)
             {
                 if (i != 0 && i != 4 && i != 3 && i != 2 && i != 6 && i != 5)
                 {
                     window.draw(disable_array[i]);
                 }
             }
-            else if (currency >= 50 && currency < 200)
+            else if (player.currency >= 50 && player.currency < 200)
             {
                 if (i != 0 && i != 4 && i != 3 && i != 2 && i != 6 && i != 5)
                 {

@@ -10,18 +10,78 @@ class ZombieFactory
 public:
 	Zombie **zombies;
 	int zombies_created;
-	ZombieFactory(int numZombies = 0)
+	ZombieFactory(int numZombies = 0, int level = 1)
 	{
 		zombies_created = numZombies;
-		zombies = new Zombie *[zombies_created];
-		for (int i = 0; i < numZombies; i++)
+		zombies = new Zombie * [zombies_created];
+
+		int numBasicZombies = 0;
+		int numFootballZombies = 0;
+		int numFlyingZombies = 0;
+
+		if (level == 1)
 		{
-			int newX = (rand() % 1001) + 1300; 
-			int newY = (rand() % 499) + 200;   
+			numBasicZombies = numZombies;
+		}
+		else if (level == 2)
+		{
+			numBasicZombies = static_cast<int>(0.7 * numZombies);
+			numFootballZombies = numZombies - numBasicZombies;
+		}
+		else if (level == 3)
+		{
+			numBasicZombies = static_cast<int>(0.35 * numZombies);
+			numFootballZombies = static_cast<int>(0.35 * numZombies);
+			numFlyingZombies = numZombies - numBasicZombies - numFootballZombies;
+		}
+		else if (level > 3)
+		{
+			// Mix of all types of zombies
+			// You can adjust the percentages as needed
+			// For example, for level 4 and beyond, you could evenly distribute among all types
+			numBasicZombies = numZombies / 3;
+			numFootballZombies = numZombies / 3;
+			numFlyingZombies = numZombies - numBasicZombies - numFootballZombies;
+		}
+
+		for (int i = 0; i < numBasicZombies; i++)
+		{
+			int newX = (rand() % 1001) + 1300;
+			int newY = (rand() % 499) + 200;
 
 			newX = newX / 100 * 100;
 			newY = newY / 100 * 100;
 			zombies[i] = new Zombie(newX, newY);
+		}
+
+		for (int i = numBasicZombies; i < numBasicZombies + numFootballZombies; i++)
+		{
+			int newX = (rand() % 1001) + 1300;
+			int newY = (rand() % 499) + 200;
+
+			newX = newX / 100 * 100;
+			newY = newY / 100 * 100;
+			zombies[i] = new FootballZombie(newX, newY);
+		}
+
+		for (int i = numBasicZombies + numFootballZombies; i < numZombies; i++)
+		{
+			int newX = (rand() % 1001) + 1300;
+			int newY = (rand() % 499) + 200;
+
+			newX = newX / 100 * 100;
+			newY = newY / 100 * 100;
+			zombies[i] = new FlyingZombie(newX, newY);
+		}
+	}
+
+	ZombieFactory(const ZombieFactory &other)
+	{
+		zombies_created = other.zombies_created;
+		zombies = new Zombie *[zombies_created];
+		for (int i = 0; i < zombies_created; i++)
+		{
+			zombies[i] = new Zombie(*other.zombies[i]);
 		}
 	}
 	void createZombie(float x=0,float y=0)
@@ -124,6 +184,17 @@ public:
 				i--;
 			}
 		}
+	}
+
+	bool areZombiesDead() {
+		for (int i = 0; i < zombies_created; i++)
+		{
+			if (zombies[i]->isAlive)
+			{
+				return false;
+			}
+		}
+		return true;
 	}
 
 	void move() {

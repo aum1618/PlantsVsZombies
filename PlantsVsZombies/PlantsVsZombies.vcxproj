@@ -146,6 +146,8 @@
     <ClInclude Include="LawnMowerFactory.h" />
     <ClInclude Include="Plant.h" />
     <ClInclude Include="PlantFactory.h" />
+    <ClInclude Include="Player.h" />
+    <ClInclude Include="Screen.h" />
     <ClInclude Include="Shop.h" />
     <ClInclude Include="Sun.h" />
     <ClInclude Include="Zombie.h" />
