@@ -44,7 +44,7 @@ public:
         position.x = bullet.position.x;
         position.y = bullet.position.y;
     }
-    void move() {
+   virtual void move() {
         if (clock.getElapsedTime().asMicroseconds() > 2) {
             clock.restart();
 
@@ -59,12 +59,51 @@ public:
             sprite.setPosition(position.x, position.y);
         }
     }
-    void draw(RenderWindow& window) {
+   virtual void draw(RenderWindow& window) {
         window.draw(sprite);
     }
     // Method to check if bullet reached the right edge
-    bool reachedRightEdge(int windowWidth) {
+   virtual bool reachedRightEdge(int windowWidth) {
         return position.x >= windowWidth;
+    }
+};
+
+class Bomb : public Bullet {
+public:
+    Bomb(float x = 0, float y = 0): Bullet(x,y) {
+        direction = false;
+        texture.loadFromFile("./Images/shot.png");
+        sprite.setTexture(texture);
+        sprite.rotate(180);
+    }
+    Bomb(const Bomb& bomb) {
+        damage = bomb.damage;
+        speed = bomb.speed;
+        exist = bomb.exist;
+        direction = bomb.direction;
+        texture = bomb.texture;
+        sprite = bomb.sprite;
+        clock = bomb.clock;
+        position.x = bomb.position.x;
+        position.y = bomb.position.y;
+    }
+    void move() {
+        if (clock.getElapsedTime().asMicroseconds() > 2) {
+            clock.restart();
+            if (direction) {
+                position.y -= speed;
+            }
+            else {
+                position.y += speed;
+            }
+            sprite.setPosition(position.x, position.y);
+        }
+    }
+    void draw(RenderWindow& window) {
+        window.draw(sprite);
+    }
+    bool reachedRightEdge(int windowWidth) {
+        return position.y >= windowWidth;
     }
 };
 
@@ -140,35 +179,3 @@ public:
 
 
 
-//class PeaShooter : public Bullet {
-//public:
-//    PeaShooter(float x = 0, float y = 0) {
-//        damage = 1;
-//        speed = 5;
-//        exist = false;
-//        direction = true;
-//        texture.loadFromFile("./Images/shot.png");
-//        sprite.setTexture(texture);
-//        sprite.setOrigin(texture.getSize().x / 2, texture.getSize().y / 2);
-//        sprite.rotate(90);
-//        sprite.setPosition(x, y);
-//        position.x = x;
-//        position.y = y;
-//    }
-//};
-//class SnowPea : public Bullet {
-//public:
-//    SnowPea(float x = 0, float y = 0) {
-//        damage = 1;
-//        speed = 5;
-//        exist = false;
-//        direction = true;
-//        texture.loadFromFile("./Images/shot.png");
-//        sprite.setTexture(texture);
-//        sprite.setOrigin(texture.getSize().x / 2, texture.getSize().y / 2);
-//        sprite.rotate(90);
-//        sprite.setPosition(x, y);
-//        position.x = x;
-//        position.y = y;
-//    }
-//};

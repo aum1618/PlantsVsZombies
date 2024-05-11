@@ -15,9 +15,7 @@ public:
 	bool exist;
 	Clock clock;
 	LawnMower(float x = 0, float y = 0) {
-		cout << "Creating lawnmower at (" << x << ", " << y << ")" << endl;
 		texture.loadFromFile("./Images/lawnmover.png");
-
 		sprite.setTexture(texture);
 		sprite.setPosition(x, y);
 		position.x = x;
@@ -70,9 +68,7 @@ public:
 	}
 	bool isLawnMowerThere(float x, float y) {
 		for (int i = 0; i < lawnmowers_created; i++) {
-			// Get the bounds of the lawnmower sprite
 			FloatRect lawnmowerBounds = lawnmowers[i]->sprite.getGlobalBounds();
-			// Check if the coordinates (x, y) are within the bounds of the lawnmower sprite
 			if (lawnmowerBounds.contains(x, y)) {
 				return true;
 			}
@@ -92,9 +88,7 @@ public:
 
 	void removeLawnMower(float x, float y) {
 		for (int i = 0; i < lawnmowers_created; i++) {
-			// Get the bounds of the lawnmower sprite
 			FloatRect lawnmowerBounds = lawnmowers[i]->sprite.getGlobalBounds();
-			// Check if the coordinates (x, y) are within the bounds of the lawnmower sprite
 			if (lawnmowerBounds.contains(x, y)) {
 				delete lawnmowers[i];
 			}

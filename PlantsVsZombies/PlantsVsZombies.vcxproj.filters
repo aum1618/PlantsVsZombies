@@ -45,7 +45,7 @@
     <ClInclude Include="LawnMowerFactory.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Bomb.h">
+    <ClInclude Include="Inspector.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -38,6 +38,7 @@ public:
 		sprite.setTextureRect(IntRect(0, 0, 100, 100));
 		sprite.setPosition(x, y);
 		shouldMove = true;
+		targetY = 0;
 	}
 	virtual void move()
 	{
@@ -47,45 +48,38 @@ public:
 			clock2.restart();
 		}
 
-		if (isAlive && shouldMove)
+		if (isAlive)
 		{
+
 			if (clock.getElapsedTime().asMilliseconds() > speed)
 			{
+					frame++;
 				if (shouldMove)
 				{
-					frame++;
 					cordintes.x -= 2;
-					sprite.setPosition(cordintes.x, cordintes.y);
-					sprite.setTextureRect(IntRect(100 * (frame), 0, 100, 100));
-					clock.restart();
-					frame = frame % numframes;
 					if (cordintes.x < 0)
 					{
 						isAlive = false;
 					}
+					sprite.setPosition(cordintes.x, cordintes.y);
+					sprite.setTextureRect(IntRect(100 * (frame), 0, 100, 100));
 				}
+				else
+				{
+					cout << frame << endl;
+					sprite.setTextureRect(IntRect(100 * (frame), 100, 100, 100));
+
+				}
+					frame = frame % numframes;
+					clock.restart();
 			}
 		}
-		else
-		{
-			frame++;
-			sprite.setTextureRect(IntRect(100 * (frame), 100, 100, 100));
-			clock.restart();
-			frame = frame % numframes;
 
-			shouldMove = true;
-		}
 	}
 	void draw(RenderWindow &window)
 	{
 		if (isAlive)
 		{
-			/*if (health == 2) {
-				sprite.setTextureRect(IntRect(0, 30, 100, 70));
-			}
-			if (health == 1) {
-				sprite.setTextureRect(IntRect(0, 60, 100, 30));
-			}*/
 			window.draw(sprite);
 		}
 	}
@@ -96,7 +90,6 @@ class FootballZombie : public Zombie
 public:
 	FootballZombie(float x = 0, float y = 0)
 	{
-		cout << "football zombie created at" << x << y << endl;
 		health = 6;
 		cordintes.x = x;
 		cordintes.y = y;
@@ -125,24 +118,22 @@ public:
 		{
 			if (clock.getElapsedTime().asMilliseconds() > speed)
 			{
+					frame++;
 				if (shouldMove)
 				{
-					frame++;
 					if (targetY != cordintes.y)
 					{
-						cout << "targetY: " << targetY << " cordintes.y: " << cordintes.y << endl;
 						if (targetY > cordintes.y)
 						{
-							cordintes.y += 4;
+							cordintes.y += 2;
 						}
 						else
 						{
-							cordintes.y -= 4;
+							cordintes.y -= 2;
 						}
 					}
 					else
 					{
-						cout << "cordinates: " << cordintes.x << endl;
 
 						cordintes.x -= 2;
 						int random = rand() % 100;
@@ -168,25 +159,19 @@ public:
 						}
 						targetY = newY;
 					}
-					// randomly move the zombie from either up or down 100 on the y axis ....there is a 10% chance that it will move along the y axis  also if the zombies is at y =200 it will only move down and if it is at y=600 it will only move up
-				}
 				sprite.setPosition(cordintes.x, cordintes.y);
 				sprite.setTextureRect(IntRect(100 * (frame), 0, 100, 100));
-				// sprite.setScale(1.1, 1.1);
+				}
+				else {
+					sprite.setTextureRect(IntRect(100 * (frame), 100, 100, 100));
+
+				}
 				clock.restart();
 				frame = frame % numframes;
 				if (cordintes.x < 0)
 				{
 					isAlive = false;
 				}
-			}
-			else
-			{
-				/*frame++;
-				sprite.setTextureRect(IntRect(100 * (frame), 100, 100, 100));
-				frame = frame % numframes;
-
-				isMoving = true;*/
 			}
 		}
 	}
@@ -195,12 +180,6 @@ public:
 	{
 		if (isAlive)
 		{
-			/*if (health == 2) {
-				sprite.setTextureRect(IntRect(0, 30, 100, 70));
-			}
-			if (health == 1) {
-				sprite.setTextureRect(IntRect(0, 60, 100, 30));
-			}*/
 			window.draw(sprite);
 		}
 	}
@@ -236,15 +215,12 @@ public:
 		{
 			if (clock.getElapsedTime().asMilliseconds() > speed)
 			{
+					frame++;
 				if (shouldMove)
 				{
-					frame++;
 					cordintes.x -= 2;
 					sprite.setPosition(cordintes.x, cordintes.y);
 					sprite.setTextureRect(IntRect(100 * (frame), 0, 100, 100));
-					// sprite.setScale(1.1, 1.1);
-					clock.restart();
-					frame = frame % numframes;
 					if (cordintes.x < 0)
 					{
 						isAlive = false;
@@ -252,13 +228,10 @@ public:
 				}
 				else
 				{
-					frame++;
 					sprite.setTextureRect(IntRect(100 * (frame), 100, 100, 100));
-					clock.restart();
-					frame = frame % numframes;
-
-					shouldMove = true;
 				}
+					frame = frame % numframes;
+					clock.restart();
 			}
 		}
 	}
@@ -266,12 +239,6 @@ public:
 	{
 		if (isAlive)
 		{
-			/*if (health == 2) {
-				sprite.setTextureRect(IntRect(0, 30, 100, 70));
-			}
-			if (health == 1) {
-				sprite.setTextureRect(IntRect(0, 60, 100, 30));
-			}*/
 			window.draw(sprite);
 		}
 	}
@@ -289,7 +256,6 @@ public:
 		isAlive = true;
 		texture.loadFromFile("./Images/zombie.png");
 		texture.setSmooth(true);
-
 		sprite.setTexture(texture);
 		sprite.setTextureRect(IntRect(0, 0, 100, 100));
 		sprite.setPosition(x, y);
@@ -310,12 +276,11 @@ public:
 		{
 			if (clock.getElapsedTime().asMilliseconds() > speed)
 			{
+					frame++;
 				if (shouldMove)
 				{
-					frame++;
 					if (targetY != cordintes.y)
 					{
-						cout << "targetY: " << targetY << " cordintes.y: " << cordintes.y << endl;
 						if (targetY > cordintes.y)
 						{
 							cordintes.y += 2;
@@ -327,7 +292,6 @@ public:
 					}
 					else
 					{
-						cout << "cordinates: " << cordintes.x << endl;
 						int random = rand() % 100;
 						float newY = cordintes.y;
 						if (random == 1)
@@ -352,12 +316,13 @@ public:
 						targetY = newY;
 					}
 					cordintes.x -= 2;
-
-					// randomly move the zombie from either up or down 100 on the y axis ....there is a 10% chance that it will move along the y axis  also if the zombies is at y =200 it will only move down and if it is at y=600 it will only move up
-				}
 				sprite.setPosition(cordintes.x, cordintes.y);
 				sprite.setTextureRect(IntRect(100 * (frame), 0, 100, 100));
-				// sprite.setScale(1.1, 1.1);
+				}
+				else {
+					sprite.setTextureRect(IntRect(100 * (frame), 100, 100, 100));
+
+				}
 				clock.restart();
 				frame = frame % numframes;
 				if (cordintes.x < 0)
@@ -365,14 +330,7 @@ public:
 					isAlive = false;
 				}
 			}
-			else
-			{
-				/*frame++;
-				sprite.setTextureRect(IntRect(100 * (frame), 100, 100, 100));
-				frame = frame % numframes;
-
-				isMoving = true;*/
-			}
+			
 		}
 	}
 
@@ -380,12 +338,7 @@ public:
 	{
 		if (isAlive)
 		{
-			/*if (health == 2) {
-				sprite.setTextureRect(IntRect(0, 30, 100, 70));
-			}
-			if (health == 1) {
-				sprite.setTextureRect(IntRect(0, 60, 100, 30));
-			}*/
+			
 			window.draw(sprite);
 		}
 	}

@@ -6,7 +6,6 @@
 #include "cordinates.h";
 #include "bullet.h";
 #include "Sun.h";
-#include "Bomb.h";
 using namespace sf;
 using namespace std;
 
@@ -20,15 +19,8 @@ public:
     Texture texture;
     Clock clock;
     int cooldown;
-    BulletFactory bulletFactory;
     string type;
-    Bomb* bomb;
-    int destination;
-    int destinationy;
-    bool freezeAll;
-    bool hasFrozen;
-
-    SunFactory sunFactory;
+    string category;
     Plant(float x = 0, float y = 0)
     {
         // cout << "Plant created" << endl;
@@ -43,7 +35,7 @@ public:
         sprite.setPosition(position.x, position.y);
         cooldown = 1;
         type = "Plant";
-        bomb = nullptr;
+        category= "Plant";
     }
     // create a copy constructor
     Plant(const Plant &plant)
@@ -58,7 +50,7 @@ public:
         clock = plant.clock;
         cooldown = plant.cooldown;
         type = "Plant";
-        bomb = nullptr;
+        category = "Plant";
     }
 
     void draw(RenderWindow &window)
@@ -71,17 +63,17 @@ public:
         position.y = y;
         sprite.setPosition(position.x, position.y);
     }
-    virtual void fireBullet()
-    {
-    }
-    virtual void updateBullet() {};
-    virtual void drawBullet(RenderWindow &window) {};
+    virtual void fireBullet() {}
+virtual void updateBullet() {}
+virtual void drawBullet(RenderWindow &window) {}
+
+
 };
 
 class Shooter : public Plant
 {
 public:
-
+    BulletFactory bulletFactory;
     Shooter(float x = 0, float y = 0)
     {
         health = 100;
@@ -95,6 +87,7 @@ public:
         sprite.setTextureRect(IntRect(0, 0, 100, 100));
         sprite.setPosition(position.x, position.y);
         type = "Shooter";
+        category = "Shooter";
     }
     Shooter(const Shooter &plant)
     {
@@ -108,6 +101,7 @@ public:
         sprite = plant.sprite;
         clock = plant.clock;
         type = "Shooter";
+        category = "Shooter";
     }
     void fireBullet()
     {
@@ -153,6 +147,7 @@ public:
         sprite.setTextureRect(IntRect(0, 0, 100, 100));
         sprite.setPosition(position.x, position.y);
         type = "NonShooter";
+        category = "NonShooter";
     }
     NonShooter(const NonShooter &plant)
     {
@@ -165,6 +160,7 @@ public:
         sprite = plant.sprite;
         clock = plant.clock;
         type = "NonShooter";
+category = "NonShooter";
     }
 };
 
@@ -184,6 +180,7 @@ public:
         sprite.setTextureRect(IntRect(0, 0, 100, 100));
         sprite.setPosition(position.x, position.y);
         type = "PeeShooter";
+        category = "Shooter";
     }
     PeeShooter(const PeeShooter &plant)
     {
@@ -196,11 +193,13 @@ public:
         sprite = plant.sprite;
         clock = plant.clock;
         type = "PeeShooter";
+category = "Shooter";
     }
 };
 class SunFlower : public NonShooter
 {
 public:
+    SunFactory sunFactory;
     SunFlower(float x, float y)
     {
         health = 100;
@@ -214,6 +213,7 @@ public:
         sprite.setTextureRect(IntRect(0, 0, 100, 100));
         sprite.setPosition(position.x, position.y);
         type = "SunFlower";
+        category = "NonShooter";
     }
     SunFlower(const SunFlower &plant)
     {
@@ -226,6 +226,7 @@ public:
         sprite = plant.sprite;
         clock = plant.clock;
         type = "SunFlower";
+category = "NonShooter";
     }
     //make function to add sun there should only be 1 sun at a time
     void fireBullet()
@@ -275,11 +276,11 @@ public:
         sprite.setTextureRect(IntRect(0, 0, 100, 100));
         sprite.setPosition(position.x, position.y);
         type = "Repeater";
+        category = "Shooter";
         
     }
     Repeater(const Repeater &plant)
     {
-        // cout << "Plant copied" << endl;
         health = plant.health;
         cost = plant.cost;
         cooldown = plant.cooldown;
@@ -289,16 +290,16 @@ public:
         sprite = plant.sprite;
         clock = plant.clock;
         type = "Repeater";
+category = "Shooter";
     }
     void fireBullet() {
         float elapsed1 = clock.getElapsedTime().asSeconds();
 
-        // Fire first bullet after base cooldown
         if (elapsed1 >= cooldown) {
             bulletFactory.removeNonExistantBullets();
             bulletFactory.addBullet(position.x + 90, position.y + 30);
             bulletFactory.addBullet(position.x + 130, position.y + 30);
-            clock.restart();  // Restart timer for first bullet
+            clock.restart(); 
         }
 
        
@@ -320,10 +321,10 @@ public:
         sprite.setTextureRect(IntRect(0, 0, 100, 100));
         sprite.setPosition(position.x, position.y);
         type = "WallNut";
+category = "NonShooter";
     }
     WallNut(const WallNut &plant)
     {
-        // cout << "Plant copied" << endl;
         health = plant.health;
         cost = plant.cost;
         position.x = plant.position.x;
@@ -332,11 +333,17 @@ public:
         sprite = plant.sprite;
         clock = plant.clock;
         type = "WallNut";
+category = "NonShooter";
     }
 };
 class SnowPea : public Shooter
 {
 public:
+    Bomb* bomb;
+    int destination;
+    int destinationy;
+    bool freezeAll;
+    bool hasFrozen;
 
     SnowPea(float x, float y)
     {
@@ -351,16 +358,16 @@ public:
         sprite.setTextureRect(IntRect(0, 0, 100, 100));
         sprite.setPosition(position.x, position.y);
         type = "SnowPea";
-        destination = (rand() % 201) + 900;  // Generates random number between 1300 and 2300
+        destination = (rand() % 201) + 900; 
         destinationy = (rand() % 501) + 200;
-        int newY = -100;          // Generates random number between 0 and 900
+        int newY = -100;        
         bomb = new Bomb(destination, newY);
         freezeAll = false;
         hasFrozen = false;
+        category = "Shooter";
     }
     SnowPea(const SnowPea &plant)
     {
-        // cout << "Plant copied" << endl;
         health = plant.health;
         cost = plant.cost;
         cooldown = plant.cooldown;
@@ -375,6 +382,7 @@ public:
         bomb = new Bomb(*plant.bomb);
         freezeAll = plant.freezeAll;
 hasFrozen = plant.hasFrozen;
+		category = "Shooter";
     }
     void fireBullet()
     {
@@ -437,6 +445,7 @@ public:
         sprite.setPosition(position.x, position.y);
         type = "CherryBomb";
         radius = 1;
+        category = "NonShooter";
     }
     CherryBomb(const CherryBomb &plant)
     {
@@ -450,6 +459,7 @@ public:
         clock = plant.clock;
         radius = plant.radius;
         type = "CherryBomb";
+category = "NonShooter";
     }
 };
 class FumeShroom : public Shooter
@@ -468,6 +478,7 @@ public:
         sprite.setTextureRect(IntRect(0, 0, 100, 100));
         sprite.setPosition(position.x, position.y);
         type = "FumeShroom";
+          category = "Shooter";
     }
     FumeShroom(const FumeShroom &plant)
     {
@@ -481,18 +492,6 @@ public:
         sprite = plant.sprite;
         clock = plant.clock;
         type = "FumeShroom";
+category = "Shooter";
     }
-    /*virtual void updateBullet() {
-        for (int i = 0; i < bulletFactory.bulletCount; i++) {
-
-            if (bulletFactory.bullets[i]->exist)
-            {
-                bulletFactory.bullets[i]->move();
-                if (bulletFactory.bullets[i]->reachedRightEdge(1300))
-                {
-                    bulletFactory.bullets[i]->exist = false;
-                }
-            }
-        }
-    }*/
 };

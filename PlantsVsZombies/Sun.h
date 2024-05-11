@@ -5,7 +5,6 @@
 using namespace sf;
 using namespace std;
 
-//animate sun it will fall down from the top of the screen you have to rotate it while it is falling
 
 class Sun {
 public:
@@ -20,7 +19,6 @@ public:
 	Sun(float x = 0, float y = 0) {
 		value = 25;
 		texture.loadFromFile("./Images/sun.png");
-	
 		sprite.setTexture(texture);
 		sprite.setOrigin(25, 25);
 		sprite.setPosition(x, y);
@@ -56,23 +54,18 @@ public:
 		}
 		}
 		else if (animating){
-			// Calculate distance to origin
-			float dx = 0 - position.x; // Destination x is 0 (center of the screen)
-			float dy = 0 - position.y; // Destination y is 0 (top of the screen)
+			float dx = 0 - position.x; 
+			float dy = 0 - position.y; 
 
-			// Calculate the distance the sun needs to travel vertically
 			float distance = sqrt(dx * dx + dy * dy);
 
-			// Calculate the time needed to reach the destination based on distance and speed
-			float speed = 2.0f; // pixels per millisecond
+			float speed = 2.0f; 
 			float time = distance / speed;
 
-			// Calculate the speed components
 			float speedX = dx / time;
 			float speedY = dy / time;
 
 
-			// Move the sun towards the top of the screen
 			if (clock.getElapsedTime().asMilliseconds() < time) {
 				float deltaTime = clock.restart().asMilliseconds();
 				position.x += speedX * deltaTime;
@@ -108,10 +101,9 @@ public:
 		suns_created = numSuns;
 		suns = new Sun * [suns_created];
 		for (int i = 0; i < numSuns; i++) {
-			int newX = (rand() % 1299);  // Generates random number between 1300 and 2300
-			int newY = -((rand() % 899)+100);          // Generates random number between 0 and 900
+			int newX = (rand() % 1299);  
+			int newY = -((rand() % 899)+100);        
 
-			// Make newX and newY multiples of 100
 			newX = newX / 50 * 50;
 			newY = newY / 50 * 50;
 			suns[i] = new Sun(newX, newY);
@@ -129,9 +121,7 @@ public:
 	}
 	bool isSunThere(float x, float y) {
 		for (int i = 0; i < suns_created; i++) {
-			// Get the bounds of the sun sprite
 			FloatRect sunBounds = suns[i]->sprite.getGlobalBounds();
-			// Check if the click coordinates are within the bounds of the sun sprite
 			if (sunBounds.contains(x, y)) {
 				return true;
 			}
@@ -141,14 +131,17 @@ public:
 
 	void moveSunToOrigin(float x, float y) {
 		for (int i = 0; i < suns_created; i++) {
-			// Get the bounds of the sun sprite
 			FloatRect sunBounds = suns[i]->sprite.getGlobalBounds();
-			// Check if the click coordinates are within the bounds of the sun sprite
 			if (sunBounds.contains(x, y)) {
 				suns[i]->animating = true;
 				suns[i]->exist = false;	
 				return;
 			}
+		}
+	}
+	void restartClock() {
+		for (int i = 0; i < suns_created; i++) {
+			suns[i]->clock.restart();
 		}
 	}
 

@@ -17,13 +17,11 @@ public:
 		plants = new Plant * [plants_created];
 	}
 	void createPlant(float x, float y,string cursor) {
-		cout << "Creating plant at (" << x << ", " << y << ")" << endl;
 		int newX = x / 100;
 		int newY = y / 100;
 		newX = newX * 100;
 		newY = newY * 100;
 
-		cout << "Plant at (" << newX << ", " << newY << ")" << endl;
 		Plant* newPlant;
 		if (cursor == "sunflower") {
 			newPlant = new SunFlower(newX, newY);
@@ -92,6 +90,15 @@ public:
 		}
 	}
 
+
+	void draw(RenderWindow& window) {
+		for (int i = 0; i < plants_created; i++)
+		{
+			plants[i]->draw(window);
+			plants[i]->drawBullet(window);
+			
+		}
+	}
 
 	~PlantFactory() {
 		for (int i = 0; i < plants_created; i++) {
