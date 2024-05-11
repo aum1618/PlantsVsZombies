@@ -12,6 +12,7 @@ using namespace std;
 class Plant
 {
 public:
+    bool isRolling;
     int health;
     int cost;
     coordinates position;
@@ -19,6 +20,7 @@ public:
     Texture texture;
     Clock clock;
     int cooldown;
+    int destination;
     string type;
     string category;
     Plant(float x = 0, float y = 0)
@@ -35,7 +37,7 @@ public:
         sprite.setPosition(position.x, position.y);
         cooldown = 1;
         type = "Plant";
-        category= "Plant";
+        category = "Plant";
     }
     // create a copy constructor
     Plant(const Plant &plant)
@@ -53,7 +55,7 @@ public:
         category = "Plant";
     }
 
-    void draw(RenderWindow &window)
+    virtual void draw(RenderWindow &window)
     {
         window.draw(sprite);
     }
@@ -63,11 +65,14 @@ public:
         position.y = y;
         sprite.setPosition(position.x, position.y);
     }
-    virtual void fireBullet() {}
-virtual void updateBullet() {}
-virtual void drawBullet(RenderWindow &window) {}
-
-
+    virtual void fireBullet()
+    {
+    }
+    virtual void updateBullet() {};
+    virtual void drawBullet(RenderWindow &window) {};
+    virtual void move()
+    {
+    }
 };
 
 class Shooter : public Plant
@@ -115,16 +120,17 @@ public:
     }
     virtual void updateBullet()
     {
-        for (int i = 0; i < bulletFactory.bulletCount; i++) {
-
-        if (bulletFactory.bullets[i]->exist)
+        for (int i = 0; i < bulletFactory.bulletCount; i++)
         {
-            bulletFactory.bullets[i]->move();
-            if (bulletFactory.bullets[i]->reachedRightEdge(1300))
+
+            if (bulletFactory.bullets[i]->exist)
             {
-                bulletFactory.bullets[i]->exist = false;
+                bulletFactory.bullets[i]->move();
+                if (bulletFactory.bullets[i]->reachedRightEdge(1300))
+                {
+                    bulletFactory.bullets[i]->exist = false;
+                }
             }
-        }
         }
     }
     void drawBullet(RenderWindow &window)
@@ -160,7 +166,7 @@ public:
         sprite = plant.sprite;
         clock = plant.clock;
         type = "NonShooter";
-category = "NonShooter";
+        category = "NonShooter";
     }
 };
 
@@ -193,7 +199,7 @@ public:
         sprite = plant.sprite;
         clock = plant.clock;
         type = "PeeShooter";
-category = "Shooter";
+        category = "Shooter";
     }
 };
 class SunFlower : public NonShooter
@@ -226,36 +232,40 @@ public:
         sprite = plant.sprite;
         clock = plant.clock;
         type = "SunFlower";
-category = "NonShooter";
+        category = "NonShooter";
     }
-    //make function to add sun there should only be 1 sun at a time
+    // make function to add sun there should only be 1 sun at a time
     void fireBullet()
-	{
-		float elapsed1 = clock.getElapsedTime().asSeconds();
-		if (elapsed1 >= cooldown)
-		{
-            int count=0;
+    {
+        float elapsed1 = clock.getElapsedTime().asSeconds();
+        if (elapsed1 >= cooldown)
+        {
+            int count = 0;
             for (int i = 0; i < sunFactory.suns_created; i++)
-			{
-				if (sunFactory.suns[i]->exist)
-				{
-					count++;
-				}
-			}
-            if (count >= 1) {
+            {
+                if (sunFactory.suns[i]->exist)
+                {
+                    count++;
+                }
+            }
+            if (count >= 1)
+            {
                 clock.restart();
             }
-            else {
+            else
+            {
 
-			sunFactory.addSunFromPlant(position.x + 50, position.y - 25);
-			clock.restart();
+                sunFactory.addSunFromPlant(position.x + 50, position.y - 25);
+                clock.restart();
             }
-		}
-	}
-    void updateBullet() {
+        }
+    }
+    void updateBullet()
+    {
         sunFactory.move();
-	}
-    void drawBullet(RenderWindow &window) {
+    }
+    void drawBullet(RenderWindow &window)
+    {
         sunFactory.draw(window);
     }
 };
@@ -277,7 +287,6 @@ public:
         sprite.setPosition(position.x, position.y);
         type = "Repeater";
         category = "Shooter";
-        
     }
     Repeater(const Repeater &plant)
     {
@@ -290,21 +299,20 @@ public:
         sprite = plant.sprite;
         clock = plant.clock;
         type = "Repeater";
-category = "Shooter";
+        category = "Shooter";
     }
-    void fireBullet() {
+    void fireBullet()
+    {
         float elapsed1 = clock.getElapsedTime().asSeconds();
 
-        if (elapsed1 >= cooldown) {
+        if (elapsed1 >= cooldown)
+        {
             bulletFactory.removeNonExistantBullets();
             bulletFactory.addBullet(position.x + 90, position.y + 30);
             bulletFactory.addBullet(position.x + 130, position.y + 30);
-            clock.restart(); 
+            clock.restart();
         }
-
-       
     }
-   
 };
 class WallNut : public NonShooter
 {
@@ -321,7 +329,9 @@ public:
         sprite.setTextureRect(IntRect(0, 0, 100, 100));
         sprite.setPosition(position.x, position.y);
         type = "WallNut";
-category = "NonShooter";
+        isRolling = true;
+        destination = 0;
+        category = "NonShooter";
     }
     WallNut(const WallNut &plant)
     {
@@ -333,13 +343,27 @@ category = "NonShooter";
         sprite = plant.sprite;
         clock = plant.clock;
         type = "WallNut";
-category = "NonShooter";
+        isRolling = plant.isRolling;
+    }
+    virtual void draw(RenderWindow &window)
+    {
+        window.draw(sprite);
+    }
+    virtual void move()
+    {
+        float speed = 5.0f; // Adjust the speed as desired
+        // Move the WallNut towards its target x position
+        if (destination < position.x)
+        {
+            destination += speed;
+            sprite.setPosition(destination, position.y);
+        }
     }
 };
 class SnowPea : public Shooter
 {
 public:
-    Bomb* bomb;
+    Bomb *bomb;
     int destination;
     int destinationy;
     bool freezeAll;
@@ -358,9 +382,9 @@ public:
         sprite.setTextureRect(IntRect(0, 0, 100, 100));
         sprite.setPosition(position.x, position.y);
         type = "SnowPea";
-        destination = (rand() % 201) + 900; 
+        destination = (rand() % 201) + 900;
         destinationy = (rand() % 501) + 200;
-        int newY = -100;        
+        int newY = -100;
         bomb = new Bomb(destination, newY);
         freezeAll = false;
         hasFrozen = false;
@@ -381,8 +405,8 @@ public:
         destinationy = plant.destinationy;
         bomb = new Bomb(*plant.bomb);
         freezeAll = plant.freezeAll;
-hasFrozen = plant.hasFrozen;
-		category = "Shooter";
+        hasFrozen = plant.hasFrozen;
+        category = "Shooter";
     }
     void fireBullet()
     {
@@ -391,7 +415,8 @@ hasFrozen = plant.hasFrozen;
             cout << "Bullet fired" << endl;
             bulletFactory.removeNonExistantBullets();
             bulletFactory.addBullet(position.x + 100, position.y + 30);
-            if (!bomb->exist) {
+            if (!bomb->exist)
+            {
                 bomb->exist = true;
             }
             clock.restart();
@@ -399,7 +424,8 @@ hasFrozen = plant.hasFrozen;
     }
     void updateBullet()
     {
-        for (int i = 0; i < bulletFactory.bulletCount; i++) {
+        for (int i = 0; i < bulletFactory.bulletCount; i++)
+        {
 
             if (bulletFactory.bullets[i]->exist)
             {
@@ -410,22 +436,23 @@ hasFrozen = plant.hasFrozen;
                 }
             }
         }
-        if (bomb->exist) {
+        if (bomb->exist)
+        {
             bomb->move();
-            if (bomb->reachedRightEdge(destinationy)) {
+            if (bomb->reachedRightEdge(destinationy))
+            {
                 bomb->exist = false;
                 freezeAll = true;
                 cout << "Bomb reached destination" << endl;
             }
         }
     }
-    void drawBullet(RenderWindow& window)
+    void drawBullet(RenderWindow &window)
     {
         bulletFactory.drawBullets(window);
-        if(bomb->exist)
-        bomb->draw(window);
+        if (bomb->exist)
+            bomb->draw(window);
     }
-
 };
 class CherryBomb : public NonShooter
 {
@@ -459,7 +486,7 @@ public:
         clock = plant.clock;
         radius = plant.radius;
         type = "CherryBomb";
-category = "NonShooter";
+        category = "NonShooter";
     }
 };
 class FumeShroom : public Shooter
@@ -478,7 +505,7 @@ public:
         sprite.setTextureRect(IntRect(0, 0, 100, 100));
         sprite.setPosition(position.x, position.y);
         type = "FumeShroom";
-          category = "Shooter";
+        category = "Shooter";
     }
     FumeShroom(const FumeShroom &plant)
     {
@@ -492,6 +519,6 @@ public:
         sprite = plant.sprite;
         clock = plant.clock;
         type = "FumeShroom";
-category = "Shooter";
+        category = "Shooter";
     }
 };

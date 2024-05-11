@@ -15,7 +15,6 @@
 using namespace sf;
 using namespace std;
 
-
 int main()
 {
     srand(time(0));
@@ -31,37 +30,41 @@ int main()
         return 1;
     }
     window.setIcon(32, 32, icon.getPixelsPtr());
-   LeaderBoardScreen leaderboard(window);
-   GameScreen* game = nullptr;
-   HomeScreen home(window);
+    LeaderBoardScreen leaderboard(window);
+    GameScreen *game = nullptr;
+    HomeScreen home(window);
     InstructionsScreen instructions(window);
     bool gameScreenInitialized = false;
 
-
-    string screen= "home";
-    while(window.isOpen()){
-		if(screen=="home"){
+    string screen = "home";
+    while (window.isOpen())
+    {
+        if (screen == "home")
+        {
             home.renderScreen(window, screen);
-		}
-		else if(screen=="instructions"){
-instructions.renderScreen(window, screen);
-		}
-		else if(screen=="leaderboard"){
-leaderboard.renderScreen(window, screen);
-		}
-else if(screen=="game"){
-            if (!gameScreenInitialized) {
-game = new GameScreen(window);
-				gameScreenInitialized = true;
+        }
+        else if (screen == "instructions")
+        {
+            instructions.renderScreen(window, screen);
+        }
+        else if (screen == "leaderboard")
+        {
+            leaderboard.renderScreen(window, screen);
+        }
+        else if (screen == "game")
+        {
+            if (!gameScreenInitialized)
+            {
+                game = new GameScreen(window);
+                gameScreenInitialized = true;
             }
             if (
-                game!=nullptr
-                )
-game->renderScreen(window, screen);
-		}
-		else{
-			window.close();
-		}
-	}
+                game != nullptr)
+                game->renderScreen(window, screen);
+        }
+        else
+        {
+            window.close();
+        }
+    }
 }
-   

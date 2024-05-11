@@ -7,19 +7,19 @@
 using namespace sf;
 using namespace std;
 
-
-
-class Bullet {
+class Bullet
+{
 public:
     int damage;
     int speed;
     bool exist;
-    bool direction; //true - right, false - left
+    bool direction; // true - right, false - left
     coordinates position;
     Sprite sprite;
     Texture texture;
     Clock clock;
-    Bullet(float x = 0, float y = 0) {
+    Bullet(float x = 0, float y = 0)
+    {
         damage = 1;
         speed = 5;
         exist = false;
@@ -33,7 +33,8 @@ public:
         position.x = x;
         position.y = y;
     }
-    Bullet(const Bullet& bullet) {
+    Bullet(const Bullet &bullet)
+    {
         damage = bullet.damage;
         speed = bullet.speed;
         exist = bullet.exist;
@@ -44,39 +45,48 @@ public:
         position.x = bullet.position.x;
         position.y = bullet.position.y;
     }
-   virtual void move() {
-        if (clock.getElapsedTime().asMicroseconds() > 2) {
+    void move()
+    {
+        if (clock.getElapsedTime().asMicroseconds() > 2)
+        {
             clock.restart();
 
-            if (direction) {
+            if (direction)
+            {
                 // Move right
                 position.x -= speed;
             }
-            else {
+            else
+            {
                 // Move left
                 position.x += speed;
             }
             sprite.setPosition(position.x, position.y);
         }
     }
-   virtual void draw(RenderWindow& window) {
+    void draw(RenderWindow &window)
+    {
         window.draw(sprite);
     }
     // Method to check if bullet reached the right edge
-   virtual bool reachedRightEdge(int windowWidth) {
+    bool reachedRightEdge(int windowWidth)
+    {
         return position.x >= windowWidth;
     }
 };
 
-class Bomb : public Bullet {
+class Bomb : public Bullet
+{
 public:
-    Bomb(float x = 0, float y = 0): Bullet(x,y) {
+    Bomb(float x = 0, float y = 0) : Bullet(x, y)
+    {
         direction = false;
         texture.loadFromFile("./Images/shot.png");
         sprite.setTexture(texture);
         sprite.rotate(180);
     }
-    Bomb(const Bomb& bomb) {
+    Bomb(const Bomb &bomb)
+    {
         damage = bomb.damage;
         speed = bomb.speed;
         exist = bomb.exist;
@@ -87,49 +97,60 @@ public:
         position.x = bomb.position.x;
         position.y = bomb.position.y;
     }
-    void move() {
-        if (clock.getElapsedTime().asMicroseconds() > 2) {
+    void move()
+    {
+        if (clock.getElapsedTime().asMicroseconds() > 2)
+        {
             clock.restart();
-            if (direction) {
+            if (direction)
+            {
                 position.y -= speed;
             }
-            else {
+            else
+            {
                 position.y += speed;
             }
             sprite.setPosition(position.x, position.y);
         }
     }
-    void draw(RenderWindow& window) {
+    void draw(RenderWindow &window)
+    {
         window.draw(sprite);
     }
-    bool reachedRightEdge(int windowWidth) {
+    bool reachedRightEdge(int windowWidth)
+    {
         return position.y >= windowWidth;
     }
 };
 
-
-
-class BulletFactory {
+class BulletFactory
+{
 public:
-    Bullet ** bullets;
+    Bullet **bullets;
     int bulletCount;
-    BulletFactory(int count=0) {
-		bulletCount = count;
-		bullets = new Bullet*[bulletCount];
-        for (int i = 0; i < bulletCount; i++) {
-			bullets[i] = new Bullet();
-		}
-	}
-    BulletFactory(const BulletFactory& bulletFactory) {
-		bulletCount = bulletFactory.bulletCount;
-		bullets = new Bullet*[bulletCount];
-        for (int i = 0; i < bulletCount; i++) {
-			bullets[i] = new Bullet(*bulletFactory.bullets[i]);
-		}
-	}
-    void addBullet(float x, float y) {
-        Bullet** temp = new Bullet * [bulletCount + 1];
-        for (int i = 0; i < bulletCount; i++) {
+    BulletFactory(int count = 0)
+    {
+        bulletCount = count;
+        bullets = new Bullet *[bulletCount];
+        for (int i = 0; i < bulletCount; i++)
+        {
+            bullets[i] = new Bullet();
+        }
+    }
+    BulletFactory(const BulletFactory &bulletFactory)
+    {
+        bulletCount = bulletFactory.bulletCount;
+        bullets = new Bullet *[bulletCount];
+        for (int i = 0; i < bulletCount; i++)
+        {
+            bullets[i] = new Bullet(*bulletFactory.bullets[i]);
+        }
+    }
+    void addBullet(float x, float y)
+    {
+        Bullet **temp = new Bullet *[bulletCount + 1];
+        for (int i = 0; i < bulletCount; i++)
+        {
             temp[i] = bullets[i];
         }
         temp[bulletCount] = new Bullet(x, y);
@@ -139,43 +160,52 @@ public:
         bullets = temp;
         bulletCount++;
     }
-    void moveBullets() {
-        for (int i = 0; i < bulletCount; i++) {
-            if (bullets[i]->exist) {
-				bullets[i]->move();
-			}
-		}
-	}
-    void drawBullets(RenderWindow& window) {
-        for (int i = 0; i < bulletCount; i++) {
-            if (bullets[i]->exist) {
-				bullets[i]->draw(window);
-			}
-		}
-	}
-    void removeNonExistantBullets() {
-        		Bullet** temp = new Bullet * [bulletCount];
-		int j = 0;
-        for (int i = 0; i < bulletCount; i++) {
-            if (bullets[i]->exist) {
-				temp[j] = bullets[i];
-				j++;
-			}
-            else {
-				delete bullets[i];
-			}
-		}
-		delete[] bullets;
-		bullets = temp;
-		bulletCount = j;
+    void moveBullets()
+    {
+        for (int i = 0; i < bulletCount; i++)
+        {
+            if (bullets[i]->exist)
+            {
+                bullets[i]->move();
+            }
+        }
     }
-    ~BulletFactory() {
-        for (int i = 0; i < bulletCount; i++) {
-			delete bullets[i];
-		}
-		delete[] bullets;
-	}
+    void drawBullets(RenderWindow &window)
+    {
+        for (int i = 0; i < bulletCount; i++)
+        {
+            if (bullets[i]->exist)
+            {
+                bullets[i]->draw(window);
+            }
+        }
+    }
+    void removeNonExistantBullets()
+    {
+        Bullet **temp = new Bullet *[bulletCount];
+        int j = 0;
+        for (int i = 0; i < bulletCount; i++)
+        {
+            if (bullets[i]->exist)
+            {
+                temp[j] = bullets[i];
+                j++;
+            }
+            else
+            {
+                delete bullets[i];
+            }
+        }
+        delete[] bullets;
+        bullets = temp;
+        bulletCount = j;
+    }
+    ~BulletFactory()
+    {
+        for (int i = 0; i < bulletCount; i++)
+        {
+            delete bullets[i];
+        }
+        delete[] bullets;
+    }
 };
-
-
-
