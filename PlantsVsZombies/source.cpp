@@ -33,6 +33,7 @@ int main()
     LeaderBoardScreen leaderboard(window);
     GameScreen *game = nullptr;
     HomeScreen home(window);
+    PauseScreen pause(window);
     InstructionsScreen instructions(window);
     bool gameScreenInitialized = false;
 
@@ -62,6 +63,9 @@ int main()
                 game != nullptr)
                 game->renderScreen(window, screen);
         }
+        else if (screen == "pause") {
+pause.renderScreen(window, screen);
+		}
         else
         {
             window.close();

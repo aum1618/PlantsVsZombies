@@ -125,6 +125,11 @@ public:
         { 
                 plantFactory->plants[i]->fireBullet();
                 plantFactory->plants[i]->updateBullet();
+                if (plantFactory->plants[i]->type == "WallNut" && plantFactory->plants[i]->isRolling)
+                {
+                    plantFactory->plants[i]->move();
+                    cout << plantFactory->plants[i]->position.x << endl;
+                }
             
             //snowpea bomb collision
             if (plantFactory->plants[i]->type == "SnowPea")

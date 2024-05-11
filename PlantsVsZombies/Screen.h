@@ -136,6 +136,46 @@ currentScreen = "home";
     
 };
 
+class PauseScreen : public Screen {
+public:
+    PauseScreen(RenderWindow& window) :Screen(window) {
+        bgImg.loadFromFile("./Images/pausesccreen.png");
+    }
+    void renderScreen(RenderWindow& window, string& currentScreen) {
+        while (true)
+        {
+            Event event;
+            while (window.pollEvent(event))
+            {
+                if (event.type == Event::Closed)
+                {
+                    window.close();
+                }
+                if (event.type == Event::MouseButtonPressed && event.mouseButton.button == Mouse::Left)
+                {
+                    coordinates clickPosition;
+                    clickPosition.x = event.mouseButton.x;
+                    clickPosition.y = event.mouseButton.y;
+                    if ((clickPosition.x >= 377 && clickPosition.x <= 923) && (clickPosition.y >= 318 && clickPosition.y <= 450))
+                    {
+                        currentScreen = "game";
+                        return;
+                    }
+                    else if ((clickPosition.x >= 205 && clickPosition.x <= 1095) && (clickPosition.y >= 440 && clickPosition.y <= 617))
+                    {
+                        currentScreen = "home";
+                        return;
+                    }
+                }
+            }
+            window.clear();
+            window.draw(background);
+            window.display();
+        };
+    }
+
+};
+
 class GameScreen : public Screen {
 public:
     Texture grid;
@@ -195,6 +235,9 @@ public:
                    inspector.collectSun(clickPosition, sunFactory, plantFactory,player);
                    inspector.addPlantOnClick(clickPosition,  plantFactory, cursor,player);
                    cursor.renderCursor(clickPosition, player);
+                   if ((clickPosition.x >= 1200 && clickPosition.x <= 1300) && (clickPosition.y >= 0 && clickPosition.y <= 100)) {
+                       currentScreen = "pause";
+                   }
                }
            }
            inspector.checkLawnmoverCollision(lawnMowerFactory, zombieFactory);
