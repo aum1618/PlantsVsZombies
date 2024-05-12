@@ -449,12 +449,21 @@ public:
     virtual void move()
     {
         float speed = 5.0f; // Adjust the speed as desired
+        sprite.setOrigin(50, 50);
         // Move the WallNut towards its target x position
         if (destination < position.x)
         {
             destination += speed;
-            sprite.setPosition(destination, position.y);
+            sprite.setPosition(destination, position.y );
+            sprite.rotate(10);
         }
+else
+		{
+			isRolling = false;
+            sprite.setOrigin(0, 0);
+            sprite.rotate(360 - sprite.getRotation());
+		}
+
     }
 };
 class SnowPea : public Shooter

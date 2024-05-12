@@ -57,6 +57,9 @@ public:
 		sprite = z.sprite;
 		shouldMove = z.shouldMove;
 		type = z.type;
+		frame = z.frame;
+numframes = z.numframes;
+		scoring = z.scoring;
 		hasSummoned = z.hasSummoned;
 		targetY = z.targetY;
 	}
@@ -119,6 +122,7 @@ public:
 	stream << lives << endl;*/
 	void Serialize(std::ostream &stream) const
 	{
+		stream << type << endl;
 		stream << health << endl;
 		stream << speed << endl;
 		stream << isAlive << endl;
@@ -127,9 +131,9 @@ public:
 		stream << numframes << endl;
 		stream << frame << endl;
 		stream << shouldMove << endl;
-		stream << type << endl;
 		stream << hasSummoned << endl;
 		stream << targetY << endl;
+stream << scoring << endl;
 	}
 
 	void Deserialize(std::istream &stream)
@@ -142,9 +146,9 @@ public:
 		stream >> numframes;
 		stream >> frame;
 		stream >> shouldMove;
-		stream >> type;
 		stream >> hasSummoned;
 		stream >> targetY;
+		stream >> scoring;
 		sprite.setPosition(cordintes.x, cordintes.y);
 		sprite.setTextureRect(IntRect(100 * (frame), 0, 100, 100));
 		cout << "Deserialized" << endl;

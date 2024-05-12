@@ -120,6 +120,7 @@ public:
 		{
 			plants[i]->move();
 		}
+	}
 		void Serialize(ostream & stream)
 		{
 			stream << plants_created << endl;
@@ -179,7 +180,7 @@ public:
 			plants_created = temp_plants_created;
 			plants = temp_plants;
 		}
-	}
+	
 	~PlantFactory()
 	{
 		for (int i = 0; i < plants_created; i++)

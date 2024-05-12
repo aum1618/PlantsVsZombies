@@ -119,13 +119,51 @@ public:
 
 class LeaderBoardScreen : public Screen
 {
+private:
+    Font font;
+    Text highScoresText;
+
 public:
-    LeaderBoardScreen(RenderWindow &window) : Screen(window)
+    LeaderBoardScreen(RenderWindow& window) : Screen(window)
     {
         bgImg.loadFromFile("./Images/leaderboard.png");
+
+        // Load font
+        if (!font.loadFromFile("arial.ttf"))
+        {
+            cout << "ERROR LOADING FONT" << endl;
+        }
+
+        // Initialize text for displaying high scores
+        highScoresText.setFont(font);
+        highScoresText.setCharacterSize(24);
+        highScoresText.setFillColor(Color::White);
+        highScoresText.setPosition(100, 100); // Set position where high scores will be displayed
     }
-    void renderScreen(RenderWindow &window, string &currentScreen)
+
+    void renderScreen(RenderWindow& window, string& currentScreen)
     {
+        // Read high scores from file
+        ifstream highScoresFile("highscores.txt");
+        string highScoresStr;
+        if (highScoresFile.is_open())
+        {
+            string line;
+            while (getline(highScoresFile, line))
+            {
+                highScoresStr += line + "\n";
+            }
+            highScoresFile.close();
+        }
+        else
+        {
+            highScoresStr = "Unable to open highscores.txt";
+        }
+
+        // Set the text to display high scores
+        highScoresText.setString(highScoresStr);
+
+        // Event handling
         Event event;
         while (window.pollEvent(event))
         {
@@ -138,16 +176,18 @@ public:
                 int mouseX = event.mouseButton.x;
                 int mouseY = event.mouseButton.y;
 
-                // Check if mouse click falls within the specified area
+                // Check if mouse click falls within the specified area to go back home
                 if (mouseX >= 927 && mouseX <= 1277 && mouseY >= 810 && mouseY <= 889)
                 {
-                    // Call renderGame function
                     currentScreen = "home";
                 }
             }
         }
+
+        // Rendering
         window.clear();
         window.draw(background);
+        window.draw(highScoresText); // Draw high scores
         window.display();
     }
 };

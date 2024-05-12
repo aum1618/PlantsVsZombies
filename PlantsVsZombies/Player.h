@@ -21,11 +21,13 @@ public:
 		stream << level << endl;
 		stream << currency << endl;
 		stream << lives << endl;
+		stream << score << endl;
 	}
 
 	void Deserialize(std::istream& stream) {
 stream >> level;
 		stream >> currency;
 		stream >> lives;
+stream >> score;
 	}
 };

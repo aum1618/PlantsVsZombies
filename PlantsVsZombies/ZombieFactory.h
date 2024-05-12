@@ -20,6 +20,7 @@ public:
 		int numBasicZombies = 0;
 		int numFootballZombies = 0;
 		int numFlyingZombies = 0;
+		int numDancingZombies = 0;
 
 		if (level == 1)
 		{
@@ -41,9 +42,11 @@ public:
 			// Mix of all types of zombies
 			// You can adjust the percentages as needed
 			// For example, for level 4 and beyond, you could evenly distribute among all types
-			numBasicZombies = numZombies / 3;
-			numFootballZombies = numZombies / 3;
-			numFlyingZombies = numZombies - numBasicZombies - numFootballZombies;
+			int temp = numZombies;
+			numBasicZombies = temp / 3;
+			numFootballZombies = temp / 3;
+			numFlyingZombies = temp - numBasicZombies - numFootballZombies;
+
 		}
 
 		for (int i = 0; i < numBasicZombies; i++)
@@ -262,7 +265,24 @@ public:
 		Zombie **temp = new Zombie *[temp_zombies_created];
 		for (int i = 0; i < temp_zombies_created; i++)
 		{
-			temp[i] = new Zombie();
+			string type;
+stream >> type;
+			if (type == "normal")
+			{
+				temp[i] = new Zombie();
+			}
+			else if (type == "football")
+			{
+				temp[i] = new FootballZombie();
+			}
+			else if (type == "flying")
+			{
+				temp[i] = new FlyingZombie();
+			}
+			else if (type == "dancing")
+			{
+				temp[i] = new DancingZombie();
+			}
 			temp[i]->Deserialize(stream);
 		}
 		delete zombies;
