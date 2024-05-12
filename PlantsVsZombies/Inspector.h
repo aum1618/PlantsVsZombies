@@ -23,7 +23,7 @@ public:
         if (sunFactory->isSunThere(clickPosition.x, clickPosition.y))
         {
             sunFactory->moveSunToOrigin(clickPosition.x, clickPosition.y);
-            player.currency += 25;
+            player.currency +=25;
             cout << "Currency: " << player.currency << endl;
         }
         for (int i = 0; i < plantFactory->plants_created; i++)
@@ -97,7 +97,7 @@ public:
         }
     }
 
-    void checkLawnmoverCollision(LawnMowerFactory* lawnMowerFactory,ZombieFactory* zombieFactory) {
+    void checkLawnmoverCollision(LawnMowerFactory* lawnMowerFactory,ZombieFactory* zombieFactory,Player& player) {
         for (int i = 0; i < lawnMowerFactory->lawnmowers_created; i++)
         {
             if (lawnMowerFactory->lawnmowers[i]->exist)
@@ -111,6 +111,7 @@ public:
                         if (lawnmowerBounds.intersects(zombieBounds))
                         {
                             zombieFactory->zombies[j]->isAlive = false;
+                            player.score += zombieFactory->zombies[j]->scoring;
                             lawnMowerFactory->lawnmowers[i]->shouldMove = true;
                         }
                     }
@@ -120,7 +121,7 @@ public:
 
     }
 
-    void checkPlantZombieBulletCollision(PlantFactory* plantFactory, ZombieFactory* zombieFactory){
+    void checkPlantZombieBulletCollision(PlantFactory* plantFactory, ZombieFactory* zombieFactory, Player& player){
         for (int i = 0; i < plantFactory->plants_created; i++)
         { 
                 plantFactory->plants[i]->fireBullet();
@@ -149,7 +150,7 @@ public:
             {
                 if (plantFactory->plants[i]->clock.getElapsedTime().asSeconds() >= plantFactory->plants[i]->cooldown)
                 {
-                    zombieFactory->deleteZombiesInRect(plantFactory->plants[i]->position.x - 100, plantFactory->plants[i]->position.y - 100);
+                    zombieFactory->deleteZombiesInRect(plantFactory->plants[i]->position.x - 100, plantFactory->plants[i]->position.y - 100,player);
                     plantFactory->plants[i]->health = 0;
                 }
             }
@@ -180,6 +181,8 @@ public:
                                 if (zombieFactory->zombies[j]->health == 0)
                                 {
                                     zombieFactory->zombies[j]->isAlive = false;
+                                    player.score += zombieFactory->zombies[j]->scoring;
+                                    
                                 }
                                 shooter->bulletFactory.bullets[k]->exist = false;
                             }

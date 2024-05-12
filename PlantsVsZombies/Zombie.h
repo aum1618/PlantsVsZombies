@@ -18,15 +18,17 @@ public:
 	Texture texture;
 	Clock clock;
 	Clock clock2;
-	int numframes = 9;
-	int frame = 0;
+	int numframes;
+	int frame;
 	bool shouldMove;
 	string type;
 	bool hasSummoned;
 	float targetY;
-
+	int scoring;
 	Zombie(float x = 0, float y = 0)
 	{
+		numframes = 9;
+		frame = 0;
 		health = 3;
 		cordintes.x = x;
 		cordintes.y = y;
@@ -39,6 +41,7 @@ public:
 		sprite.setPosition(x, y);
 		shouldMove = true;
 		targetY = 0;
+		scoring = 50;
 	}
 	virtual void move()
 	{
@@ -90,14 +93,16 @@ class FootballZombie : public Zombie
 public:
 	FootballZombie(float x = 0, float y = 0)
 	{
+		scoring = 75;
 		health = 6;
 		cordintes.x = x;
 		cordintes.y = y;
-		speed = 100;
+		speed = 50;
 		isAlive = true;
-		texture.loadFromFile("./Images/zombie.png");
+		texture.loadFromFile("./Images/footballzombie.png");
 		texture.setSmooth(true);
-
+		numframes = 28;
+		frame = 0;
 		sprite.setTexture(texture);
 		sprite.setTextureRect(IntRect(0, 0, 100, 100));
 		sprite.setPosition(x, y);
@@ -190,12 +195,15 @@ class FlyingZombie : public Zombie
 public:
 	FlyingZombie(float x = 0, float y = 0)
 	{
+		scoring= 100;
+		numframes = 11;
+		frame = 0;
 		health = 3;
 		cordintes.x = x;
 		cordintes.y = y;
-		speed = 150;
+		speed = 50;
 		isAlive = true;
-		texture.loadFromFile("./Images/zombie.png");
+		texture.loadFromFile("./Images/flyingzombie.png");
 		texture.setSmooth(true);
 		sprite.setTexture(texture);
 		sprite.setTextureRect(IntRect(0, 0, 100, 100));
@@ -249,12 +257,15 @@ class DancingZombie : public Zombie
 public:
 	DancingZombie(float x = 0, float y = 0)
 	{
+		scoring = 100;
 		health = 3;
 		cordintes.x = x;
 		cordintes.y = y;
 		speed = 150;
+		numframes = 8;
+		frame = 0;
 		isAlive = true;
-		texture.loadFromFile("./Images/zombie.png");
+		texture.loadFromFile("./Images/dancingzombie.png");
 		texture.setSmooth(true);
 		sprite.setTexture(texture);
 		sprite.setTextureRect(IntRect(0, 0, 100, 100));

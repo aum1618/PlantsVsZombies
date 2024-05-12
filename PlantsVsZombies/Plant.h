@@ -23,6 +23,9 @@ public:
     int destination;
     string type;
     string category;
+    bool isAlive;
+    int numframes;
+    int frame;
     Plant(float x = 0, float y = 0)
     {
         // cout << "Plant created" << endl;
@@ -38,6 +41,7 @@ public:
         cooldown = 1;
         type = "Plant";
         category = "Plant";
+        isAlive = true;
     }
     // create a copy constructor
     Plant(const Plant &plant)
@@ -173,6 +177,7 @@ public:
 class PeeShooter : public Shooter
 {
 public:
+    Clock clock1;
     PeeShooter(float x = 0, float y = 0)
     {
         health = 100;
@@ -180,13 +185,15 @@ public:
         cooldown = 2;
         position.x = x;
         position.y = y;
-        texture.loadFromFile("./Images/plant.png");
+        texture.loadFromFile("./Images/peeshoot.png");
         texture.setSmooth(true);
         sprite.setTexture(texture);
         sprite.setTextureRect(IntRect(0, 0, 100, 100));
         sprite.setPosition(position.x, position.y);
         type = "PeeShooter";
         category = "Shooter";
+        numframes = 20;
+        frame = 0;
     }
     PeeShooter(const PeeShooter &plant)
     {
@@ -200,6 +207,21 @@ public:
         clock = plant.clock;
         type = "PeeShooter";
         category = "Shooter";
+        clock1 = plant.clock1;
+    }
+    virtual void move()
+    {
+        if (clock1.getElapsedTime().asMilliseconds() >20)
+        {
+            if (isAlive)
+            {
+                frame++;
+                sprite.setTextureRect(IntRect(100 * (frame), 0, 100, 100));
+
+                frame = frame % numframes;
+                clock1.restart();
+            }
+        }
     }
 };
 class SunFlower : public NonShooter

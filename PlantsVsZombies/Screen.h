@@ -178,12 +178,14 @@ public:
 
 class GameScreen : public Screen {
 public:
-    Texture grid;
-    Sprite s_grid;
+    Texture pauseButton;
+    Sprite pause_button;
     GameCursor cursor;
     Shop sh;
     Text currencyText;
     Font font;
+    Text score;
+    Text level;
     PlantFactory* plantFactory;
     ZombieFactory* zombieFactory;
     SunFactory* sunFactory;
@@ -196,18 +198,28 @@ public:
        }
 		bgImg.loadFromFile("./Images/background.png");
         bgImg.setRepeated(true);
-        grid.loadFromFile("./Images/grid.png");
-		s_grid.setTexture(grid);
-        s_grid.setPosition(200, 200);
         currencyText.setFont(font);
         currencyText.setCharacterSize(24);
         currencyText.setFillColor(Color::Black);
         currencyText.setString(to_string(player.currency));
-        currencyText.setPosition(40, 70);
+        currencyText.setPosition(30, 70);
+        score.setFont(font);
+        score.setCharacterSize(24);
+        score.setFillColor(Color::White);
+        score.setString("Score:  "+to_string(player.score));
+        score.setPosition(1150, 850);
+        level.setFont(font);
+        level.setCharacterSize(24);
+        level.setFillColor(Color::Red);
+        level.setString("Level: "+to_string(player.level));
+        level.setPosition(20, 850);
+        pauseButton.loadFromFile("./Images/pause.png");
+        pause_button.setTexture(pauseButton);
+        pause_button.setPosition(1200,0);
         sunFactory = new SunFactory(10);
         zombieFactory = new ZombieFactory(10,player.level);
         lawnMowerFactory = new LawnMowerFactory(5);
-      plantFactory = new PlantFactory();
+        plantFactory = new PlantFactory();
 
 	}
    GameScreen(const GameScreen& gs) :Screen(gs) {
@@ -240,8 +252,8 @@ public:
                    }
                }
            }
-           inspector.checkLawnmoverCollision(lawnMowerFactory, zombieFactory);
-           inspector.checkPlantZombieBulletCollision(plantFactory, zombieFactory);
+           inspector.checkLawnmoverCollision(lawnMowerFactory, zombieFactory,player);
+           inspector.checkPlantZombieBulletCollision(plantFactory, zombieFactory,player);
            inspector.hasZombieReachedEdge(zombieFactory, player);
            if (zombieFactory->areZombiesDead()) {
                player.level++;
@@ -263,20 +275,24 @@ public:
            sunFactory->move();
            lawnMowerFactory->move();
            zombieFactory->move();
+           plantFactory->move();
            window.clear();
            window.draw(background);
-           window.draw(s_grid);
            zombieFactory->draw(window);
-
+           window.draw(pause_button);
            plantFactory->draw(window);
            lawnMowerFactory->draw(window);
            sunFactory->draw(window);
-           sh.draw(window, player);
+           sh.draw(window, player,player.level);
            currencyText.setString(to_string(player.currency));
+           score.setString("Score:  " + to_string(player.score));
+           level.setString("Level: " + to_string(player.level));
            cursor.applyCursor(window);
            window.draw(currencyText);
+           window.draw(score);
+           window.draw(level);
            window.display();
-       
+
    }
 
 	

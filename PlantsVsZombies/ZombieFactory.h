@@ -2,6 +2,7 @@
 #include <iostream>
 #include <SFML/Graphics.hpp>
 #include "Zombie.h"
+#include "Player.h"
 using namespace sf;
 using namespace std;
 
@@ -159,11 +160,11 @@ public:
 
 	}
 
-	void deleteZombiesInRect(float x, float y)
+	void deleteZombiesInRect(float x, float y,Player& player)
 	{
 		// Determine the coordinates of the bottom right corner of the box
 		float x2 = x + 300;
-		float y2 = y;
+		float y2 = y+300;
 
 		// Iterate through zombies and delete those within the box
 		for (int i = 0; i < zombies_created; i++)
@@ -175,6 +176,7 @@ public:
 				zombieBounds.top >= y && zombieBounds.top <= y2)
 			{
 				// Delete the zombie
+				player.score += zombies[i]->scoring;
 				delete zombies[i];
 				// Move the last zombie to the current position to maintain continuity in the array
 				zombies[i] = zombies[zombies_created - 1];

@@ -25,7 +25,7 @@ public:
         exist = false;
         direction = true;
 
-        texture.loadFromFile("./Images/shot.png");
+        texture.loadFromFile("./Images/ProjectilePea.png");
         sprite.setTexture(texture);
         sprite.setOrigin(texture.getSize().x / 2, texture.getSize().y / 2);
         sprite.rotate(90);
@@ -81,7 +81,7 @@ public:
     Bomb(float x = 0, float y = 0) : Bullet(x, y)
     {
         direction = false;
-        texture.loadFromFile("./Images/shot.png");
+        texture.loadFromFile("./Images/ProjectileSnowPea.png");
         sprite.setTexture(texture);
         sprite.rotate(180);
     }

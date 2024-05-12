@@ -99,7 +99,13 @@ public:
 			
 		}
 	}
+	void move() {
+		for (int i = 0; i < plants_created; i++)
+		{
+			plants[i]->move();
+		}
 
+	}
 	~PlantFactory() {
 		for (int i = 0; i < plants_created; i++) {
 			delete plants[i];
