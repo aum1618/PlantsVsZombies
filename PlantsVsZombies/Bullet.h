@@ -4,8 +4,10 @@
 #include <iostream>
 #include <ctime>
 #include "cordinates.h";
+#include <fstream>;
 using namespace sf;
 using namespace std;
+
 
 class Bullet
 {
@@ -45,6 +47,27 @@ public:
         position.x = bullet.position.x;
         position.y = bullet.position.y;
     }
+
+    void Serialize(std::ostream& stream) const {
+stream << damage << endl;
+stream << speed << endl;
+stream << exist << endl;
+stream << direction << endl;
+stream << position.x << endl;
+stream << position.y << endl;
+
+
+    }
+void Deserialize(std::istream& stream) {
+stream >> damage;
+stream >> speed;
+stream >> exist;
+stream >> direction;
+stream >> position.x;
+stream >> position.y;
+sprite.setPosition(position.x, position.y);
+	}
+
     void move()
     {
         if (clock.getElapsedTime().asMicroseconds() > 2)
@@ -200,6 +223,35 @@ public:
         bullets = temp;
         bulletCount = j;
     }
+
+
+    void Serialize(std::ostream& stream) const {
+
+stream << bulletCount << endl;
+for (int i = 0; i < bulletCount; i++)
+{
+    bullets[i]->Serialize(stream);
+}
+
+    }
+
+    void Deserialize(std::istream& stream) {
+        int temp_bulletCount;
+stream >> temp_bulletCount;
+Bullet **temp_bullets = new Bullet *[temp_bulletCount];
+for (int i = 0; i < temp_bulletCount; i++) {
+temp_bullets[i] = new Bullet();
+	temp_bullets[i]->Deserialize(stream);
+}
+for (int i = 0; i < bulletCount; i++) {
+delete bullets[i];
+
+}
+delete[] bullets;
+bulletCount = temp_bulletCount;
+bullets = temp_bullets;
+    }
+
     ~BulletFactory()
     {
         for (int i = 0; i < bulletCount; i++)

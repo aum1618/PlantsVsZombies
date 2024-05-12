@@ -6,6 +6,7 @@
 using namespace sf;
 using namespace std;
 #include "cordinates.h";
+#include <fstream>
 
 class Zombie
 {
@@ -25,7 +26,7 @@ public:
 	bool hasSummoned;
 	float targetY;
 
-	Zombie(float x = 0, float y = 0)
+	Zombie(float x = 10, float y = 10)
 	{
 		health = 3;
 		cordintes.x = x;
@@ -39,6 +40,22 @@ public:
 		sprite.setPosition(x, y);
 		shouldMove = true;
 		targetY = 0;
+		hasSummoned = false;
+type = "normal";
+	}
+	Zombie(const Zombie &z)
+	{
+		health = z.health;
+		cordintes.x = z.cordintes.x;
+		cordintes.y = z.cordintes.y;
+		speed = z.speed;
+		isAlive = z.isAlive;
+		texture = z.texture;
+		sprite = z.sprite;
+		shouldMove = z.shouldMove;
+		type = z.type;
+		hasSummoned = z.hasSummoned;
+		targetY = z.targetY;
 	}
 	virtual void move()
 	{
@@ -83,6 +100,67 @@ public:
 			window.draw(sprite);
 		}
 	}
+
+	//save and load the folllowing attributes:
+	/*int health;
+	float speed;
+	bool isAlive;
+	coordinates cordintes;
+	int numframes = 9;
+	int frame = 0;
+	bool shouldMove;
+	string type;
+	bool hasSummoned;
+	float targetY;*/
+	/*using the following syntax:
+	stream << level << endl;
+	stream << currency << endl;
+	stream << lives << endl;*/
+	void Serialize(std::ostream& stream) const {
+stream << health << endl;
+		stream << speed << endl;
+		stream << isAlive << endl;
+		stream << cordintes.x << endl;
+		stream << cordintes.y << endl;
+		stream << numframes << endl;
+		stream << frame << endl;
+		stream << shouldMove << endl;
+		stream << type << endl;
+		stream << hasSummoned << endl;
+		stream << targetY << endl;
+	}
+
+	void Deserialize(std::istream& stream) {
+stream >> health;
+		stream >> speed;
+		stream >> isAlive;
+		stream >> cordintes.x;
+		stream >> cordintes.y;
+		stream >> numframes;
+		stream >> frame;
+		stream >> shouldMove;
+		stream >> type;
+		stream >> hasSummoned;
+		stream >> targetY;
+		sprite.setPosition(cordintes.x, cordintes.y);
+		sprite.setTextureRect(IntRect(100 * (frame), 0, 100, 100));
+		 cout << "Deserialized" << endl;
+		 cout << "the zombie has the following attributes: " << endl;
+cout << "health: " << health << endl;
+cout << "speed: " << speed << endl;
+cout << "isAlive: " << isAlive << endl;
+cout << "cordintes.x: " << cordintes.x << endl;
+cout << "cordintes.y: " << cordintes.y << endl;
+cout << "numframes: " << numframes << endl;
+cout << "frame: " << frame << endl;
+cout << "shouldMove: " << shouldMove << endl;
+cout << "type: " << type << endl;
+cout << "hasSummoned: " << hasSummoned << endl;
+cout << "targetY: " << targetY << endl;
+
+		
+	}
+
 };
 
 class FootballZombie : public Zombie

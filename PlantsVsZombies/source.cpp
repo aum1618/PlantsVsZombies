@@ -4,13 +4,6 @@
 #include <iostream>
 #include <ctime>
 #include <cmath>
-#include "PlantFactory.h"
-#include "ZombieFactory.h"
-#include "Sun.h"
-#include "Cursor.h"
-#include "Shop.h"
-#include "Inspector.h"
-#include "LawnMowerFactory.h"
 #include "Screen.h";
 using namespace sf;
 using namespace std;
@@ -35,6 +28,7 @@ int main()
     HomeScreen home(window);
     PauseScreen pause(window);
     InstructionsScreen instructions(window);
+    LevelUpScreen levelUp(window);
     bool gameScreenInitialized = false;
 
     string screen = "home";
@@ -64,8 +58,11 @@ int main()
                 game->renderScreen(window, screen);
         }
         else if (screen == "pause") {
-pause.renderScreen(window, screen);
+        pause.renderScreen(window, screen);
 		}
+        else if (screen == "levelUp") {
+        levelUp.renderScreen(window, screen);
+        }
         else
         {
             window.close();

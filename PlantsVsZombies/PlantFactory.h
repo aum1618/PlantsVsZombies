@@ -99,6 +99,53 @@ public:
 			
 		}
 	}
+	void Serialize(ostream& stream) {
+		stream << plants_created << endl;
+		for (int i = 0; i < plants_created; i++) {
+			plants[i]->Serialize(stream);
+		}
+	}
+	void Deserialize(istream& stream) {
+		int temp_plants_created;
+stream >> temp_plants_created;
+	Plant **temp_plants = new Plant*[temp_plants_created];
+	for (int i = 0; i < temp_plants_created; i++) {
+		string type;
+		string category;
+stream >> type;
+stream >> category;
+//create a new plant based on the type these are the types available: PeeShooter SunFlower Repeater SnowPea FumeShroom WallNut CherryBomb
+
+if (type == "PeeShooter") {
+	temp_plants[i] = new PeeShooter(0, 0);
+}
+else if (type == "SunFlower") {
+	temp_plants[i] = new SunFlower(0, 0);
+}
+else if (type == "Repeater") {
+	temp_plants[i] = new Repeater(0, 0);
+}
+else if (type == "SnowPea") {
+	temp_plants[i] = new SnowPea(0, 0);
+}
+else if (type == "FumeShroom") {
+	temp_plants[i] = new FumeShroom(0, 0);
+}
+else if (type == "WallNut") {
+	temp_plants[i] = new WallNut(0, 0);
+}
+else {
+	temp_plants[i] = new CherryBomb(0, 0);
+}
+temp_plants[i]->Deserialize(stream);
+	}
+	for (int i = 0; i < plants_created; i++) {
+		delete plants[i];
+	}
+delete[] plants;
+plants_created = temp_plants_created;
+plants = temp_plants;
+	}
 
 	~PlantFactory() {
 		for (int i = 0; i < plants_created; i++) {

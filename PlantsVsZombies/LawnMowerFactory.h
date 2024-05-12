@@ -2,6 +2,7 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
 #include "cordinates.h"
+#include <fstream>
 using namespace sf;
 using namespace std;
 
@@ -52,6 +53,23 @@ public:
 		}
 	}
 
+	void Serialize(std::ostream& stream) const {
+stream << position.x << endl;
+		stream << position.y << endl;
+		stream << exist << endl;
+		stream << shouldMove << endl;
+	}
+
+	void Deserialize(std::istream& stream) {
+stream >> position.x;
+		stream >> position.y;
+		stream >> exist;
+		stream >> shouldMove;
+sprite.setPosition(position.x, position.y);
+cout <<"Deserialized LawnMower" << endl;
+cout <<"Attributes: " << position.x << " " << position.y << " " << exist << " " << shouldMove << endl;
+	}
+
 
 };
 
@@ -94,4 +112,27 @@ public:
 			}
 		}
 	}
+	void Serialize(std::ostream& stream) const {
+stream << lawnmowers_created << endl;
+		for (int i = 0; i < lawnmowers_created; i++) {
+			lawnmowers[i]->Serialize(stream);
+		}
+	}
+
+	void Deserialize(std::istream& stream) {
+		int temp_created;
+		stream >> temp_created;
+		LawnMower** temp_suns = new LawnMower * [temp_created];
+		for (int i = 0; i < temp_created; i++) {
+			temp_suns[i] = new LawnMower();
+			temp_suns[i]->Deserialize(stream);
+		}
+		for (int i = 0; i < lawnmowers_created; i++) {
+			delete lawnmowers[i];
+		}
+		delete[] lawnmowers;
+		lawnmowers_created = temp_created;
+		lawnmowers = temp_suns;
+	}
+
 };

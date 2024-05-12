@@ -13,6 +13,7 @@
 #include "Inspector.h"
 #include "LawnMowerFactory.h"
 #include "Player.h";
+#include <fstream>
 
 class Screen {
 public:
@@ -176,6 +177,35 @@ public:
 
 };
 
+
+class LevelUpScreen : public Screen {
+public:
+        Clock clock;
+    LevelUpScreen(RenderWindow& window) :Screen(window) {
+        bgImg.loadFromFile("./Images/levelup.png");
+
+    }
+    void renderScreen(RenderWindow& window, string& currentScreen) {
+     clock.restart();
+        while (clock.getElapsedTime().asSeconds()<3)
+        {
+            Event event;
+            while (window.pollEvent(event))
+            {
+                if (event.type == Event::Closed)
+                {
+                    window.close();
+                }
+            }
+            window.clear();
+            window.draw(background);
+            window.display();
+        };
+        currentScreen = "game";
+    }
+
+};
+
 class GameScreen : public Screen {
 public:
     Texture grid;
@@ -208,6 +238,8 @@ public:
         zombieFactory = new ZombieFactory(10,player.level);
         lawnMowerFactory = new LawnMowerFactory(5);
       plantFactory = new PlantFactory();
+      cout << "Deserializing game state...\n";
+      Deserialize();
 
 	}
    GameScreen(const GameScreen& gs) :Screen(gs) {
@@ -220,13 +252,47 @@ public:
        inspector = gs.inspector;
        player = gs.player;
    };
+   void Serialize()  {
+       ofstream saveFile("save.txt", ios::trunc);
+       if (saveFile.is_open())
+       {
+           zombieFactory->Serialize(saveFile);
+           sunFactory->Serialize(saveFile);
+           lawnMowerFactory->Serialize(saveFile);
+           player.Serialize(saveFile);
+           plantFactory->Serialize(saveFile);
+           saveFile.close();
+       }
+	   else
+	   {
+		   cout << "Error opening the save file.\n";
+	   }
+   }
+void Deserialize() {
+ifstream stream("save.txt");
+	   if (!stream.is_open())
+	   {
+		   cout << "Error opening the save file.\n";
+		   return;
+	   }
+	   zombieFactory->Deserialize(stream);
+	   sunFactory->Deserialize(stream);
+	   lawnMowerFactory->Deserialize(stream);
+	   player.Deserialize(stream);
+	   plantFactory->Deserialize(stream);
+stream.close();
+   }
    void renderScreen(RenderWindow& window, string& currentScreen){
    
            Event event;
            while (window.pollEvent(event))
            {
-               if (event.type == Event::Closed)
+               if (event.type == Event::Closed) {
+                   cout << "Saving game state...\n";
+Serialize();
+                   
                    window.close();
+               }
                if (event.type == Event::MouseButtonPressed && event.mouseButton.button == Mouse::Left)
                {
                    coordinates clickPosition;
@@ -253,9 +319,77 @@ public:
 			   plantFactory = new PlantFactory();
 			   sunFactory = new SunFactory(player.level*20);
 			   lawnMowerFactory = new LawnMowerFactory(5);
+               player.currency = 0;
+			   currentScreen = "levelUp";
            }
            if(player.lives<=0){
+ofstream saveFile("save.txt", ios::trunc);
 			   currentScreen = "gameover";
+               Texture endTexture;
+               string playerName;
+Text playerNameText;
+               playerNameText.setFont(font);
+               playerNameText.setCharacterSize(50);
+               playerNameText.setFillColor(sf::Color::White);
+               //set origin to be center of the text
+               playerNameText.setOrigin(
+               	playerNameText.getLocalBounds().left + playerNameText.getLocalBounds().width / 2,
+				   playerNameText.getLocalBounds().top + playerNameText.getLocalBounds().height / 2
+               );
+               playerNameText.setPosition((GAME_WIDTH  / 2)-100, (GAME_HEIGHT / 2));
+Sprite endSprite;
+endTexture.loadFromFile("./Images/levelup.png");
+endSprite.setTexture(endTexture);
+endSprite.setPosition(0, 0);
+
+               while (true) {
+                   Event event;
+                   while (window.pollEvent(event))
+                   {
+                       if (event.type == Event::Closed)
+                           window.close();
+                       else if (event.type == sf::Event::TextEntered)
+                       {
+                           if (event.text.unicode < 128)
+                           {
+                               if (event.text.unicode == 13)
+                               {
+                                   // Enter key pressed
+                                    // Save the name  
+                                   if (!playerName.empty())
+                                   {
+                                       ofstream scoreFile("highscores.txt", ios::app);
+                                       if (scoreFile.is_open())
+                                       {
+                                           scoreFile << playerName << " " << 128 << "\n";
+                                           scoreFile.close();
+                                       }
+                                       else
+                                       {
+                                           cout << "Error opening the highscores file.\n";
+                                       }
+                                   }
+                                   window.close();
+                                                               }
+                               else if (event.text.unicode == 8 && !playerName.empty())
+                               {
+                                   // Backspace pressed
+                                   playerName.pop_back();
+                               }
+                               else
+                               {
+                                   playerName += (char)(event.text.unicode);
+                               }
+                               playerNameText.setString(playerName);
+                           }
+                       }
+                   }
+                   window.clear();
+window.draw(endSprite);
+window.draw(playerNameText);
+window.display();
+                   
+               }
 		   }
 
 

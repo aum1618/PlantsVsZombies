@@ -6,6 +6,7 @@
 #include "cordinates.h";
 #include "bullet.h";
 #include "Sun.h";
+#include <fstream>
 using namespace sf;
 using namespace std;
 
@@ -23,6 +24,9 @@ public:
     int destination;
     string type;
     string category;
+    int destinationy;
+    bool freezeAll;
+    bool hasFrozen;
     Plant(float x = 0, float y = 0)
     {
         // cout << "Plant created" << endl;
@@ -38,6 +42,11 @@ public:
         cooldown = 1;
         type = "Plant";
         category = "Plant";
+        isRolling = true;
+        destination = 0;
+        freezeAll = false;
+hasFrozen = false;
+destinationy = 0;
     }
     // create a copy constructor
     Plant(const Plant &plant)
@@ -53,6 +62,11 @@ public:
         cooldown = plant.cooldown;
         type = "Plant";
         category = "Plant";
+        destination = plant.destination;
+        isRolling = plant.isRolling;
+freezeAll = plant.freezeAll;
+hasFrozen = plant.hasFrozen;
+destinationy = plant.destinationy;
     }
 
     virtual void draw(RenderWindow &window)
@@ -73,6 +87,39 @@ public:
     virtual void move()
     {
     }
+    virtual void Serialize(std::ostream& stream) const {
+		stream << type << endl;
+		stream << category << endl;
+        stream << position.x << endl;
+stream << position.y << endl;
+stream << cooldown << endl;
+		stream << destination << endl;
+		stream << destinationy << endl;
+		stream << freezeAll << endl;
+		stream << hasFrozen << endl;
+		stream << isRolling << endl;
+		stream << health << endl;
+		stream << cost << endl;
+
+    }
+
+    virtual void Deserialize(std::istream& stream) {
+stream >> position.x;
+stream >> position.y;
+sprite.setPosition(position.x, position.y);
+stream >> cooldown;
+		stream >> destination;
+stream >> destinationy;
+stream >> freezeAll;
+stream >> hasFrozen;
+stream >> isRolling;
+stream >> health;
+stream >> cost;
+cout << "Plant Deserialized" << endl;
+cout << "Attributes: " << cooldown << " " << destination << " " << type << " " << category << " " << destinationy << " " << freezeAll << " " << hasFrozen << " " << isRolling << " " << health << " " << cost << endl;
+	
+	}
+	
 };
 
 class Shooter : public Plant
@@ -108,6 +155,15 @@ public:
         type = "Shooter";
         category = "Shooter";
     }
+    virtual void Serialize(std::ostream& stream) const {
+        Plant::Serialize(stream);
+bulletFactory.Serialize(stream);
+    }
+    virtual void Deserialize(std::istream& stream) {
+        Plant::Deserialize(stream);
+bulletFactory.Deserialize(stream);
+    }
+
     void fireBullet()
     {
         if (clock.getElapsedTime().asSeconds() > cooldown)
@@ -235,6 +291,16 @@ public:
         category = "NonShooter";
     }
     // make function to add sun there should only be 1 sun at a time
+
+    virtual void Serialize(std::ostream& stream) const {
+        Plant::Serialize(stream);
+sunFactory.Serialize(stream);
+    }
+    virtual void Deserialize(std::istream& stream) {
+        Plant::Deserialize(stream);
+sunFactory.Deserialize(stream);
+    }
+
     void fireBullet()
     {
         float elapsed1 = clock.getElapsedTime().asSeconds();
@@ -363,12 +429,8 @@ public:
 class SnowPea : public Shooter
 {
 public:
-    Bomb *bomb;
-    int destination;
-    int destinationy;
-    bool freezeAll;
-    bool hasFrozen;
 
+    Bomb* bomb;
     SnowPea(float x, float y)
     {
         health = 100;
@@ -407,6 +469,17 @@ public:
         freezeAll = plant.freezeAll;
         hasFrozen = plant.hasFrozen;
         category = "Shooter";
+    }
+
+    
+    virtual void Serialize(std::ostream& stream) const {
+        Shooter::Serialize(stream);
+bomb->Serialize(stream);
+    }
+
+    virtual void Deserialize(std::istream& stream) {
+        Shooter::Deserialize(stream);
+bomb->Deserialize(stream);
     }
     void fireBullet()
     {

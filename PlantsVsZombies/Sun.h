@@ -2,6 +2,7 @@
 #include <iostream>
 #include <SFML/Graphics.hpp>
 #include "cordinates.h"
+#include <fstream>
 using namespace sf;
 using namespace std;
 
@@ -83,6 +84,27 @@ position.y = 0;
 	}
 	void animate() {
 		sprite.rotate(1);
+	}
+
+	void Serialize(std::ostream& stream) const {
+stream << value << endl;
+		stream << exist << endl;
+		stream << animating << endl;
+		stream << willMove << endl;
+		stream << position.x << endl;
+		stream << position.y << endl;
+	}
+
+	void Deserialize(std::istream& stream) {
+stream >> value;
+		stream >> exist;
+		stream >> animating;
+		stream >> willMove;
+		stream >> position.x;
+		stream >> position.y;
+		sprite.setPosition(position.x, position.y);
+		cout << "Sun Deserialized" << endl;
+		cout<< "attributes: " << value << " " << exist << " " << animating << " " << willMove << " " << position.x << " " << position.y << endl;
 	}
 	
 
@@ -209,6 +231,29 @@ for (int i = 0; i < suns_created; i++) {
 		}
 		delete[] suns;
 	}
+	void Serialize(std::ostream& stream) const {
+	stream << suns_created << endl;
+		for (int i = 0; i < suns_created; i++) {
+			suns[i]->Serialize(stream);
+		}
+	}
+
+	void Deserialize(std::istream& stream) {
+		int temp_suns_created;
+	stream >> temp_suns_created;
+	Sun** temp_suns = new Sun * [temp_suns_created];
+		for (int i = 0; i < temp_suns_created; i++) {
+			temp_suns[i] = new Sun();
+			temp_suns[i]->Deserialize(stream);
+		}
+for (int i = 0; i < suns_created; i++) {
+			delete suns[i];
+		}
+		delete[] suns;
+suns_created = temp_suns_created;
+suns = temp_suns;
+	}
+
 };
 
 

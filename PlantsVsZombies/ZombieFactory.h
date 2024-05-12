@@ -2,6 +2,7 @@
 #include <iostream>
 #include <SFML/Graphics.hpp>
 #include "Zombie.h"
+#include <fstream>
 using namespace sf;
 using namespace std;
 
@@ -211,6 +212,60 @@ public:
 			zombies[i]->draw(window);
 		}
 	}
+
+	//save and load the data for zombieFactory usng the following zombie class functions:
+	//void Serialize(std::ostream& stream) const {
+	//	stream << health << endl;
+	//	stream << speed << endl;
+	//	stream << isAlive << endl;
+	//	stream << cordintes.x << endl;
+	//	stream << cordintes.y << endl;
+	//	stream << numframes << endl;
+	//	stream << frame << endl;
+	//	stream << shouldMove << endl;
+	//	stream << type << endl;
+	//	stream << hasSummoned << endl;
+	//	stream << targetY << endl;
+	//}
+
+	//void Deserialize(std::istream& stream) {
+	//	stream >> health;
+	//	stream >> speed;
+	//	stream >> isAlive;
+	//	stream >> cordintes.x;
+	//	stream >> cordintes.y;
+	//	stream >> numframes;
+	//	stream >> frame;
+	//	stream >> shouldMove;
+	//	stream >> type;
+	//	stream >> hasSummoned;
+	//	stream >> targetY;
+
+	//}
+
+	void Serialize(std::ostream& stream) const {
+		stream << zombies_created << endl;
+		for (int i = 0; i < zombies_created; i++)
+		{
+			zombies[i]->Serialize(stream);
+		}
+	}
+
+void Deserialize(std::istream& stream) {
+	int temp_zombies_created;
+	stream >> temp_zombies_created;
+	cout << "Zombies created: " << temp_zombies_created << endl;
+		Zombie** temp = new Zombie * [temp_zombies_created];
+		for (int i = 0; i < temp_zombies_created; i++)
+		{
+			temp[i] = new Zombie();
+			temp[i]->Deserialize(stream);
+		}
+		delete zombies;
+zombies_created = temp_zombies_created;
+zombies = temp;
+	}
+
 
 	~ZombieFactory()
 	{
