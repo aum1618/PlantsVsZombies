@@ -2,6 +2,7 @@
 #include <iostream>
 #include <SFML/Graphics.hpp>
 #include "Zombie.h"
+#include "Player.h"
 #include <fstream>
 using namespace sf;
 using namespace std;
@@ -14,7 +15,7 @@ public:
 	ZombieFactory(int numZombies = 0, int level = 1)
 	{
 		zombies_created = numZombies;
-		zombies = new Zombie * [zombies_created];
+		zombies = new Zombie *[zombies_created];
 
 		int numBasicZombies = 0;
 		int numFootballZombies = 0;
@@ -85,9 +86,9 @@ public:
 			zombies[i] = new Zombie(*other.zombies[i]);
 		}
 	}
-	void createZombie(float x=0,float y=0)
+	void createZombie(float x = 0, float y = 0)
 	{
-		Zombie *newZombie = new Zombie(x,y);
+		Zombie *newZombie = new Zombie(x, y);
 		Zombie **temp = new Zombie *[zombies_created + 1];
 		for (int i = 0; i < zombies_created; i++)
 		{
@@ -126,7 +127,8 @@ public:
 			}
 		}
 	}
-	void summonZombies() {
+	void summonZombies()
+	{
 
 		for (int i = 0; i < zombies_created; i++)
 		{
@@ -155,16 +157,14 @@ public:
 					zombies[i]->hasSummoned = true;
 				}
 			}
-
 		}
-
 	}
 
-	void deleteZombiesInRect(float x, float y)
+	void deleteZombiesInRect(float x, float y, Player &player)
 	{
 		// Determine the coordinates of the bottom right corner of the box
 		float x2 = x + 300;
-		float y2 = y;
+		float y2 = y + 300;
 
 		// Iterate through zombies and delete those within the box
 		for (int i = 0; i < zombies_created; i++)
@@ -176,6 +176,7 @@ public:
 				zombieBounds.top >= y && zombieBounds.top <= y2)
 			{
 				// Delete the zombie
+				player.score += zombies[i]->scoring;
 				delete zombies[i];
 				// Move the last zombie to the current position to maintain continuity in the array
 				zombies[i] = zombies[zombies_created - 1];
@@ -187,7 +188,8 @@ public:
 		}
 	}
 
-	bool areZombiesDead() {
+	bool areZombiesDead()
+	{
 		for (int i = 0; i < zombies_created; i++)
 		{
 			if (zombies[i]->isAlive)
@@ -198,12 +200,12 @@ public:
 		return true;
 	}
 
-	void move() {
+	void move()
+	{
 		for (int i = 0; i < zombies_created; i++)
 		{
 			zombies[i]->move();
 		}
-
 	}
 	void draw(RenderWindow &window)
 	{
@@ -213,8 +215,8 @@ public:
 		}
 	}
 
-	//save and load the data for zombieFactory usng the following zombie class functions:
-	//void Serialize(std::ostream& stream) const {
+	// save and load the data for zombieFactory usng the following zombie class functions:
+	// void Serialize(std::ostream& stream) const {
 	//	stream << health << endl;
 	//	stream << speed << endl;
 	//	stream << isAlive << endl;
@@ -226,9 +228,9 @@ public:
 	//	stream << type << endl;
 	//	stream << hasSummoned << endl;
 	//	stream << targetY << endl;
-	//}
+	// }
 
-	//void Deserialize(std::istream& stream) {
+	// void Deserialize(std::istream& stream) {
 	//	stream >> health;
 	//	stream >> speed;
 	//	stream >> isAlive;
@@ -243,7 +245,8 @@ public:
 
 	//}
 
-	void Serialize(std::ostream& stream) const {
+	void Serialize(std::ostream &stream) const
+	{
 		stream << zombies_created << endl;
 		for (int i = 0; i < zombies_created; i++)
 		{
@@ -251,21 +254,21 @@ public:
 		}
 	}
 
-void Deserialize(std::istream& stream) {
-	int temp_zombies_created;
-	stream >> temp_zombies_created;
-	cout << "Zombies created: " << temp_zombies_created << endl;
-		Zombie** temp = new Zombie * [temp_zombies_created];
+	void Deserialize(std::istream &stream)
+	{
+		int temp_zombies_created;
+		stream >> temp_zombies_created;
+		cout << "Zombies created: " << temp_zombies_created << endl;
+		Zombie **temp = new Zombie *[temp_zombies_created];
 		for (int i = 0; i < temp_zombies_created; i++)
 		{
 			temp[i] = new Zombie();
 			temp[i]->Deserialize(stream);
 		}
 		delete zombies;
-zombies_created = temp_zombies_created;
-zombies = temp;
+		zombies_created = temp_zombies_created;
+		zombies = temp;
 	}
-
 
 	~ZombieFactory()
 	{

@@ -24,6 +24,9 @@ public:
     int destination;
     string type;
     string category;
+    bool isAlive;
+    int numframes;
+    int frame;
     int destinationy;
     bool freezeAll;
     bool hasFrozen;
@@ -42,11 +45,12 @@ public:
         cooldown = 1;
         type = "Plant";
         category = "Plant";
+        isAlive = true;
         isRolling = true;
         destination = 0;
         freezeAll = false;
-hasFrozen = false;
-destinationy = 0;
+        hasFrozen = false;
+        destinationy = 0;
     }
     // create a copy constructor
     Plant(const Plant &plant)
@@ -64,9 +68,9 @@ destinationy = 0;
         category = "Plant";
         destination = plant.destination;
         isRolling = plant.isRolling;
-freezeAll = plant.freezeAll;
-hasFrozen = plant.hasFrozen;
-destinationy = plant.destinationy;
+        freezeAll = plant.freezeAll;
+        hasFrozen = plant.hasFrozen;
+        destinationy = plant.destinationy;
     }
 
     virtual void draw(RenderWindow &window)
@@ -87,39 +91,38 @@ destinationy = plant.destinationy;
     virtual void move()
     {
     }
-    virtual void Serialize(std::ostream& stream) const {
-		stream << type << endl;
-		stream << category << endl;
+    virtual void Serialize(std::ostream &stream) const
+    {
+        stream << type << endl;
+        stream << category << endl;
         stream << position.x << endl;
-stream << position.y << endl;
-stream << cooldown << endl;
-		stream << destination << endl;
-		stream << destinationy << endl;
-		stream << freezeAll << endl;
-		stream << hasFrozen << endl;
-		stream << isRolling << endl;
-		stream << health << endl;
-		stream << cost << endl;
-
+        stream << position.y << endl;
+        stream << cooldown << endl;
+        stream << destination << endl;
+        stream << destinationy << endl;
+        stream << freezeAll << endl;
+        stream << hasFrozen << endl;
+        stream << isRolling << endl;
+        stream << health << endl;
+        stream << cost << endl;
     }
 
-    virtual void Deserialize(std::istream& stream) {
-stream >> position.x;
-stream >> position.y;
-sprite.setPosition(position.x, position.y);
-stream >> cooldown;
-		stream >> destination;
-stream >> destinationy;
-stream >> freezeAll;
-stream >> hasFrozen;
-stream >> isRolling;
-stream >> health;
-stream >> cost;
-cout << "Plant Deserialized" << endl;
-cout << "Attributes: " << cooldown << " " << destination << " " << type << " " << category << " " << destinationy << " " << freezeAll << " " << hasFrozen << " " << isRolling << " " << health << " " << cost << endl;
-	
-	}
-	
+    virtual void Deserialize(std::istream &stream)
+    {
+        stream >> position.x;
+        stream >> position.y;
+        sprite.setPosition(position.x, position.y);
+        stream >> cooldown;
+        stream >> destination;
+        stream >> destinationy;
+        stream >> freezeAll;
+        stream >> hasFrozen;
+        stream >> isRolling;
+        stream >> health;
+        stream >> cost;
+        cout << "Plant Deserialized" << endl;
+        cout << "Attributes: " << cooldown << " " << destination << " " << type << " " << category << " " << destinationy << " " << freezeAll << " " << hasFrozen << " " << isRolling << " " << health << " " << cost << endl;
+    }
 };
 
 class Shooter : public Plant
@@ -155,13 +158,15 @@ public:
         type = "Shooter";
         category = "Shooter";
     }
-    virtual void Serialize(std::ostream& stream) const {
+    virtual void Serialize(std::ostream &stream) const
+    {
         Plant::Serialize(stream);
-bulletFactory.Serialize(stream);
+        bulletFactory.Serialize(stream);
     }
-    virtual void Deserialize(std::istream& stream) {
+    virtual void Deserialize(std::istream &stream)
+    {
         Plant::Deserialize(stream);
-bulletFactory.Deserialize(stream);
+        bulletFactory.Deserialize(stream);
     }
 
     void fireBullet()
@@ -229,6 +234,7 @@ public:
 class PeeShooter : public Shooter
 {
 public:
+    Clock clock1;
     PeeShooter(float x = 0, float y = 0)
     {
         health = 100;
@@ -236,13 +242,15 @@ public:
         cooldown = 2;
         position.x = x;
         position.y = y;
-        texture.loadFromFile("./Images/plant.png");
+        texture.loadFromFile("./Images/peeshoot.png");
         texture.setSmooth(true);
         sprite.setTexture(texture);
         sprite.setTextureRect(IntRect(0, 0, 100, 100));
         sprite.setPosition(position.x, position.y);
         type = "PeeShooter";
         category = "Shooter";
+        numframes = 20;
+        frame = 0;
     }
     PeeShooter(const PeeShooter &plant)
     {
@@ -256,6 +264,21 @@ public:
         clock = plant.clock;
         type = "PeeShooter";
         category = "Shooter";
+        clock1 = plant.clock1;
+    }
+    virtual void move()
+    {
+        if (clock1.getElapsedTime().asMilliseconds() > 20)
+        {
+            if (isAlive)
+            {
+                frame++;
+                sprite.setTextureRect(IntRect(100 * (frame), 0, 100, 100));
+
+                frame = frame % numframes;
+                clock1.restart();
+            }
+        }
     }
 };
 class SunFlower : public NonShooter
@@ -292,13 +315,15 @@ public:
     }
     // make function to add sun there should only be 1 sun at a time
 
-    virtual void Serialize(std::ostream& stream) const {
+    virtual void Serialize(std::ostream &stream) const
+    {
         Plant::Serialize(stream);
-sunFactory.Serialize(stream);
+        sunFactory.Serialize(stream);
     }
-    virtual void Deserialize(std::istream& stream) {
+    virtual void Deserialize(std::istream &stream)
+    {
         Plant::Deserialize(stream);
-sunFactory.Deserialize(stream);
+        sunFactory.Deserialize(stream);
     }
 
     void fireBullet()
@@ -429,8 +454,7 @@ public:
 class SnowPea : public Shooter
 {
 public:
-
-    Bomb* bomb;
+    Bomb *bomb;
     SnowPea(float x, float y)
     {
         health = 100;
@@ -471,15 +495,16 @@ public:
         category = "Shooter";
     }
 
-    
-    virtual void Serialize(std::ostream& stream) const {
+    virtual void Serialize(std::ostream &stream) const
+    {
         Shooter::Serialize(stream);
-bomb->Serialize(stream);
+        bomb->Serialize(stream);
     }
 
-    virtual void Deserialize(std::istream& stream) {
+    virtual void Deserialize(std::istream &stream)
+    {
         Shooter::Deserialize(stream);
-bomb->Deserialize(stream);
+        bomb->Deserialize(stream);
     }
     void fireBullet()
     {
