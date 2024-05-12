@@ -33,6 +33,7 @@ struct Shop {
 	}
 	void draw(RenderWindow& window, Player& player,int level) {
 		window.draw(sprite);
+        //Putting black boxes according to level and level
         for (int i = 0; i < 7; i++)
         {
             if (player.currency < 50)
@@ -81,6 +82,12 @@ struct Shop {
                         window.draw(disable_array[i]);
                     }
                 }
+                if (level == 4) {
+                    if (i != 0 && i != 4 && i != 6)
+                    {
+                        window.draw(disable_array[i]);
+                    }
+                }
                 if (level == 3) {
                     if (i != 0 && i != 4 && i != 6)
                     {
@@ -104,6 +111,12 @@ struct Shop {
             {
                 if (level == 5) {
                     if (i != 0 && i != 4 && i != 6 && i != 2 && i != 3)
+                    {
+                        window.draw(disable_array[i]);
+                    }
+                }
+                if (level == 4) {
+                    if (i != 0 && i != 4 && i != 6)
                     {
                         window.draw(disable_array[i]);
                     }

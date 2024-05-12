@@ -59,10 +59,8 @@ public:
                 int mouseX = event.mouseButton.x;
                 int mouseY = event.mouseButton.y;
 
-                // Check if mouse click falls within the specified area
                 if (mouseX >= 66 && mouseX <= 635 && mouseY >= 356 && mouseY <= 501)
                 {
-                    // Call renderGame function
                     currentScreen = "game";
                 }
                 else if (mouseX >= 66 && mouseX <= 635 && mouseY >= 526 && mouseY <= 669)
@@ -103,10 +101,8 @@ public:
                 int mouseX = event.mouseButton.x;
                 int mouseY = event.mouseButton.y;
 
-                // Check if mouse click falls within the specified area
                 if (mouseX >= 927 && mouseX <= 1277 && mouseY >= 810 && mouseY <= 889)
                 {
-                    // Call renderGame function
                     currentScreen = "home";
                 }
             }
@@ -128,22 +124,21 @@ public:
     {
         bgImg.loadFromFile("./Images/leaderboard.png");
 
-        // Load font
-        if (!font.loadFromFile("arial.ttf"))
+        if (!font.loadFromFile("new.ttf"))
         {
             cout << "ERROR LOADING FONT" << endl;
         }
 
-        // Initialize text for displaying high scores
+
         highScoresText.setFont(font);
-        highScoresText.setCharacterSize(24);
+        highScoresText.setCharacterSize(50);
         highScoresText.setFillColor(Color::White);
-        highScoresText.setPosition(100, 100); // Set position where high scores will be displayed
+        highScoresText.setPosition(250, 250);
     }
 
     void renderScreen(RenderWindow& window, string& currentScreen)
     {
-        // Read high scores from file
+        // For reading hish scores from the file
         ifstream highScoresFile("highscores.txt");
         string highScoresStr;
         if (highScoresFile.is_open())
@@ -160,10 +155,8 @@ public:
             highScoresStr = "Unable to open highscores.txt";
         }
 
-        // Set the text to display high scores
         highScoresText.setString(highScoresStr);
 
-        // Event handling
         Event event;
         while (window.pollEvent(event))
         {
@@ -176,7 +169,7 @@ public:
                 int mouseX = event.mouseButton.x;
                 int mouseY = event.mouseButton.y;
 
-                // Check if mouse click falls within the specified area to go back home
+                // For going back to home
                 if (mouseX >= 927 && mouseX <= 1277 && mouseY >= 810 && mouseY <= 889)
                 {
                     currentScreen = "home";
@@ -184,10 +177,9 @@ public:
             }
         }
 
-        // Rendering
         window.clear();
         window.draw(background);
-        window.draw(highScoresText); // Draw high scores
+        window.draw(highScoresText);
         window.display();
     }
 };
@@ -410,13 +402,12 @@ public:
             playerNameText.setFont(font);
             playerNameText.setCharacterSize(50);
             playerNameText.setFillColor(sf::Color::White);
-            // set origin to be center of the text
             playerNameText.setOrigin(
-                playerNameText.getLocalBounds().left + playerNameText.getLocalBounds().width / 2,
-                playerNameText.getLocalBounds().top + playerNameText.getLocalBounds().height / 2);
-            playerNameText.setPosition((GAME_WIDTH / 2) - 100, (GAME_HEIGHT / 2));
+            playerNameText.getLocalBounds().left + playerNameText.getLocalBounds().width / 2,
+            playerNameText.getLocalBounds().top + playerNameText.getLocalBounds().height / 2);
+            playerNameText.setPosition(650,750);
             Sprite endSprite;
-            endTexture.loadFromFile("./Images/levelup.png");
+            endTexture.loadFromFile("./Images/endscreen.png");
             endSprite.setTexture(endTexture);
             endSprite.setPosition(0, 0);
 
@@ -431,10 +422,8 @@ public:
                     {
                         if (event.text.unicode < 128)
                         {
-                            if (event.text.unicode == 13)
+                            if (event.text.unicode == 13)//Checks enter on keyboard
                             {
-                                // Enter key pressed
-                                // Save the name
                                 if (!playerName.empty())
                                 {
                                     ofstream scoreFile("highscores.txt", ios::app);
