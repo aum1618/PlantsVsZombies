@@ -39,9 +39,6 @@ public:
 		}
 		else if (level > 3)
 		{
-			// Mix of all types of zombies
-			// You can adjust the percentages as needed
-			// For example, for level 4 and beyond, you could evenly distribute among all types
 			int temp = numZombies;
 			numBasicZombies = temp / 3;
 			numFootballZombies = temp / 3;
@@ -106,9 +103,8 @@ public:
 	{
 		for (int i = 0; i < zombies_created; i++)
 		{
-			// Get the bounds of the zombie sprite
 			FloatRect zombieBounds = zombies[i]->sprite.getGlobalBounds();
-			// Check if the coordinates (x, y) are within the bounds of the zombie sprite
+			// Check if existing zombie is there
 			if (zombieBounds.contains(x, y))
 			{
 				return true;
@@ -163,29 +159,24 @@ public:
 		}
 	}
 
-	void deleteZombiesInRect(float x, float y, Player &player)
+	void deleteZombiesInRect(float x, float y, Player &player) //For cherrybomb
 	{
-		// Determine the coordinates of the bottom right corner of the box
+		// Bottom right corner
 		float x2 = x + 300;
 		float y2 = y + 300;
 
-		// Iterate through zombies and delete those within the box
 		for (int i = 0; i < zombies_created; i++)
 		{
-			// Get the bounds of the zombie sprite
+
 			FloatRect zombieBounds = zombies[i]->sprite.getGlobalBounds();
-			// Check if the zombie is within the box
+
 			if (zombieBounds.left >= x && zombieBounds.left <= x2 &&
 				zombieBounds.top >= y && zombieBounds.top <= y2)
 			{
-				// Delete the zombie
 				player.score += zombies[i]->scoring;
 				delete zombies[i];
-				// Move the last zombie to the current position to maintain continuity in the array
 				zombies[i] = zombies[zombies_created - 1];
-				// Decrease the count of zombies
 				zombies_created--;
-				// Decrement i to recheck the current position after swapping
 				i--;
 			}
 		}

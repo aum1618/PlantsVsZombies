@@ -68,9 +68,8 @@ public:
 	{
 		for (int i = 0; i < plants_created; i++)
 		{
-			// Get the bounds of the plant sprite
 			FloatRect plantBounds = plants[i]->sprite.getGlobalBounds();
-			// Check if the coordinates (x, y) are within the bounds of the plant sprite
+			// Checks bounds of plant
 			if (plantBounds.contains(x, y))
 			{
 				return true;
@@ -83,9 +82,7 @@ public:
 	{
 		for (int i = 0; i < plants_created; i++)
 		{
-			// Get the bounds of the plant sprite
 			FloatRect plantBounds = plants[i]->sprite.getGlobalBounds();
-			// Check if the coordinates (x, y) are within the bounds of the plant sprite
 			if (plantBounds.contains(x, y))
 			{
 				delete plants[i];
@@ -140,7 +137,6 @@ public:
 				string category;
 				stream >> type;
 				stream >> category;
-				// create a new plant based on the type these are the types available: PeeShooter SunFlower Repeater SnowPea FumeShroom WallNut CherryBomb
 
 				if (type == "PeeShooter")
 				{

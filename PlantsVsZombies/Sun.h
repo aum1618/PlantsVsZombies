@@ -73,9 +73,9 @@ public:
 				position.y += speedY * deltaTime;
 				sprite.setPosition(position.x, position.y);
 			}
-else {
+			else {
 				position.x = 0;	
-position.y = 0;
+				position.y = 0;
 				animating = false;
 				exist = false;
 			}
@@ -87,7 +87,7 @@ position.y = 0;
 	}
 
 	void Serialize(std::ostream& stream) const {
-stream << value << endl;
+		stream << value << endl;
 		stream << exist << endl;
 		stream << animating << endl;
 		stream << willMove << endl;
@@ -96,7 +96,7 @@ stream << value << endl;
 	}
 
 	void Deserialize(std::istream& stream) {
-stream >> value;
+		stream >> value;
 		stream >> exist;
 		stream >> animating;
 		stream >> willMove;

@@ -52,10 +52,8 @@ public:
         hasFrozen = false;
         destinationy = 0;
     }
-    // create a copy constructor
     Plant(const Plant &plant)
     {
-        // cout << "Plant copied" << endl;
         health = plant.health;
         cost = plant.cost;
         position.x = plant.position.x;
@@ -224,7 +222,6 @@ public:
     }
     NonShooter(const NonShooter &plant)
     {
-        // cout << "Plant copied" << endl;
         health = plant.health;
         cost = plant.cost;
         position.x = plant.position.x;
@@ -319,7 +316,6 @@ public:
         type = "SunFlower";
         category = "NonShooter";
     }
-    // make function to add sun there should only be 1 sun at a time
 
     virtual void Serialize(std::ostream &stream) const
     {
@@ -448,9 +444,8 @@ public:
     }
     virtual void move()
     {
-        float speed = 5.0f; // Adjust the speed as desired
+        float speed = 5.0f;
         sprite.setOrigin(50, 50);
-        // Move the WallNut towards its target x position
         if (destination < position.x)
         {
             destination += speed;
@@ -589,7 +584,6 @@ public:
     }
     CherryBomb(const CherryBomb &plant)
     {
-        // cout << "Plant copied" << endl;
         health = plant.health;
         cost = plant.cost;
         position.x = plant.position.x;
@@ -622,7 +616,6 @@ public:
     }
     FumeShroom(const FumeShroom &plant)
     {
-        // cout << "Plant copied" << endl;
         health = plant.health;
         cost = plant.cost;
         cooldown = plant.cooldown;

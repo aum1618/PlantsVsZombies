@@ -319,8 +319,8 @@ public:
         pauseButton.loadFromFile("./Images/pause.png");
         pause_button.setTexture(pauseButton);
         pause_button.setPosition(1200, 0);
-        sunFactory = new SunFactory(10);
-        zombieFactory = new ZombieFactory(10, player.level);
+        sunFactory = new SunFactory(player.level*10);
+        zombieFactory = new ZombieFactory(player.level*10, player.level);
         lawnMowerFactory = new LawnMowerFactory(5);
         plantFactory = new PlantFactory();
         cout << "Deserializing game state...\n";
@@ -471,6 +471,7 @@ public:
                                         for (int i = 0; i < numScores; ++i) {
                                             saveFile << highScores[i].playerName << " " << highScores[i].score << "\n";
                                         }
+                                        saveFile << playerName << " " << player.score << "\n";
                                         saveFile.close();
                                     }
                                     else {

@@ -26,7 +26,6 @@ public:
         speed = 5;
         exist = false;
         direction = true;
-
         texture.loadFromFile("./Images/ProjectilePea.png");
         sprite.setTexture(texture);
         sprite.setOrigin(texture.getSize().x / 2, texture.getSize().y / 2);
@@ -49,23 +48,21 @@ public:
     }
 
     void Serialize(std::ostream& stream) const {
-stream << damage << endl;
-stream << speed << endl;
-stream << exist << endl;
-stream << direction << endl;
-stream << position.x << endl;
-stream << position.y << endl;
-
-
+        stream << damage << endl;
+        stream << speed << endl;
+        stream << exist << endl;
+        stream << direction << endl;
+        stream << position.x << endl;
+        stream << position.y << endl;
     }
 void Deserialize(std::istream& stream) {
-stream >> damage;
-stream >> speed;
-stream >> exist;
-stream >> direction;
-stream >> position.x;
-stream >> position.y;
-sprite.setPosition(position.x, position.y);
+        stream >> damage;
+        stream >> speed;
+        stream >> exist;
+        stream >> direction;
+        stream >> position.x;
+        stream >> position.y;
+        sprite.setPosition(position.x, position.y);
 	}
 
     void move()
@@ -76,12 +73,10 @@ sprite.setPosition(position.x, position.y);
 
             if (direction)
             {
-                // Move right
                 position.x -= speed;
             }
             else
             {
-                // Move left
                 position.x += speed;
             }
             sprite.setPosition(position.x, position.y);
@@ -91,7 +86,6 @@ sprite.setPosition(position.x, position.y);
     {
         window.draw(sprite);
     }
-    // Method to check if bullet reached the right edge
     bool reachedRightEdge(int windowWidth)
     {
         return position.x >= windowWidth;
@@ -226,30 +220,27 @@ public:
 
 
     void Serialize(std::ostream& stream) const {
-
-stream << bulletCount << endl;
-for (int i = 0; i < bulletCount; i++)
-{
-    bullets[i]->Serialize(stream);
-}
-
+        stream << bulletCount << endl;
+        for (int i = 0; i < bulletCount; i++)
+        {
+            bullets[i]->Serialize(stream);
+        }
     }
 
     void Deserialize(std::istream& stream) {
         int temp_bulletCount;
-stream >> temp_bulletCount;
-Bullet **temp_bullets = new Bullet *[temp_bulletCount];
-for (int i = 0; i < temp_bulletCount; i++) {
-temp_bullets[i] = new Bullet();
-	temp_bullets[i]->Deserialize(stream);
-}
-for (int i = 0; i < bulletCount; i++) {
-delete bullets[i];
-
-}
-delete[] bullets;
-bulletCount = temp_bulletCount;
-bullets = temp_bullets;
+        stream >> temp_bulletCount;
+        Bullet **temp_bullets = new Bullet *[temp_bulletCount];
+        for (int i = 0; i < temp_bulletCount; i++) {
+        temp_bullets[i] = new Bullet();
+	        temp_bullets[i]->Deserialize(stream);
+        }
+        for (int i = 0; i < bulletCount; i++) {
+        delete bullets[i];
+        }
+        delete[] bullets;
+        bulletCount = temp_bulletCount;
+        bullets = temp_bullets;
     }
 
     ~BulletFactory()
