@@ -218,36 +218,6 @@ public:
 		}
 	}
 
-	// save and load the data for zombieFactory usng the following zombie class functions:
-	// void Serialize(std::ostream& stream) const {
-	//	stream << health << endl;
-	//	stream << speed << endl;
-	//	stream << isAlive << endl;
-	//	stream << cordintes.x << endl;
-	//	stream << cordintes.y << endl;
-	//	stream << numframes << endl;
-	//	stream << frame << endl;
-	//	stream << shouldMove << endl;
-	//	stream << type << endl;
-	//	stream << hasSummoned << endl;
-	//	stream << targetY << endl;
-	// }
-
-	// void Deserialize(std::istream& stream) {
-	//	stream >> health;
-	//	stream >> speed;
-	//	stream >> isAlive;
-	//	stream >> cordintes.x;
-	//	stream >> cordintes.y;
-	//	stream >> numframes;
-	//	stream >> frame;
-	//	stream >> shouldMove;
-	//	stream >> type;
-	//	stream >> hasSummoned;
-	//	stream >> targetY;
-
-	//}
-
 	void Serialize(std::ostream &stream) const
 	{
 		stream << zombies_created << endl;

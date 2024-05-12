@@ -105,21 +105,7 @@ numframes = z.numframes;
 		}
 	}
 
-	// save and load the folllowing attributes:
-	/*int health;
-	float speed;
-	bool isAlive;
-	coordinates cordintes;
-	int numframes = 9;
-	int frame = 0;
-	bool shouldMove;
-	string type;
-	bool hasSummoned;
-	float targetY;*/
-	/*using the following syntax:
-	stream << level << endl;
-	stream << currency << endl;
-	stream << lives << endl;*/
+	
 	void Serialize(std::ostream &stream) const
 	{
 		stream << type << endl;

@@ -15,6 +15,27 @@
 #include "Player.h";
 #include <fstream>
 
+
+const int MAX_SCORES = 10; // Maximum number of high scores
+
+struct HighScore {
+    string playerName;
+    int score;
+};
+
+void bubbleSort(HighScore highScores[], int n) {
+    for (int i = 0; i < n - 1; ++i) {
+        for (int j = 0; j < n - i - 1; ++j) {
+            if (highScores[j].score < highScores[j + 1].score) {
+                // Swap scores
+                HighScore temp = highScores[j];
+                highScores[j] = highScores[j + 1];
+                highScores[j + 1] = temp;
+            }
+        }
+    }
+}
+
 class Screen
 {
 public:
@@ -437,15 +458,34 @@ public:
                                 // Save the name
                                 if (!playerName.empty())
                                 {
-                                    ofstream scoreFile("highscores.txt", ios::app);
-                                    if (scoreFile.is_open())
-                                    {
-                                        scoreFile << playerName << " " << 128 << "\n";
+                                    HighScore highScores[MAX_SCORES];
+                                    int numScores = 0;
+
+                                    // Read existing high scores from file
+                                    ifstream scoreFile("highscores.txt");
+                                    if (scoreFile.is_open()) {
+                                        while (numScores < MAX_SCORES && scoreFile >> highScores[numScores].playerName >> highScores[numScores].score) {
+                                            numScores++;
+                                        }
                                         scoreFile.close();
                                     }
-                                    else
-                                    {
+                                    else {
                                         cout << "Error opening the highscores file.\n";
+                                    }
+
+                                    // Sort high scores
+                                    bubbleSort(highScores, numScores);
+
+                                    // Store sorted high scores back to file
+                                    ofstream saveFile("highscores.txt", ios::trunc);
+                                    if (saveFile.is_open()) {
+                                        for (int i = 0; i < numScores; ++i) {
+                                            saveFile << highScores[i].playerName << " " << highScores[i].score << "\n";
+                                        }
+                                        saveFile.close();
+                                    }
+                                    else {
+                                        cout << "Error opening the highscores file for writing.\n";
                                     }
                                 }
                                 window.close();
