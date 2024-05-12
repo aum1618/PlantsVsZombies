@@ -105,6 +105,9 @@ public:
         stream << isRolling << endl;
         stream << health << endl;
         stream << cost << endl;
+        stream << isAlive << endl;
+        cout << frame << endl;
+        cout << numframes << endl;
     }
 
     virtual void Deserialize(std::istream &stream)
@@ -120,6 +123,9 @@ public:
         stream >> isRolling;
         stream >> health;
         stream >> cost;
+        stream >> isAlive;
+        stream >> frame;
+        stream >> numframes;
         cout << "Plant Deserialized" << endl;
         cout << "Attributes: " << cooldown << " " << destination << " " << type << " " << category << " " << destinationy << " " << freezeAll << " " << hasFrozen << " " << isRolling << " " << health << " " << cost << endl;
     }
