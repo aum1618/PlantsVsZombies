@@ -1,13 +1,19 @@
-# Setting up PlantsVszombies Game with SFML in Visual Studio
+# PlantsVsZombies Game with SFML
 
-To set up the PlantsVszombies game project with SFML in Visual Studio, follow these instructions:
+Welcome to the PlantsVsZombies game project! This game is a recreation of the popular tower defense game "Plants vs. Zombies" built using C++ and the Simple and Fast Multimedia Library (SFML). As part of our Object-Oriented Programming (OOP) project, this game showcases the use of various OOP principles and the integration of a multimedia library to create an engaging user experience.
+
+If you enjoy this project or find it helpful, please give it a star on GitHub!
+
+## Setting up PlantsVsZombies Game with SFML in Visual Studio
+
+To set up the PlantsVsZombies game project with SFML in Visual Studio, follow these instructions:
 
 ## Prerequisites
 - Clone the repository into your local machine's D drive.
 
 ## Configuration Steps
 1. Open the project in Visual Studio.
-2. Navigate to `Project > PlantsVszombies Properties` in the navigation bar.
+2. Navigate to `Project > PlantsVsZombies Properties` in the navigation bar.
 
 ### Debug Configuration
 3. Ensure that the configuration is set to `x64` and the mode is `Debug`.
@@ -48,4 +54,4 @@ To set up the PlantsVszombies game project with SFML in Visual Studio, follow th
 
 13. Click "OK" and close the properties window.
 
-You have now successfully configured the PlantsVszombies game project with SFML in Visual Studio.
+You have now successfully configured the PlantsVsZombies game project with SFML in Visual Studio.
